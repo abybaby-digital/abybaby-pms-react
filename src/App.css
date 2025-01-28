@@ -5,6 +5,10 @@
   box-shadow: 0 0 3px #383838;
 }
 
+main{
+  overflow-x: hidden;
+}
+
 li[data-sidebar="menu-item"]:has(.admin-navlink.active)>button {
   background: linear-gradient(33deg, #383838, black);
   color: white;
@@ -27,8 +31,27 @@ label{
   @apply text-lightdark md:text-lg text-sm inline-block mb-2
 }
 
-input{
+input, select{
   @apply w-full border p-2 md:text-[15px] text-sm rounded-md outline-none
 }
+
+.file-upload input{
+  @apply p-[5px]
+}
+
+.form-group .form-check{
+  @apply flex items-center gap-1 border py-1 px-5 rounded
+}
+
+.form-group .form-check label{
+  @apply m-0 text-lg text-nowrap
+}
+
+input[type="checkbox"]:checked{
+  color: black;
+}
+
+
+
 
 

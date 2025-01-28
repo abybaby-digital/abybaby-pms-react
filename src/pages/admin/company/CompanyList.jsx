@@ -8,17 +8,17 @@ import {
 
 import AdminHead from "../../../components/common/AdminHead";
 
-export default function AddCompany() {
+export default function CompanyList() {
 
     return (
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
                 <AdminHead breadcrumb_name="company" />
-                <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
+                <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
 
                     <form method="post" action="#" className="bg-white rounded-2xl shadow  mx-auto xl:w-[80%] w-full overflow-hidden">
-                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">ADD COMPANY</h2>
+                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">COMPANY LIST</h2>
                         <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
                             <div className="form-group">
                                 <label htmlFor="exampleInputEmail1">
