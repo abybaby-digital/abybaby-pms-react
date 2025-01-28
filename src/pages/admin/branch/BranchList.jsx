@@ -53,7 +53,7 @@ export default function BranchList() {
         setModal(true);
     }
 
-    console.log(singleBranchData);
+    // console.log(singleBranchData);
 
     return (
         <SidebarProvider>
