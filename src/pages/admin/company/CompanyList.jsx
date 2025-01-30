@@ -63,7 +63,7 @@ export default function CompanyList() {
                         <div className="card-body p-5 bg-white shadow  overflow-hidden">
                             {
                                 isLoading ? (
-                                    <TableSkeleton columns="5" />
+                                    <TableSkeleton columns="10" />
                                 ) : (
                                     <DataTable value={companyList?.response} stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
@@ -71,9 +71,20 @@ export default function CompanyList() {
                                         <Column field="company_details" sortable header="Company Details" style={{ textTransform: "capitalize" }}></Column>
                                         <Column field="company_gst" sortable header="Company GST" style={{ textTransform: "capitalize" }}></Column>
                                         <Column field="company_address" sortable header="Company Address" style={{ textTransform: "capitalize", width: "35%" }}></Column>
-                                        <Column header="Status" body={() => (
-                                            <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
-                                        )}></Column>
+                                        <Column field="contact_person" sortable header="Contact Person" style={{ textTransform: "capitalize", width: "35%" }}></Column>
+                                        <Column field="contact_number" sortable header="Contact Number" style={{ textTransform: "capitalize", width: "35%" }}></Column>
+                                        <Column field="contact_email" sortable header="Contact Email" style={{ textTransform: "capitalize", width: "35%" }}></Column>
+                                        <Column
+                                            header="Status"
+                                            body={(rowData) => (
+                                                rowData.status ? (
+                                                    <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
+                                                ) : (
+                                                    <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">Closed</span>
+                                                )
+                                            )}
+                                        />
+
 
                                         <Column header="Actions" body={(rowData) => (
                                             <>
@@ -116,7 +127,7 @@ export default function CompanyList() {
 
                             {/* View Company Modal */}
                             <ViewCompany company={singleCompanyData} add_or_edit={addOrEdit} />
-                            
+
                         </div>
                     </div>
                 </div>

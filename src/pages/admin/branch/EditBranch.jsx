@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
+import ButtonLoader from "../../../components/common/ButtonLoader";
 
 const EditBranch = ({ branch }) => {
     const token = useSelector((state) => state.auth.token);
@@ -134,7 +135,7 @@ const EditBranch = ({ branch }) => {
                     className="px-10 py-2 text-white bg-lightdark rounded-2xl"
                     disabled={editBranchMutation.isPending}
                 >
-                    {editBranchMutation.isPending ? "Updating..." : "Update"}
+                    {editBranchMutation.isPending ? <ButtonLoader /> : "Update"}
                 </button>
             </div>
         </form>

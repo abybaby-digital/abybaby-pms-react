@@ -23,8 +23,8 @@ const ViewCompany = ({ company, add_or_edit }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
     
     return (
-        <Dialog open={modal}>
-            <DialogContent className="p-5">
+        <Dialog open={modal} >
+            <DialogContent className="p-5 w-full">
                 <DialogHeader>
                     <DialogTitle className="text-center text-xl font-bold font-merri">
                         Company {add_or_edit === "view" ? "Details" : "Edit"}

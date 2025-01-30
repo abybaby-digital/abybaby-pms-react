@@ -7,6 +7,7 @@ import { addBranch } from "../../../services/api";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import ButtonLoader from "../../../components/common/ButtonLoader";
 
 export default function AddBranch() {
     const token = useSelector((state) => state.auth.token);
@@ -103,7 +104,7 @@ export default function AddBranch() {
                                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
                                 disabled={addBranchMutation.isPending}
                             >
-                                {addBranchMutation.isPending ? "Submitting..." : "Submit"}
+                                {addBranchMutation.isPending ? <ButtonLoader /> : "Submit"}
                             </button>
                         </div>
                     </form>

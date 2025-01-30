@@ -12,6 +12,8 @@ import BranchList from "./pages/admin/branch/BranchList";
 import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { DialogOpenCloseProvider } from "./context/DialogOpenClose";
+import AddVendor from "./pages/admin/vendor/AddVendor";
+import VendorList from "./pages/admin/vendor/VendorList";
 
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
@@ -47,6 +49,8 @@ const App = () => {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/company-add" element={<AddCompany />} />
                   <Route path="/company-list" element={<CompanyList />} />
+                  <Route path="/vendor-add" element={<AddVendor />} />
+                  <Route path="/vendor-list" element={<VendorList />} />
                   <Route path="/branch-add" element={<AddBranch />} />
                   <Route path="/branch-list" element={<BranchList />} />
                   <Route path="/user-add" element={<AddUser />} />

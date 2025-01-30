@@ -7,6 +7,7 @@ import { addCompany } from "../../../services/api"; // Assuming addCompany API f
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import ButtonLoader from "../../../components/common/ButtonLoader";
 
 export default function AddCompany() {
     const token = useSelector((state) => state.auth.token);
@@ -17,13 +18,13 @@ export default function AddCompany() {
         mutationFn: async (data) => {
             // Pass form data and status to the addCompany API
             return await addCompany(
-                token, 
-                data.companyName, 
-                data.companyDetails, 
-                data.companyGst, 
-                data.companyAddress, 
-                data.contactPerson, 
-                data.contactNo, 
+                token,
+                data.companyName,
+                data.companyDetails,
+                data.companyGst,
+                data.companyAddress,
+                data.contactPerson,
+                data.contactNo,
                 data.contactEmail,
                 "1"
             );
@@ -70,76 +71,117 @@ export default function AddCompany() {
                                 />
                                 {errors.companyName && (
                                     <span className="text-red-600 text-sm">
-                                        {errors.companyName.message}
+                                        {errors.companyName?.message}
                                     </span>
                                 )}
                             </div>
 
                             {/* Company Details Field */}
                             <div className="form-group">
-                                <label htmlFor="companyDetails">Company Details</label>
+                                <label htmlFor="companyDetails">Company Details
+                                    <span className="text-red-600">*</span>
+                                </label>
                                 <input
                                     type="text"
                                     className="block"
                                     id="companyDetails"
                                     placeholder="Company Details"
-                                    {...register("companyDetails")}
+                                    {...register("companyDetails", { required: "Company Details is required" })}
                                 />
+                                {errors.companyName && (
+                                    <span className="text-red-600 text-sm">
+                                        {errors.companyDetails?.message}
+                                    </span>
+                                )}
                             </div>
 
                             {/* Company GST Field */}
                             <div className="form-group">
-                                <label htmlFor="companyGst">Company GST</label>
+                                <label htmlFor="companyGst">Company GST
+                                    <span className="text-red-600">*</span>
+                                </label>
                                 <input
                                     type="text"
                                     className="block"
                                     id="companyGst"
                                     placeholder="Company GST"
-                                    {...register("companyGst")}
+                                    {...register("companyGst", {
+                                        required: "Company GST is required",
+                                        pattern: {
+                                            value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, // Indian GST regex
+                                            message: "Please enter a valid GST number"
+                                        }
+                                    })}
                                 />
+                                <span className="text-red-600 text-sm">
+                                    {errors.companyGst?.message}
+                                </span>
                             </div>
+
 
                             {/* Company Address Field */}
                             <div className="form-group">
-                                <label htmlFor="companyAddress">Company Address</label>
+                                <label htmlFor="companyAddress">Company Address
+                                    <span className="text-red-600">*</span>
+                                </label>
                                 <input
                                     type="text"
                                     className="block"
                                     id="companyAddress"
                                     placeholder="Company Address"
-                                    {...register("companyAddress")}
+                                    {...register("companyAddress", { required: "Company Address is required" })}
                                 />
+                                <span className="text-red-600 text-sm">
+                                    {errors.companyAddress?.message}
+                                </span>
                             </div>
 
                             {/* Contact Person Field */}
                             <div className="form-group">
-                                <label htmlFor="contactPerson">Contact Person</label>
+                                <label htmlFor="contactPerson">Contact Person
+                                    <span className="text-red-600">*</span>
+                                </label>
                                 <input
                                     type="text"
                                     className="block"
                                     id="contactPerson"
                                     placeholder="Contact Person"
-                                    {...register("contactPerson")}
+                                    {...register("contactPerson", { required: "Company Person is required" })}
                                 />
+                                <span className="text-red-600 text-sm">
+                                    {errors.contactPerson?.message}
+                                </span>
                             </div>
 
                             {/* Contact Number Field */}
                             <div className="form-group">
-                                <label htmlFor="contactNo">Contact Number</label>
+                                <label htmlFor="contactNo">Contact Number
+                                    <span className="text-red-600">*</span>
+                                </label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="block"
                                     id="contactNo"
                                     placeholder="Contact Number"
-                                    {...register("contactNo")}
+                                    {...register("contactNo", {
+                                        required: "Contact Number is required",
+                                        pattern: {
+                                            value: /^[0-9]{10}$/, // Ensures the input is exactly 10 digits
+                                            message: "Please enter a valid 10-digit phone number"
+                                        }
+                                    })}
                                 />
+                                <span className="text-red-600 text-sm">
+                                    {errors.contactNo?.message}
+                                </span>
                             </div>
+
 
                             {/* Contact Email Field */}
                             <div className="form-group">
                                 <label htmlFor="contactEmail">Contact Email</label>
                                 <input
-                                    type="text"
+                                    type="email"
                                     className="block"
                                     id="contactEmail"
                                     placeholder="Contact Email"
@@ -154,7 +196,7 @@ export default function AddCompany() {
                                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
                                 disabled={addCompanyMutation.isPending}
                             >
-                                {addCompanyMutation.isPending ? "Submitting..." : "Submit"}
+                                {addCompanyMutation.isPending ? <ButtonLoader /> : "Submit"}
                             </button>
                         </div>
                     </form>

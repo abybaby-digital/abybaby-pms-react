@@ -13,14 +13,12 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
-import { getBranchList } from "../../../services/api";
+import { getVendorList } from "../../../services/api";
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
-import ViewBranch from "./ViewBranch";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import TableSkeleton from "../../../components/common/TableSkeleton";
-import EditBranch from "./EditBranch";
 import { useSelector } from "react-redux";
 import { BsFiletypeXlsx } from "react-icons/bs";
 import { FaFilePdf } from "react-icons/fa";
@@ -29,76 +27,78 @@ import { FaFilePdf } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import ViewVendor from "./ViewVendor";
 
-export default function BranchList() {
+export default function VendorList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
-    console.log(token);
 
-    const { data: branchlist = [], isLoading } = useQuery({
-        queryKey: ["branch-list", refetchList],
+    const { data: vendorList = [], isLoading } = useQuery({
+        queryKey: ["vendor-list", refetchList],
         queryFn: async () => {
-            return await getBranchList(token);
+            return await getVendorList(token);
         }
     });
 
     useEffect(() => {
-        if (branchlist) {
-            console.log(branchlist);
+        if (vendorList) {
+            console.log(vendorList);
         }
-    }, [branchlist]);
+    }, [vendorList]);
 
-    const [singleBranchData, setsingleBranchData] = useState({});
+    const [singleVendorData, setSingleVendorData] = useState({});
     const [addOrEdit, setAddOrEdit] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState(""); // State for search input
 
-    const singleBranch = (id) => {
-        const allbranches = branchlist?.response;
-        const singleBranch = allbranches.find(branch => branch.id === id);  // Use find to get a single match
-        setsingleBranchData(singleBranch);
+    const singleVendor = (id) => {
+        const allVendors = vendorList?.response;
+        const singleVendor = allVendors.find(vendor => vendor.id === id);
+        setSingleVendorData(singleVendor);
         setModal(true);
     };
 
-    const filteredBranches = branchlist?.response?.filter(branch => {
+    const filteredVendors = vendorList?.response?.filter(vendor => {
         const keyword = searchKeyword.toLowerCase();
         return (
-            branch.branch_code.toLowerCase().includes(keyword) ||
-            branch.branch_name.toLowerCase().includes(keyword) ||
-            branch.branch_address.toLowerCase().includes(keyword)
+            vendor.vendor_code.toLowerCase().includes(keyword) ||
+            vendor.vendor_name.toLowerCase().includes(keyword) ||
+            vendor.vendor_address.toLowerCase().includes(keyword)
         );
     });
 
     // Export to Excel function
     const exportToExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(branchlist?.response || []);
+        const ws = XLSX.utils.json_to_sheet(vendorList?.response || []);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Branch List");
-        XLSX.writeFile(wb, "branch_list.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Vendor List");
+        XLSX.writeFile(wb, "vendor_list.xlsx");
     };
 
     // Export to PDF function
     const exportToPDF = () => {
         const doc = new jsPDF();
         doc.autoTable({
-            head: [["Branch Code", "Branch Name", "Branch Address", "Status"]],
-            body: branchlist?.response.map(branch => [
-                branch.branch_code,
-                branch.branch_name,
-                branch.branch_address,
+            head: [["Vendor Code", "Vendor Name", "Vendor Address", "State", "Branch Name", "Status"]],
+            body: vendorList?.response.map(vendor => [
+                vendor.vendor_code,
+                vendor.vendor_name,
+                vendor.vendor_address,
+                vendor.state_name,
+                vendor.branch_name,
                 "Active", // Assuming Status is always Active, you can modify this as needed
             ]),
         });
-        doc.save("branch_list.pdf");
+        doc.save("vendor_list.pdf");
     };
 
     return (
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <AdminHead breadcrumb_name="branch" />
+                <AdminHead breadcrumb_name="vendor" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">BRANCH LIST</h2>
+                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">VENDOR LIST</h2>
                         <div className="card-body p-5 bg-white shadow overflow-hidden">
                             {
                                 isLoading ? (
@@ -108,7 +108,6 @@ export default function BranchList() {
                                         {/* Export Buttons */}
                                         <div className="flex justify-between space-x-2 items-center mb-4 bg-whitesmoke p-2 rounded-xl shadow">
                                             {/* Search Box */}
-
                                             <input
                                                 type="text"
                                                 placeholder="Search by keyword..."
@@ -149,16 +148,17 @@ export default function BranchList() {
                                                     </Tooltip>
                                                 </TooltipProvider>
                                             </div>
-
-
                                         </div>
 
                                         {/* DataTable */}
-                                        <DataTable value={filteredBranches} stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                                        <DataTable value={filteredVendors} stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}">
-                                            <Column field="branch_code" sortable header="branch code" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="branch_name" sortable header="branch name" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="branch_address" sortable header="branch address" style={{ textTransform: "capitalize", width: "35%" }}></Column>
+                                            <Column field="vendor_code" sortable header="Vendor Code" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="vendor_name" sortable header="Vendor Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="vendor_category_name" sortable header="Vendor Service" style={{ textTransform: "capitalize"}}></Column>
+                                            <Column field="vendor_mobile" sortable header="Mobile" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="vendor_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
+
                                             <Column header="Status" body={() => (
                                                 <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
                                             )}></Column>
@@ -167,23 +167,27 @@ export default function BranchList() {
                                                 <>
                                                     <TooltipProvider>
                                                         <Tooltip>
-                                                            <TooltipTrigger> <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                singleBranch(rowData.id);
-                                                                setAddOrEdit("view");
-                                                            }}><FaEye /></button></TooltipTrigger>
+                                                            <TooltipTrigger>
+                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                    singleVendor(rowData.id);
+                                                                    setAddOrEdit("view");
+                                                                }}><FaEye /></button>
+                                                            </TooltipTrigger>
                                                             <TooltipContent>
-                                                                <p>View Branch</p>
+                                                                <p>View Vendor</p>
                                                             </TooltipContent>
                                                         </Tooltip>
                                                     </TooltipProvider>
 
                                                     <TooltipProvider>
                                                         <Tooltip>
-                                                            <TooltipTrigger> <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                singleBranch(rowData.id); setAddOrEdit("edit");
-                                                            }}><MdEditSquare /></button></TooltipTrigger>
+                                                            <TooltipTrigger>
+                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                    singleVendor(rowData.id); setAddOrEdit("edit");
+                                                                }}><MdEditSquare /></button>
+                                                            </TooltipTrigger>
                                                             <TooltipContent>
-                                                                <p>Edit Branch</p>
+                                                                <p>Edit Vendor</p>
                                                             </TooltipContent>
                                                         </Tooltip>
                                                     </TooltipProvider>
@@ -194,9 +198,8 @@ export default function BranchList() {
                                 )
                             }
 
-                            {/* VIEW BRANCH POPUP */}
-                            <ViewBranch branch={singleBranchData} add_or_edit={addOrEdit} />
-                            {/* <EditBranch branch={singleBranchData} /> */}
+                            {/* VIEW VENDOR POPUP */}
+                            <ViewVendor vendor={singleVendorData} add_or_edit={addOrEdit} />
                         </div>
                     </div>
                 </div>
