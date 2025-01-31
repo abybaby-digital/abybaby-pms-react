@@ -14,6 +14,10 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { DialogOpenCloseProvider } from "./context/DialogOpenClose";
 import AddVendor from "./pages/admin/vendor/AddVendor";
 import VendorList from "./pages/admin/vendor/VendorList";
+import AddClient from "./pages/admin/client/AddClient";
+import ClientList from "./pages/admin/client/ClientList";
+import AddProject from "./pages/admin/project/AddProject";
+import ProjectList from "./pages/admin/project/ProjectList";
 
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
@@ -53,6 +57,10 @@ const App = () => {
                   <Route path="/vendor-list" element={<VendorList />} />
                   <Route path="/branch-add" element={<AddBranch />} />
                   <Route path="/branch-list" element={<BranchList />} />
+                  <Route path="/client-add" element={<AddClient />} />
+                  <Route path="/client-list" element={<ClientList />} />
+                  <Route path="/project-add" element={<AddProject />} />
+                  <Route path="/project-list" element={<ProjectList />} />
                   <Route path="/user-add" element={<AddUser />} />
                 </Route>
               </Routes>

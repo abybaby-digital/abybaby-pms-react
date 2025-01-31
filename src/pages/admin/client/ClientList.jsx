@@ -13,7 +13,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
-import { getVendorList } from "../../../services/api";
+import { getClientList } from "../../../services/api"; // Updated to getClientList API
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -27,32 +27,32 @@ import { FaFilePdf } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import ViewVendor from "./ViewVendor";
+import ViewClient from "./ViewClient";
 
-export default function VendorList() {
+export default function ClientList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
 
-    const { data: vendorList = [], isLoading } = useQuery({
-        queryKey: ["vendor-list", refetchList],
+    const { data: clientList = [], isLoading } = useQuery({
+        queryKey: ["client-list", refetchList],
         queryFn: async () => {
-            return await getVendorList(token);
+            return await getClientList(token); // Fetch the list using the client list API
         }
     });
 
     useEffect(() => {
-        if (vendorList) {
-            console.log(vendorList);
+        if (clientList) {
+            console.log(clientList);
         }
-    }, [vendorList]);
+    }, [clientList]);
 
-    const [singleVendorData, setSingleVendorData] = useState({});
+    const [singleClientData, setSingleClientData] = useState({});
     const [addOrEdit, setAddOrEdit] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState(""); // State for search input
     const [debouncedSearchKeyword, setDebouncedSearchKeyword] = useState(""); // State for debounced search input
 
-     // Debounce logic using setTimeout
-     useEffect(() => {
+    // Debounce logic using setTimeout
+    useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearchKeyword(searchKeyword); // Update the debounced keyword after 500ms
         }, 500); // Set the delay time in milliseconds (500ms in this case)
@@ -61,61 +61,56 @@ export default function VendorList() {
         return () => clearTimeout(timer);
     }, [searchKeyword]);
 
-    const singleVendor = (id) => {
-        const allVendors = vendorList?.response;
-        const singleVendor = allVendors.find(vendor => vendor.id === id);
-        setSingleVendorData(singleVendor);
+    const singleClient = (id) => {
+        const allClients = clientList?.response;
+        const singleClient = allClients.find(client => client.id === id);
+        setSingleClientData(singleClient);
         setModal(true);
     };
 
-    const filteredVendors = vendorList?.response?.filter(vendor => {
+    const filteredClients = clientList?.response?.filter(client => {
         const keyword = debouncedSearchKeyword.toLowerCase();
         return (
-            vendor.vendor_code.toLowerCase().includes(keyword) ||
-            vendor.vendor_name.toLowerCase().includes(keyword) ||
-            vendor.vendor_address.toLowerCase().includes(keyword)
+            client.company_name.toLowerCase().includes(keyword) ||
+            client.contact_person.toLowerCase().includes(keyword) ||
+            client.client_gst.toLowerCase().includes(keyword) ||
+            client.client_email.toLowerCase().includes(keyword)
         );
     });
 
     // Export to Excel function
     const exportToExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(vendorList?.response || []);
+        const ws = XLSX.utils.json_to_sheet(clientList?.response || []);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Vendor List");
-        XLSX.writeFile(wb, "vendor_list.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Client List");
+        XLSX.writeFile(wb, "client_list.xlsx");
     };
 
     // Export to PDF function
     const exportToPDF = () => {
         const doc = new jsPDF('l', 'mm', 'a4');
         doc.autoTable({
-            head: [["Vendor Code", "Vendor Name", "Vendor Service", "Vendor Address", "State", "Branch Name", "GST No", "Bank Name", "Bank A/C No", "Bank IFSC", "Status"]],
-            body: vendorList?.response.map(vendor => [
-                vendor.vendor_code,
-                vendor.vendor_name,
-                vendor.vendor_category_name,
-                vendor.vendor_address,
-                vendor.state_name,
-                vendor.branch_name,
-                vendor.gst_no,
-                vendor.branch_name,
-                vendor.bank_name,
-                vendor.bank_account,
-                vendor.ifsc_code,
-                "Active", // Assuming Status is always Active, you can modify this as needed
+            head: [["Company Name", "Contact Person", "Client GST", "Contact Email", "Address", "Status"]],
+            body: clientList?.response.map(client => [
+                client.company_name,
+                client.contact_person,
+                client.client_gst,
+                client.client_email,
+                client.office_address,
+                client.status ? "Active" : "Closed", // Assuming status is boolean
             ]),
         });
-        doc.save("vendor_list.pdf");
+        doc.save("client_list.pdf");
     };
 
     return (
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <AdminHead breadcrumb_name="vendor" />
+                <AdminHead breadcrumb_name="client" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">VENDOR LIST</h2>
+                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">CLIENT LIST</h2>
                         <div className="card-body p-5 bg-white shadow overflow-hidden">
                             {
                                 isLoading ? (
@@ -128,7 +123,7 @@ export default function VendorList() {
                                             <input
                                                 type="text"
                                                 placeholder="Search by keyword..."
-                                                className="p-2 w-full border rounded-md shadow lg:w-[300px] "
+                                                className="p-2 w-full border rounded-md shadow lg:w-[300px]"
                                                 value={searchKeyword}
                                                 onChange={(e) => setSearchKeyword(e.target.value)}
                                             />
@@ -168,16 +163,20 @@ export default function VendorList() {
                                         </div>
 
                                         {/* DataTable */}
-                                        <DataTable value={filteredVendors} stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                                        <DataTable value={filteredClients} stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}">
-                                            <Column field="vendor_code" sortable header="Vendor Code" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_name" sortable header="Vendor Name" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_category_name" sortable header="Vendor Service" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_mobile" sortable header="Mobile" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
+                                            <Column field="company_name" sortable header="Company Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="contact_person" sortable header="Contact Person" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="client_gst" sortable header="Client GST" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="client_email" sortable header="Contact Email" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="office_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
 
-                                            <Column header="Status" body={() => (
-                                                <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
+                                            <Column header="Status" body={(rowData) => (
+                                                rowData.status === "1" ? (
+                                                    <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
+                                                ) : (
+                                                    <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">Closed</span>
+                                                )
                                             )}></Column>
 
                                             <Column header="Actions" body={(rowData) => (
@@ -186,12 +185,12 @@ export default function VendorList() {
                                                         <Tooltip>
                                                             <TooltipTrigger>
                                                                 <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                    singleVendor(rowData.id);
+                                                                    singleClient(rowData.id);
                                                                     setAddOrEdit("view");
                                                                 }}><FaEye /></button>
                                                             </TooltipTrigger>
                                                             <TooltipContent>
-                                                                <p>View Vendor</p>
+                                                                <p>View Client</p>
                                                             </TooltipContent>
                                                         </Tooltip>
                                                     </TooltipProvider>
@@ -200,11 +199,11 @@ export default function VendorList() {
                                                         <Tooltip>
                                                             <TooltipTrigger>
                                                                 <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                    singleVendor(rowData.id); setAddOrEdit("edit");
+                                                                    singleClient(rowData.id); setAddOrEdit("edit");
                                                                 }}><MdEditSquare /></button>
                                                             </TooltipTrigger>
                                                             <TooltipContent>
-                                                                <p>Edit Vendor</p>
+                                                                <p>Edit Client</p>
                                                             </TooltipContent>
                                                         </Tooltip>
                                                     </TooltipProvider>
@@ -215,8 +214,8 @@ export default function VendorList() {
                                 )
                             }
 
-                            {/* VIEW VENDOR POPUP */}
-                            <ViewVendor vendor={singleVendorData} add_or_edit={addOrEdit} />
+                            {/* VIEW CLIENT POPUP */}
+                            <ViewClient client={singleClientData} add_or_edit={addOrEdit} />
                         </div>
                     </div>
                 </div>

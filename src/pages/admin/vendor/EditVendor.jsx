@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {  getVendorCategoryList, getBranchList, getStateList } from "../../../services/api";
+import { getVendorCategoryList, getBranchList, getStateList, editVendor } from "../../../services/api";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -20,12 +20,12 @@ const EditVendor = ({ vendor }) => {
             vendor_email: vendor.vendor_email,
             vendor_mobile: vendor.vendor_mobile,
             vendor_address: vendor.vendor_address,
-            branch_id: vendor.branch_id,
-            vendor_state: vendor.vendor_state,
-            pan_no: vendor.pan_no,
+            branch_id: vendor.vendor_branch_id,
+            vendor_state: vendor.state_id,
+            pan_no: vendor.pancard_no,
             gst_no: vendor.gst_no,
             bank_name: vendor.bank_name,
-            bank_account_number: vendor.bank_account_number,
+            bank_account_number: vendor.bank_account,
             ifsc_code: vendor.ifsc_code,
             vendor_status: vendor.status === "1" ? true : false,  // Assuming vendor's status is boolean (active/inactive)
         }
@@ -36,6 +36,12 @@ const EditVendor = ({ vendor }) => {
         queryKey: ["branch-list"],
         queryFn: () => getBranchList(token),
     });
+    console.log(vendor);
+
+    branchList?.response?.map((item) => {
+        console.log(typeof(item.id));
+    })
+
 
     const { data: vendorCategoryList } = useQuery({
         queryKey: ["vendor-category-list"],
@@ -47,19 +53,21 @@ const EditVendor = ({ vendor }) => {
         queryFn: () => getStateList(token),
     });
 
+    // console.log(vendor.id);
+
     // Mutation to edit the vendor
     const editVendorMutation = useMutation({
         mutationFn: async (data) => {
             return await editVendor(
                 token,
                 vendor.id,  // Vendor ID to edit the correct one
-                data.vendor_category_id,
+                +data.vendor_category_id,
                 data.vendor_name,
                 data.vendor_email,
                 data.vendor_mobile,
-                data.branch_id,
+                +data.branch_id,
                 data.vendor_address,
-                data.vendor_state,
+                +data.vendor_state,
                 data.pan_no,
                 data.gst_no,
                 data.bank_name,
@@ -80,17 +88,16 @@ const EditVendor = ({ vendor }) => {
     });
 
     const onSubmit = (data) => {
+        console.log(data);
         editVendorMutation.mutate(data);  // Trigger mutation to edit the vendor
     };
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto xl:w-[50%] w-full overflow-hidden"
+            className="bg-white rounded-2xl shadow mx-auto w-full overflow-hidden"
         >
-            <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
-                EDIT VENDOR
-            </h2>
+
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
                 {/* Vendor Category Select Field */}
                 <div className="form-group">
@@ -103,7 +110,7 @@ const EditVendor = ({ vendor }) => {
                     >
                         <option value="">-- Select Category --</option>
                         {vendorCategoryList?.response.map((item) => (
-                            <option key={item.id} value={item.id}>
+                            <option key={item.id} value={item.id} selected={vendor.vendor_category_id === item.id}>
                                 {item.name}
                             </option>
                         ))}
@@ -195,7 +202,7 @@ const EditVendor = ({ vendor }) => {
                     >
                         <option value="">-- Select Branch --</option>
                         {branchList?.response.map((item) => (
-                            <option key={item.id} value={item.id}>
+                            <option key={item.id} value={item.id} selected={+vendor.vendor_branch_id === item.id}>
                                 {item.branch_name}
                             </option>
                         ))}
@@ -214,7 +221,7 @@ const EditVendor = ({ vendor }) => {
                     >
                         <option value="">-- Select State --</option>
                         {stateList?.response.map((item) => (
-                            <option key={item.id} value={item.id}>
+                            <option key={item.id} value={item.id} selected={+vendor.state_id === item.id}>
                                 {item.state_name}
                             </option>
                         ))}
@@ -244,7 +251,22 @@ const EditVendor = ({ vendor }) => {
                         <span className="text-red-600 text-sm">{errors.pan_no.message}</span>
                     )}
                 </div>
-
+                {/* GST Number Field */}
+                <div className="form-group">
+                    <label htmlFor="gst_no">GST No</label>
+                    <input
+                        type="text"
+                        className="block"
+                        id="gst_no"
+                        placeholder="Enter GST Number"
+                        {...register("gst_no")}
+                    />
+                    {errors.gst_no && (
+                        <span className="text-red-600 text-sm">
+                            {errors.gst_no.message}
+                        </span>
+                    )}
+                </div>
                 {/* Bank Name Field */}
                 <div className="form-group">
                     <label htmlFor="bank_name">Bank Name <span className="text-red-600">*</span></label>
@@ -259,17 +281,60 @@ const EditVendor = ({ vendor }) => {
                         <span className="text-red-600 text-sm">{errors.bank_name.message}</span>
                     )}
                 </div>
-
-                {/* Submit Button */}
-                <div className="card-footer text-center bg-gray-100 py-5">
-                    <button
-                        type="submit"
-                        className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                        disabled={editVendorMutation.isLoading}
-                    >
-                        {editVendorMutation.isLoading ? <ButtonLoader /> : "Submit"}
-                    </button>
+                {/* Bank Account Number Field */}
+                <div className="form-group">
+                    <label htmlFor="bank_account_number">Bank Account No.
+                        <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                        type="number"
+                        className="block"
+                        id="bank_account_number"
+                        placeholder="Enter Bank Account Number"
+                        {...register("bank_account_number", { required: "Bank Account Number is required" })}
+                    />
+                    {errors.bank_account_number && (
+                        <span className="text-red-600 text-sm">
+                            {errors.bank_account_number.message}
+                        </span>
+                    )}
                 </div>
+
+                {/* IFSC Code Field */}
+                <div className="form-group">
+                    <label htmlFor="ifsc_code">IFSC Code
+                        <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        className="block"
+                        id="ifsc_code"
+                        placeholder="Enter IFSC Code"
+                        {...register("ifsc_code", {
+                            required: "IFSC Code is required", pattern: {
+                                value: /^[A-Z]{4}[0-9]{7}$/,
+                                message: "Invalid IFSC Code"
+                            }
+                        })}
+                    />
+                    {errors.ifsc_code && (
+                        <span className="text-red-600 text-sm">
+                            {errors.ifsc_code.message}
+                        </span>
+                    )}
+                </div>
+
+
+            </div>
+            {/* Submit Button */}
+            <div className="card-footer text-center bg-gray-100 py-5">
+                <button
+                    type="submit"
+                    className="px-10 py-2 text-white bg-lightdark rounded-2xl"
+                    disabled={editVendorMutation.isPending}
+                >
+                    {editVendorMutation.isPending ? <ButtonLoader /> : "Submit"}
+                </button>
             </div>
         </form>
     );
