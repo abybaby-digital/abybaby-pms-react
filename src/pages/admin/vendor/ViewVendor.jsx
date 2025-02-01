@@ -40,61 +40,61 @@ const ViewVendor = ({ vendor, add_or_edit }) => {
                         <DialogDescription>
                             {add_or_edit === "view" ? (
                                 <Table className="text-black">
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Vendor Code</TableCell>
+                                    <TableBody className="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Vendor Code:</TableCell>
                                             <TableCell>{vendor?.vendor_code}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Vendor Name</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Vendor Name:</TableCell>
                                             <TableCell>{vendor?.vendor_name}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Vendor Email</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Vendor Email:</TableCell>
                                             <TableCell>{vendor?.vendor_email}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Vendor Mobile</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Vendor Mobile:</TableCell>
                                             <TableCell>{vendor?.vendor_mobile}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Vendor Address</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Vendor Address:</TableCell>
                                             <TableCell>{vendor?.vendor_address}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">State</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">State:</TableCell>
                                             <TableCell>{vendor?.state_name}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Branch Name</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Branch Name:</TableCell>
                                             <TableCell>{vendor?.branch_name}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Vendor Category</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Vendor Category:</TableCell>
                                             <TableCell>{vendor?.vendor_category_name}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">PAN Card No.</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">PAN Card No.:</TableCell>
                                             <TableCell>{vendor?.pancard_no}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">GST No.</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">GST No.:</TableCell>
                                             <TableCell>{vendor?.gst_no}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Bank Name</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Bank Name:</TableCell>
                                             <TableCell>{vendor?.bank_name}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Bank Account No.</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Bank Account No.:</TableCell>
                                             <TableCell>{vendor?.bank_account}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">IFSC Code</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">IFSC Code:</TableCell>
                                             <TableCell>{vendor?.ifsc_code}</TableCell>
                                         </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Status</TableCell>
+                                        <TableRow className="flex justify-between">
+                                            <TableCell className="font-bold text-lg">Status:</TableCell>
                                             <TableCell>
                                                 {vendor?.status === "1" ? (
                                                     <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>

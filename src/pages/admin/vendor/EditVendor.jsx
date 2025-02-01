@@ -9,6 +9,8 @@ import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 
 const EditVendor = ({ vendor }) => {
+    console.log(vendor);
+    
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const { refetchList, setRefetchList, setModal } = useContext(dialogOpenCloseContext);
@@ -39,7 +41,7 @@ const EditVendor = ({ vendor }) => {
     console.log(vendor);
 
     branchList?.response?.map((item) => {
-        console.log(typeof(item.id));
+        console.log(typeof (item.id));
     })
 
 
@@ -98,7 +100,7 @@ const EditVendor = ({ vendor }) => {
             className="bg-white rounded-2xl shadow mx-auto w-full overflow-hidden"
         >
 
-            <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
+            <div className="card-body grid gap-3 lg:grid-cols-3 grid-cols-1 p-5">
                 {/* Vendor Category Select Field */}
                 <div className="form-group">
                     <label htmlFor="vendor_category_id">
@@ -157,6 +159,19 @@ const EditVendor = ({ vendor }) => {
                         <span className="text-red-600 text-sm">{errors.vendor_email.message}</span>
                     )}
                 </div>
+                {/* Vendor Address Field */}
+                <div className="form-group">
+                    <label htmlFor="vendor_address">Address <span className="text-red-600">*</span></label>
+                    <input
+                        className="block"
+                        id="vendor_address"
+                        placeholder="Enter Vendor Address"
+                        {...register("vendor_address", { required: "Vendor Address is required" })}
+                    />
+                    {errors.vendor_address && (
+                        <span className="text-red-600 text-sm">{errors.vendor_address.message}</span>
+                    )}
+                </div>
 
                 {/* Vendor Mobile Field */}
                 <div className="form-group">
@@ -179,19 +194,7 @@ const EditVendor = ({ vendor }) => {
                     )}
                 </div>
 
-                {/* Vendor Address Field */}
-                <div className="form-group lg:col-span-2">
-                    <label htmlFor="vendor_address">Address <span className="text-red-600">*</span></label>
-                    <textarea
-                        className="block border w-full rounded-lg p-3"
-                        id="vendor_address"
-                        placeholder="Enter Vendor Address"
-                        {...register("vendor_address", { required: "Vendor Address is required" })}
-                    />
-                    {errors.vendor_address && (
-                        <span className="text-red-600 text-sm">{errors.vendor_address.message}</span>
-                    )}
-                </div>
+
 
                 {/* Branch Select Field */}
                 <div className="form-group">
@@ -202,7 +205,7 @@ const EditVendor = ({ vendor }) => {
                     >
                         <option value="">-- Select Branch --</option>
                         {branchList?.response.map((item) => (
-                            <option key={item.id} value={item.id} selected={+vendor.vendor_branch_id === item.id}>
+                            <option key={item.id} value={item.id} selected={+vendor?.vendor_branch_id === item?.id}>
                                 {item.branch_name}
                             </option>
                         ))}
