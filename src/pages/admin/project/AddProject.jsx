@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
@@ -8,12 +8,25 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+
+import Select from 'react-select'
+import makeAnimated from 'react-select/animated';
+const animatedComponents = makeAnimated();
 
 export default function AddProject() {
+
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, control, watch } = useForm();
+
+    // Watch selected values
+    const selectedVerticalHead = watch("vertical_head_id")?.value.toString();
+    const selectedBranchManager = watch("branch_manager_id")?.map((item) => (item.value.toString()));
+    const selectedClientService = watch("client_service_id")?.map((item) => (item.value.toString()));
+
+    //  console.log(selectedVerticalHead);
+    //  console.log(selectedBranchManager?.join(","));
+    //  console.log(selectedClientService?.join(","));
 
     // Fetch Branch List
     const { data: branchList } = useQuery({
@@ -48,23 +61,23 @@ export default function AddProject() {
     });
     // Fetch Branch Manager List
     const { data: branchManagerList } = useQuery({
-        queryKey: ["branch-manager-list"],
+        queryKey: ["branch-manager-list", selectedVerticalHead],
         queryFn: async () => {
-            return await getBranchManagerList(token, "12");
+            return await getBranchManagerList(token, `${selectedVerticalHead}`);
         }
     });
     // Fetch Client Service List
     const { data: clientServiceList } = useQuery({
-        queryKey: ["client-service-list"],
+        queryKey: ["client-service-list", selectedBranchManager],
         queryFn: async () => {
-            return await getClientServiceList(token, 19);
+            return await getClientServiceList(token, `${selectedBranchManager}`);
         }
     });
     // Fetch Other List
     const { data: othersList } = useQuery({
-        queryKey: ["others-list"],
+        queryKey: ["others-list", selectedClientService],
         queryFn: async () => {
-            return await getOtherList(token, 21);
+            return await getOtherList(token, `${selectedClientService}`);
         }
     });
 
@@ -74,20 +87,20 @@ export default function AddProject() {
             return await addProject(
                 token,
                 data.project_number,
-                data.purchase_order_no,
+                "",
                 data.project_name,
-                +data.client_id,
-                +data.branch_id,
-                +data.company_id,
-                data.vertical_head_id,
-                data.business_manager_id,
-                data.client_service_id,
-                data.other_members_id,
+                data.client_id.value,
+                data.branch_id.value,
+                data.company_id.value,
+                data.vertical_head_id.value?.toString(),
+                data?.branch_manager_id?.map((item) => (item.value.toString())).join(","),
+                data.client_service_id?.map((item) => (item.value.toString())).join(","),
+                data.other_members_id?.map((item) => (item.value.toString())).join(","),
                 data.quotation_no,
                 data.project_amount,
                 data.project_start_date,
                 data.project_end_date,
-                data.status
+                "1"
             );
         },
         onSuccess: () => {
@@ -144,7 +157,7 @@ export default function AddProject() {
                                     Project Number <span className="text-red-600">*</span>
                                 </label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="block"
                                     id="project_number"
                                     placeholder="Project Number"
@@ -161,173 +174,142 @@ export default function AddProject() {
 
                             {/* Client Select Field */}
                             <div className="form-group">
-                                <label htmlFor="client_id">
-                                    Client <span className="text-red-600">*</span>
-                                </label>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="--Select Client--" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {clientList?.response.map((item) => (
-                                            <SelectItem value={item.id} key={item.id}>
-                                                {item.company_name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.client_id && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.client_id.message}
-                                    </span>
-                                )}
+                                <label htmlFor="client_id">Client <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="client_id"
+                                    control={control}
+                                    rules={{ required: "Client is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={clientList?.response?.map((item) => ({ value: item.id, label: item.company_name }))}
+                                            components={animatedComponents}
+                                            placeholder="Select Client"
+                                        />
+                                    )}
+                                />
+                                {errors.client_id && <span className="text-red-600 text-sm">{errors.client_id.message}</span>}
                             </div>
 
                             {/* Branch Select Field */}
                             <div className="form-group">
-                                <label htmlFor="branch_id">
-                                    Branch <span className="text-red-600">*</span>
-                                </label>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="--Select Branch--" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {branchList?.response.map((item) => (
-                                            <SelectItem value={item.id} key={item.id}>
-                                                {item.branch_name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.branch_id && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.branch_id.message}
-                                    </span>
-                                )}
+                                <label htmlFor="branch_id">Branch <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="branch_id"
+                                    control={control}
+                                    rules={{ required: "Branch is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={branchList?.response?.map((item) => ({ value: item.id, label: item.branch_name }))}
+                                            components={animatedComponents}
+                                            placeholder="Select Branch"
+                                        />
+                                    )}
+                                />
+                                {errors.branch_id && <span className="text-red-600 text-sm">{errors.branch_id.message}</span>}
                             </div>
 
                             {/* Company Select Field */}
                             <div className="form-group">
-                                <label htmlFor="company_id">
-                                    Company <span className="text-red-600">*</span>
-                                </label>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="--Select Company--" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {companyList?.response.map((item) => (
-                                            <SelectItem value={item.id} key={item.id}>
-                                                {item.company_name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.company_id && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.company_id.message}
-                                    </span>
-                                )}
+                                <label htmlFor="company_id">Company <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="company_id"
+                                    control={control}
+                                    rules={{ required: "Company is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={companyList?.response?.map((item) => ({ value: item.id, label: item.company_name }))}
+                                            components={animatedComponents}
+                                            placeholder="Select Company"
+                                        />
+                                    )}
+                                />
+                                {errors.company_id && <span className="text-red-600 text-sm">{errors.company_id.message}</span>}
                             </div>
 
                             {/* Vertical Head Select Field */}
                             <div className="form-group">
-                                <label htmlFor="vertical_head_id">
-                                    Vertical Head <span className="text-red-600">*</span>
-                                </label>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="--Select Vertical Head--" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {verticalHeadList?.response.map((item) => (
-                                            <SelectItem value={item.id} key={item.id}>
-                                                {item.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.vertical_head_id && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.vertical_head_id.message}
-                                    </span>
-                                )}
+                                <label htmlFor="vertical_head_id">Vertical Head <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="vertical_head_id"
+                                    control={control}
+                                    rules={{ required: "Vertical Head is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name }))}
+                                            components={animatedComponents}
+                                            placeholder="Select Vertical Head"
+                                        />
+                                    )}
+                                />
+                                {errors.vertical_head_id && <span className="text-red-600 text-sm">{errors.vertical_head_id.message}</span>}
                             </div>
 
-                            {/* Branch Manager Select Field */}
+                            {/* Branch Manager Multi-Select Field */}
                             <div className="form-group">
-                                <label htmlFor="vertical_head_id">
-                                    Branch Manager <span className="text-red-600">*</span>
-                                </label>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="--Select Branch Manager--" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {branchManagerList?.response.map((item) => (
-                                            <SelectItem value={item.id} key={item.id}>
-                                                {item.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.vertical_head_id && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.vertical_head_id.message}
-                                    </span>
-                                )}
+                                <label htmlFor="branch_manager_id">Branch Manager <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="branch_manager_id"
+                                    control={control}
+                                    rules={{ required: "At least one Branch Manager is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={branchManagerList?.response?.map((item) => ({ value: item.id, label: item.name }))}
+                                            components={animatedComponents}
+                                            placeholder="Select Branch Manager"
+                                            isMulti
+                                        />
+                                    )}
+                                />
+                                {errors.branch_manager_id && <span className="text-red-600 text-sm">{errors.branch_manager_id.message}</span>}
                             </div>
 
                             {/* Client Service Select Field */}
                             <div className="form-group">
-                                <label htmlFor="vertical_head_id">
-                                    Client Service <span className="text-red-600">*</span>
-                                </label>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="--Select Client Service--" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {clientServiceList?.response.map((item) => (
-                                            <SelectItem value={item.id} key={item.id}>
-                                                {item.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.vertical_head_id && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.vertical_head_id.message}
-                                    </span>
-                                )}
+                                <label htmlFor="client_service_id">Client Service <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="client_service_id"
+                                    control={control}
+                                    rules={{ required: "Client Service is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={clientServiceList?.response?.map((item) => ({ value: item.id, label: item.name }))}
+                                            components={animatedComponents}
+                                            placeholder="Select Client Service"
+                                            isMulti
+                                        />
+                                    )}
+                                />
+                                {errors.client_service_id && <span className="text-red-600 text-sm">{errors.client_service_id.message}</span>}
                             </div>
 
                             {/* Others Select Field */}
                             <div className="form-group">
-                                <label htmlFor="vertical_head_id">
-                                    Others <span className="text-red-600">*</span>
-                                </label>
-                                <Select>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="--Select Others--" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {othersList?.response.map((item) => (
-                                            <SelectItem value={item.id} key={item.id}>
-                                                {item.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {errors.vertical_head_id && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.vertical_head_id.message}
-                                    </span>
-                                )}
+                                <label htmlFor="other_members_id">Others <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="other_members_id"
+                                    control={control}
+                                    rules={{ required: "At least one other member is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={othersList?.response?.map((item) => ({ value: item.id, label: item.name }))}
+                                            components={animatedComponents}
+                                            placeholder="Select Other Members"
+                                            isMulti
+                                        />
+                                    )}
+                                />
+                                {errors.other_members_id && <span className="text-red-600 text-sm">{errors.other_members_id.message}</span>}
                             </div>
 
-                            {/* Project Amount Field */}
+
+                            {/* Quotation No Field */}
                             <div className="form-group">
                                 <label htmlFor="project_amount">
                                     Quotation No <span className="text-red-600">*</span>
@@ -335,13 +317,13 @@ export default function AddProject() {
                                 <input
                                     type="number"
                                     className="block"
-                                    id="project_amount"
+                                    id="quotation_no"
                                     placeholder="Project Amount"
-                                    {...register("project_amount", { required: "Project Amount is required" })}
+                                    {...register("quotation_no", { required: "Quotation Number is required" })}
                                 />
                                 {errors.project_amount && (
                                     <span className="text-red-600 text-sm">
-                                        {errors.project_amount.message}
+                                        {errors.quotation_no.message}
                                     </span>
                                 )}
                             </div>

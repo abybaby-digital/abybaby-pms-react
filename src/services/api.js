@@ -417,6 +417,25 @@ export const getClientList = async (token) => {
   }
 };
 
+// FY LIST
+export const getFYList = async (token) => {
+  try {
+    const response = await api.post(
+      "/financial-year",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+
 // ADD PROJECT
 export const addProject = async (
   token,
@@ -469,12 +488,77 @@ export const addProject = async (
   }
 };
 
+// EDIT PROJECT
+export const editProject = async (
+  token,
+  id,
+  project_number,
+  purchase_order_no,
+  project_name,
+  client_id,
+  branch_id,
+  company_id,
+  vertical_head_id,
+  business_manager_id,
+  client_service_id,
+  other_members_id,
+  quotation_no,
+  project_amount,
+  project_start_date,
+  project_end_date,
+  status
+) => {
+  try {
+    const response = await api.post(
+      "/edit-project",
+      {
+        id: id,
+        project_number: project_number,
+        purchase_order_no: purchase_order_no,
+        project_name: project_name,
+        client_id: client_id,
+        branch_id: branch_id,
+        company_id: company_id,
+        vertical_head_id: vertical_head_id,
+        business_manager_id: business_manager_id,
+        client_service_id: client_service_id,
+        other_members_id: other_members_id,
+        quotation_no: quotation_no,
+        project_amount: project_amount,
+        project_start_date: project_start_date,
+        project_end_date: project_end_date,
+        status: status,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+
 // PROJECT LIST
-export const getProjectList = async (token) => {
+export const getProjectList = async (
+  token,
+  client_id,
+  branch_id,
+  company_id,
+  financial_year
+) => {
   try {
     const response = await api.post(
       "/project-list",
-      {},
+      {
+        client_id: client_id,
+        branch_id: branch_id,
+        company_id: company_id,
+        financial_year: financial_year,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,

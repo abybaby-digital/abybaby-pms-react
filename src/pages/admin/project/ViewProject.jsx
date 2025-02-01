@@ -47,10 +47,10 @@ const ViewProject = ({ project, add_or_edit }) => {
                                             <TableCell className="font-bold text-lg">Project Number</TableCell>
                                             <TableCell>{project?.project_number}</TableCell>
                                         </TableRow>
-                                        <TableRow>
+                                        {/* <TableRow>
                                             <TableCell className="font-bold text-lg">Purchase Order No</TableCell>
                                             <TableCell>{project?.purchase_order_no}</TableCell>
-                                        </TableRow>
+                                        </TableRow> */}
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Project Name</TableCell>
                                             <TableCell>{project?.project_name}</TableCell>
@@ -66,6 +66,22 @@ const ViewProject = ({ project, add_or_edit }) => {
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Company</TableCell>
                                             <TableCell>{project?.company_name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Vertical Head</TableCell>
+                                            <TableCell>{project?.vertical_head_name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Branch Manager</TableCell>
+                                            <TableCell>{project?.business_manager_name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Client Service</TableCell>
+                                            <TableCell>{project?.client_service_name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Others</TableCell>
+                                            <TableCell>{project?.other_service_names}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Quotation No</TableCell>
