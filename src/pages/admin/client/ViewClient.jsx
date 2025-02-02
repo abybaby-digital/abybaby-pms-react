@@ -24,7 +24,7 @@ const ViewClient = ({ client, add_or_edit }) => {
 
     return (
         <Dialog open={modal}>
-            <DialogContent className="p-5 w-full">
+            <DialogContent className="pb-5">
                 <DialogHeader>
                     <DialogTitle className="text-center text-xl font-bold font-merri">
                         Client {add_or_edit === "view" ? "Details" : "Edit"}

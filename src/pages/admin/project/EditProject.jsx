@@ -38,11 +38,13 @@ const EditProject = ({ project }) => {
     });
 
     // Watch selected values
-    const selectedVerticalHead = watch("vertical_head_id")?.value;
+    const selectedVerticalHead = watch("vertical_head_id");
+    // console.log(selectedVerticalHead);
+
     const selectedBranchManager = watch("branch_manager_id")?.map((item) => item.value);
     const selectedClientService = watch("client_service_id")?.map((item) => item.value);
 
-    console.log(selectedBranchManager);
+    // console.log(selectedBranchManager);
 
     // Fetch Branch List
     const { data: branchList } = useQuery({
@@ -53,6 +55,7 @@ const EditProject = ({ project }) => {
     });
 
     const branchListOptions = branchList?.response?.map((item) => ({ value: item.id, label: item.branch_name }));
+    // console.log(branchListOptions);
 
     // Fetch Client List
     const { data: clientList } = useQuery({
@@ -65,7 +68,7 @@ const EditProject = ({ project }) => {
 
 
     const clientListOptions = clientList?.response?.map((item) => ({ value: item.id, label: item.company_name }));
-    console.log(clientListOptions);
+    // console.log(clientListOptions);
 
 
     // Fetch Company List
@@ -87,13 +90,17 @@ const EditProject = ({ project }) => {
     });
 
     const verticalHeadOptions = verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name }));
+
     // Fetch Branch Manager List
     const { data: branchManagerList } = useQuery({
         queryKey: ["branch-manager-list", selectedVerticalHead],
         queryFn: async () => {
-            return await getBranchManagerList(token, `${+project.vertical_head_id} ||${selectedVerticalHead}`);
+            return await getBranchManagerList(token, `${selectedVerticalHead}`);
         }
     });
+    const branchManagerOptions = branchManagerList?.response?.map((item) => ({ value: item.id, label: item.name }));
+    console.log(branchManagerOptions);
+    
     // Fetch Client Service List
     const { data: clientServiceList } = useQuery({
         queryKey: ["client-service-list", selectedBranchManager],
@@ -120,10 +127,10 @@ const EditProject = ({ project }) => {
                 data.project_number,
                 "",
                 data.project_name,
-                data.client_id.value,
-                data.branch_id.value,
-                data.company_id.value,
-                data.vertical_head_id.value?.toString(),
+                +data.client_id,
+                +data.branch_id,
+                +data.company_id,
+                data.vertical_head_id,
                 data.branch_manager_id?.map((item) => item.value.toString()).join(","),
                 data.client_service_id?.map((item) => item.value.toString()).join(","),
                 data.other_members_id?.map((item) => item.value.toString()).join(","),
@@ -134,10 +141,17 @@ const EditProject = ({ project }) => {
                 data.project_status
             );
         },
-        onSuccess: () => {
-            toast.success("Project updated successfully!");
-            // setModal(false);
-            // setRefetchList(!refetchList);
+        onSuccess: (value) => {
+// console.log(value);
+
+            if (value.status === 200) {
+                toast.success("Project updated successfully!");
+                // setModal(false);
+                // setRefetchList(!refetchList);
+            }
+            else {
+                toast.error(value?.message || "Error updating project");
+            }
         },
         onError: (error) => {
             toast.error(error?.message || "Error updating project");
@@ -146,6 +160,7 @@ const EditProject = ({ project }) => {
 
     const onSubmit = (data) => {
         console.log(data);
+        console.log(project_id);
         editProjectMutation.mutate(data);
     };
 
@@ -156,7 +171,7 @@ const EditProject = ({ project }) => {
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto  w-full overflow-hidden"
+            className="w-full overflow-hidden"
         >
             <div className="card-body grid gap-3 lg:grid-cols-3 grid-cols-1 p-5">
 
@@ -198,90 +213,59 @@ const EditProject = ({ project }) => {
                     )}
                 </div>
 
-
-
                 {/* Client Select Field */}
                 <div className="form-group">
                     <label htmlFor="client_id">Client <span className="text-red-600">*</span></label>
-                    <Controller
-                        name="client_id"
-                        control={control}
-                        rules={{ required: "Client is required" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                value={clientListOptions?.find((item) => item.label === project.client_name)}
-                                options={clientListOptions}
-                                components={animatedComponents}
-                                placeholder="Select Client"
-                            />
-                        )}
-                    />
+                    <select {...register("client_id", { required: "Client is required" })}>
+                        <option value="">Select Client</option>
+                        {clientListOptions?.map((client) => (
+                            <option key={client.value} value={client.value} selected={client.value === project.client_id}>
+                                {client.label}
+                            </option>
+                        ))}
+                    </select>
                     {errors.client_id && <span className="text-red-600 text-sm">{errors.client_id.message}</span>}
                 </div>
 
                 {/* Branch Select Field */}
                 <div className="form-group">
                     <label htmlFor="branch_id">Branch <span className="text-red-600">*</span></label>
-                    <Controller
-                        name="branch_id"
-                        control={control}
-                        rules={{ required: "Branch is required" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                value={branchListOptions?.find((item) => item.label === project.branch_name)}
-                                options={branchListOptions}
-                                components={animatedComponents}
-                                placeholder="Select Branch"
-                            />
-                        )}
-                    />
+                    <select {...register("branch_id", { required: "Branch is required" })}>
+                        <option value="">Select Branch</option>
+                        {branchListOptions?.map((branch) => (
+                            <option key={branch.value} value={branch.value} selected={branch.value === project.branch_id}>
+                                {branch.label}
+                            </option>
+                        ))}
+                    </select>
                     {errors.branch_id && <span className="text-red-600 text-sm">{errors.branch_id.message}</span>}
                 </div>
 
                 {/* Company Select Field */}
                 <div className="form-group">
                     <label htmlFor="company_id">Company <span className="text-red-600">*</span></label>
-                    <Controller
-                        name="company_id"
-                        control={control}
-                        rules={{ required: "Company is required" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                options={companyListOptions}
-                                components={animatedComponents}
-                                placeholder="Select Company"
-                                value={companyListOptions?.find(option => option.value === project.company_id)} // Ensure correct value binding
-                                onChange={(selectedOption) => {
-                                    field.onChange(selectedOption); // Store full object (not just value)
-                                }}
-                            />
-                        )}
-                    />
+                    <select {...register("company_id", { required: "Company is required" })}>
+                        <option value="">Select Company</option>
+                        {companyListOptions?.map((company) => (
+                            <option key={company.value} value={company.value} selected={company.value === project.company_id}>
+                                {company.label}
+                            </option>
+                        ))}
+                    </select>
                     {errors.company_id && <span className="text-red-600 text-sm">{errors.company_id.message}</span>}
                 </div>
-
-
 
                 {/* Vertical Head Select Field */}
                 <div className="form-group">
                     <label htmlFor="vertical_head_id">Vertical Head <span className="text-red-600">*</span></label>
-                    <Controller
-                        name="vertical_head_id"
-                        control={control}
-                        rules={{ required: "Vertical Head is required" }}
-                        render={({ field }) => (
-                            <Select
-                                {...field}
-                                value={verticalHeadOptions?.find((item) => item.value === +project.vertical_head_id)}
-                                options={verticalHeadOptions}
-                                components={animatedComponents}
-                                placeholder="Select Vertical Head"
-                            />
-                        )}
-                    />
+                    <select {...register("vertical_head_id", { required: "Vertical Head is required" })}>
+                        <option value="">Select Vertical Head</option>
+                        {verticalHeadOptions?.map((verticalHead) => (
+                            <option key={verticalHead.value} value={verticalHead.value} selected={verticalHead.value === +project.vertical_head_id}>
+                                {verticalHead.label}
+                            </option>
+                        ))}
+                    </select>
                     {errors.vertical_head_id && <span className="text-red-600 text-sm">{errors.vertical_head_id.message}</span>}
                 </div>
 

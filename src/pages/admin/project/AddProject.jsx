@@ -105,7 +105,7 @@ export default function AddProject() {
         },
         onSuccess: () => {
             toast.success("Project added successfully!");
-            // navigate("/project-list"); // Redirect after successful submission
+            navigate("/project-list"); // Redirect after successful submission
         },
         onError: (error) => {
             toast.error("Failed to add project: " + error.message);

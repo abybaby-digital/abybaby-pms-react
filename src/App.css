@@ -13,10 +13,11 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
-} 
+}
 
 .admin-navlink.active li>button {
   background: linear-gradient(33deg, #383838, black);
@@ -27,6 +28,14 @@
 main {
   overflow-x: hidden;
 }
+
+.dialog-box::-webkit-scrollbar {
+  display: none;
+}
+
+/* .dialog-head>svg {
+  display: none;
+} */
 
 li[data-sidebar="menu-item"]:has(.admin-navlink.active)>button {
   background: linear-gradient(33deg, #383838, black);

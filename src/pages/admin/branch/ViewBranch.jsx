@@ -29,16 +29,17 @@ const ViewBranch = ({ branch, add_or_edit }) => {
             <Dialog open={modal}>
                 {/* <DialogTrigger>Open</DialogTrigger> */}
 
-                <DialogContent className="p-5">
+                <DialogContent className="pb-5">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">Branch {add_or_edit === "view" ? "Details" : "Edit"}</DialogTitle>
-                        <DialogClose asChild onClick={() => { setModal(false) }} className="text-black text-2xl bg-white absolute 
-                        right-4 top-2 z-40 cursor-pointer">
+                        <DialogClose asChild onClick={() => { setModal(false) }} className="text-black text-2xl cursor-pointer">
 
                             <MdOutlineClose />
 
                         </DialogClose>
-                        <DialogDescription>
+                        
+                    </DialogHeader>
+                    <DialogDescription>
                             {
                                 add_or_edit === "view" ?
                                     (
@@ -69,7 +70,6 @@ const ViewBranch = ({ branch, add_or_edit }) => {
                                     )
                             }
                         </DialogDescription>
-                    </DialogHeader>
                 </DialogContent>
             </Dialog>
 

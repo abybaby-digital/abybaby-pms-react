@@ -66,7 +66,7 @@ const EditClient = ({ client }) => {
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto w-full overflow-hidden"
+            className=" mx-auto w-full overflow-hidden"
         >
             <div className="card-body grid lg:grid-cols-2 gap-3 grid-cols-1 p-5">
                 {/* Company Name Field */}

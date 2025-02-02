@@ -24,15 +24,14 @@ const ViewProject = ({ project, add_or_edit }) => {
     return (
         <>
             <Dialog open={modal}>
-                <DialogContent className="p-5">
+                <DialogContent className=" pb-5">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
                             Project {add_or_edit === "view" ? "Details" : "Edit"}
                         </DialogTitle>
                         <DialogClose
-                            asChild
                             onClick={() => { setModal(false) }}
-                            className="text-black text-2xl bg-white absolute right-4 top-2 z-40 cursor-pointer"
+                            className="text-black text-2xl z-40 cursor-pointer"
                         >
                             <MdOutlineClose />
                         </DialogClose>

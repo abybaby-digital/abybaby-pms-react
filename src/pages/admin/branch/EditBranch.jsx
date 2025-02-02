@@ -61,7 +61,7 @@ const EditBranch = ({ branch }) => {
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto w-full overflow-hidden"
+            className="bg-white  mx-auto w-full overflow-hidden"
         >
             <div className="card-body grid gap-3 lg:grid-cols-1 grid-cols-1 p-5">
                 {/* Branch Code Field */}

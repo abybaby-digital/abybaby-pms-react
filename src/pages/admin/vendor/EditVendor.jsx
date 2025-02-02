@@ -97,7 +97,7 @@ const EditVendor = ({ vendor }) => {
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto w-full overflow-hidden"
+            className="mx-auto w-full overflow-hidden"
         >
 
             <div className="card-body grid gap-3 lg:grid-cols-3 grid-cols-1 p-5">
