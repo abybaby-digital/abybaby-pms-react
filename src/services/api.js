@@ -653,3 +653,214 @@ export const getOtherList = async (token, client_service_id) => {
     throw error;
   }
 };
+
+// ADD ROLE
+export const addRole = async (
+  token,
+  role_name,
+  access_type_add,
+  access_type_edit,
+  status
+) => {
+  try {
+    const response = await api.post(
+      "/add-role",
+      {
+        role_name: role_name,
+        access_type_add: access_type_add,
+        access_type_edit: access_type_edit,
+        status: status,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+// EDIT ROLE
+export const editRole = async (
+  token,
+  id,
+  role_name,
+  access_type_add,
+  access_type_edit,
+  status
+) => {
+  try {
+    const response = await api.post(
+      "/edit-role",
+      {
+        id: id,
+        role_name: role_name,
+        access_type_add: access_type_add,
+        access_type_edit: access_type_edit,
+        status: status,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+// ROLE LIST
+export const getRoleList = async (token) => {
+  try {
+    const response = await api.get("/role-list", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching role list:", error);
+    throw error;
+  }
+};
+
+// ADD USER
+export const addUser = async (
+  token,
+  name,
+  email,
+  role_id,
+  state_id,
+  company_id,
+  branch_id,
+  vertical_head_id,
+  business_manager_id,
+  client_service_id,
+  other_service_id,
+  contact_number,
+  password,
+  profile_img, // This will be a file object (image)
+  user_details,
+  view_status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("role_id", role_id);
+    formData.append("state_id", state_id);
+    formData.append("company_id", company_id);
+    formData.append("branch_id", branch_id);
+    formData.append("vertical_head_id", vertical_head_id);
+    formData.append("business_manager_id", business_manager_id);
+    formData.append("client_service_id", client_service_id);
+    formData.append("other_service_id", other_service_id);
+    formData.append("contact_number", contact_number);
+    formData.append("password", password);
+    formData.append("user_details", user_details);
+    formData.append("view_status", view_status);
+
+    // Append the profile image if it exists
+    if (profile_img) {
+      formData.append("profile_img", profile_img[0]); // profile_img should be a File object
+    }
+
+    const response = await api.post("/add-user", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding user:", error);
+    throw error;
+  }
+};
+
+
+// EDIT USER
+export const editUser = async (
+  token,
+  id,
+  name,
+  email,
+  role_id,
+  state_id,
+  company_id,
+  branch_id,
+  vertical_head_id,
+  business_manager_id,
+  client_service_id,
+  other_service_id,
+  contact_number,
+  password,
+  profile_img, // This will be a file object (image)
+  user_details,
+  view_status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("id", id);
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("role_id", role_id);
+    formData.append("state_id", state_id);
+    formData.append("company_id", company_id);
+    formData.append("branch_id", branch_id);
+    formData.append("vertical_head_id", vertical_head_id);
+    formData.append("business_manager_id", business_manager_id);
+    formData.append("client_service_id", client_service_id);
+    formData.append("other_service_id", other_service_id);
+    formData.append("contact_number", contact_number);
+    formData.append("password", password);
+    formData.append("user_details", user_details);
+    formData.append("view_status", view_status);
+
+    // Append the profile image if it exists
+    if (profile_img) {
+      formData.append("profile_img", profile_img[0]); // profile_img should be a File object
+    }
+
+    const response = await api.post("/edit-user", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing user:", error);
+    throw error;
+  }
+};
+
+// USER LIST
+export const getUserList = async (token) => {
+  try {
+    const response = await api.post(
+      "/user-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+    throw error;
+  }
+};

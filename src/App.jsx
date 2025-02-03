@@ -18,6 +18,9 @@ import AddClient from "./pages/admin/client/AddClient";
 import ClientList from "./pages/admin/client/ClientList";
 import AddProject from "./pages/admin/project/AddProject";
 import ProjectList from "./pages/admin/project/ProjectList";
+import AddRole from "./pages/admin/role-management/AddRole";
+import RoleList from "./pages/admin/role-management/RoleList";
+import UserList from "./pages/admin/user/UserList";
 
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
@@ -62,6 +65,9 @@ const App = () => {
                   <Route path="/project-add" element={<AddProject />} />
                   <Route path="/project-list" element={<ProjectList />} />
                   <Route path="/user-add" element={<AddUser />} />
+                  <Route path="/user-list" element={<UserList />} />
+                  <Route path="/role-add" element={<AddRole />} />
+                  <Route path="/role-list" element={<RoleList />} />
                 </Route>
               </Routes>
             </Suspense>

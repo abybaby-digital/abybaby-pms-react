@@ -50,6 +50,7 @@ import { PiUserListFill } from "react-icons/pi";
 import { FaFileInvoice } from "react-icons/fa6";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { GiPieChart } from "react-icons/gi";
+import { PiNetworkBold } from "react-icons/pi";
 
 
 
@@ -85,6 +86,25 @@ const data = {
       hasSubMenu: false,
       isActive: false,
       role: []
+    },
+    {
+      title: "Role Management",
+      url: "#",
+      icon: PiNetworkBold,
+      hasSubMenu: true,
+      isActive: false,
+      items: [
+        {
+          title: "Add Role",
+          url: "/role-add",
+          role: []
+        },
+        {
+          title: " Role List",
+          url: "/role-list",
+          role: []
+        },
+      ],
     },
     {
       title: "Company",

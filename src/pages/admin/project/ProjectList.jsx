@@ -33,14 +33,12 @@ import "jspdf-autotable";
 export default function ProjectList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
-
-
+    
     // FILTERING STATE VARIABLES FOR PROJECT FILTER
     const [fincYear, setFincYear] = useState(null);
     const [companyFilter, setCompanyFilter] = useState(null);
     const [branchFilter, setBranchFilter] = useState(null);
     const [clientFilter, setClientFilter] = useState(null);
-
 
     const { data: projectList = [], isLoading } = useQuery({
         queryKey: ["project-list", refetchList, fincYear, companyFilter, branchFilter, clientFilter],
