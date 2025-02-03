@@ -21,6 +21,8 @@ import ProjectList from "./pages/admin/project/ProjectList";
 import AddRole from "./pages/admin/role-management/AddRole";
 import RoleList from "./pages/admin/role-management/RoleList";
 import UserList from "./pages/admin/user/UserList";
+import AddPaymentReceived from "./pages/admin/payment-received/AddPaymentReceived";
+import PaymentReceivedList from "./pages/admin/payment-received/PaymentReceivedList";
 
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
@@ -68,6 +70,8 @@ const App = () => {
                   <Route path="/user-list" element={<UserList />} />
                   <Route path="/role-add" element={<AddRole />} />
                   <Route path="/role-list" element={<RoleList />} />
+                  <Route path="/payment-receipt-add" element={<AddPaymentReceived />} />
+                  <Route path="/payment-receipt-list" element={<PaymentReceivedList />} />
                 </Route>
               </Routes>
             </Suspense>

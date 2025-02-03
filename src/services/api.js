@@ -864,3 +864,107 @@ export const getUserList = async (token) => {
     throw error;
   }
 };
+
+// ADD PAYMENT RECEIVED
+export const addPaymentReceived = async (
+  token,
+  project_id,
+  received_no,
+  received_amount,
+  received_date,
+  received_img, // This will be a file object (image)
+  received_details,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("project_id", project_id);
+    formData.append("received_no", received_no);
+    formData.append("received_amount", received_amount);
+    formData.append("received_date", received_date);
+    formData.append("received_details", received_details);
+    formData.append("status", status);
+
+    // Append the received image if it exists
+    if (received_img) {
+      formData.append("received_img", received_img[0]); // received_img should be a File object
+    }
+
+    const response = await api.post("/add-payment-received", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding payment received:", error);
+    throw error;
+  }
+};
+
+// EDIT PAYMENT RECEIVED
+export const editPaymentReceived = async (
+  token,
+  id,
+  project_id,
+  received_no,
+  received_amount,
+  received_date,
+  received_img, // This will be a file object (image)
+  received_details,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("id", id);
+    formData.append("project_id", project_id);
+    formData.append("received_no", received_no);
+    formData.append("received_amount", received_amount);
+    formData.append("received_date", received_date);
+    formData.append("received_details", received_details);
+    formData.append("status", status);
+
+    // Append the received image if it exists
+    if (received_img) {
+      formData.append("received_img", received_img[0]); // received_img should be a File object
+    }
+
+    const response = await api.post("/edit-payment-received", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing payment received:", error);
+    throw error;
+  }
+};
+
+// PAYMENT RECEIVED LIST
+export const getPaymentReceivedList = async (token) => {
+  try {
+    const response = await api.post(
+      "/payment-received-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching payment received list:", error);
+    throw error;
+  }
+};
+
