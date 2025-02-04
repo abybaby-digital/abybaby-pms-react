@@ -296,7 +296,7 @@ const data = {
         },
         {
           title: "Client Purchase Order",
-          url: "/client-info-list",
+          url: "/client-po-list",
           role: []
         },
       ],

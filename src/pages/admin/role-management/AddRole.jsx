@@ -2,21 +2,42 @@ import { useForm } from "react-hook-form";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
-import { useMutation } from "@tanstack/react-query";
-import { addRole } from "../../../services/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { addRole, getMenuList } from "../../../services/api";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
+import { useEffect, useState } from "react";
 
-const accessOptions = [
-    "Company", "Branch", "Role Management", "Vendor", "Client", "Users",
-    "Project", "Billing Supportings", "Payment Requisition", "Client PO",
-    "Invoice", "Payment Received", "Report"
-];
+// const accessOptions = [
+//     "Company", "Branch", "Role Management", "Vendor", "Client", "Users",
+//     "Project", "Billing Supportings", "Payment Requisition", "Client PO",
+//     "Invoice", "Payment Received", "Report"
+// ];
 
 export default function AddRole() {
     const token = useSelector((state) => state.auth.token);
+    const [accessOptions, setAccessOptions] = useState([]);
+
+    const { data: menuList } = useQuery({
+        queryKey: ["menu-list"],
+        queryFn: async () => {
+            return await getMenuList(token);
+        }
+    });
+
+    // Update access options when menuList data is fetched
+    useEffect(() => {
+        if (menuList?.response) {
+            const updatedAccessOptions = menuList.response.map((item) => ({
+                id: item.id,
+                menuName: item.menu_name
+            }));
+            setAccessOptions(updatedAccessOptions);
+        }
+    }, [menuList]);  // Correctly listen to the `menuList` state change
+
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -28,17 +49,12 @@ export default function AddRole() {
             return await addRole(token, data.role_name, access_add, access_edit, "1");
         },
         onSuccess: (value) => {
-            console.log(value);
-            
-            if(value.status === 200 || value.status === 201){
+            if (value.status === 200 || value.status === 201) {
                 toast.success("Role added successfully!");
                 navigate("/role-list"); // Redirect to role list after successful submission
+            } else {
+                toast.error("Something went wrong!");
             }
-            else{
-                toast.error("Something Went wrong !!")
-            }
-            
-            
         },
         onError: (error) => {
             toast.error("Failed to add role: " + error.message);
@@ -46,7 +62,7 @@ export default function AddRole() {
     });
 
     const onSubmit = (data) => {
-        console.log("Submitting data:", data.access_type_add.join(","));
+        console.log("Submitting data:", data);
         addRoleMutation.mutate(data); // Call the mutation with the form data
     };
 
@@ -91,18 +107,18 @@ export default function AddRole() {
                                 </label>
                                 <div className="flex gap-5 flex-wrap text-nowrap items-center">
                                     {accessOptions.map((option) => (
-                                        <div key={option} className="flex items-center gap-1 px-5 py-1  rounded-3xl bg-whitesmoke shadow-lg">
+                                        <div key={option.id} className="flex items-center gap-1 px-5 py-1  rounded-3xl bg-whitesmoke shadow-lg">
                                             <input
                                                 type="checkbox"
                                                 className="accent-lightdark"
-                                                id={`access_type_add_${option}`}
-                                                value={option}
+                                                id={`access_type_add_${option.id}`}
+                                                value={option.id}
                                                 {...register("access_type_add", {
                                                     required: "At least one access type is required",
                                                 })}
                                             />
-                                            <label htmlFor={`access_type_add_${option}`} className="m-0">
-                                                {option}
+                                            <label htmlFor={`access_type_add_${option.id}`} className="m-0">
+                                                {option.menuName}
                                             </label>
                                         </div>
                                     ))}
@@ -121,18 +137,18 @@ export default function AddRole() {
                                 </label>
                                 <div className="flex gap-5 flex-wrap text-nowrap items-center">
                                     {accessOptions.map((option) => (
-                                        <div key={option} className="flex items-center gap-1 px-5 py-1  rounded-3xl bg-whitesmoke shadow-lg">
+                                        <div key={option.id} className="flex items-center gap-1 px-5 py-1  rounded-3xl bg-whitesmoke shadow-lg">
                                             <input
                                                 type="checkbox"
                                                 className="accent-lightdark"
-                                                id={`access_type_edit_${option}`}
-                                                value={option}
+                                                id={`access_type_edit_${option.id}`}
+                                                value={option.id}
                                                 {...register("access_type_edit", {
                                                     required: "At least one access type is required",
                                                 })}
                                             />
-                                            <label htmlFor={`access_type_edit_${option}`} className="m-0">
-                                                {option}
+                                            <label htmlFor={`access_type_edit_${option.id}`} className="m-0">
+                                                {option.menuName}
                                             </label>
                                         </div>
                                     ))}
@@ -145,16 +161,15 @@ export default function AddRole() {
                             </div>
 
                         </div>
-                        {/* /.card-body */}
 
                         {/* Submit Button */}
                         <div className="card-footer text-center bg-gray-100 py-5">
                             <button
                                 type="submit"
                                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                                disabled={addRoleMutation.isPending}
+                                disabled={addRoleMutation.isLoading}
                             >
-                                {addRoleMutation.isPending ? <ButtonLoader /> : "Submit"}
+                                {addRoleMutation.isLoading ? <ButtonLoader /> : "Submit"}
                             </button>
                         </div>
                     </form>

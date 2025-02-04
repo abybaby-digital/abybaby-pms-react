@@ -17,16 +17,16 @@ import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 
-import EditPaymentReceived from "./EditPaymentReceived"; // Assuming you have an EditPaymentReceived component
+import EditClientPO from "./EditClientPO"; // Assuming you have an EditClientPO component
 
-const ViewPaymentReceived = ({ payment, add_or_edit }) => {
+const ViewClientPO = ({ clientPO, add_or_edit }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
-    const [imageModalOpen, setImageModalOpen] = useState(false); // state to control image modal visibility
-    const [imageSrc, setImageSrc] = useState(null); // state to store the image source
+    const [imageModalOpen, setImageModalOpen] = useState(false);  // state to control image modal visibility
+    const [fileSrc, setFileSrc] = useState(null); // state to store the file source (image or PDF)
 
-    const handleImageClick = (src) => {
-        setImageSrc(src); // set the image source to the clicked image
-        setImageModalOpen(true); // open the image modal
+    const handleFileClick = (src) => {
+        setFileSrc(src); // set the file source to the clicked file
+        setImageModalOpen(true); // open the file modal (image or PDF)
     };
 
     return (
@@ -35,7 +35,7 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                 <DialogContent className="pb-5">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            Payment Received {add_or_edit === "view" ? "Details" : "Edit"}
+                            Client PO {add_or_edit === "view" ? "Details" : "Edit"}
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -51,28 +51,32 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                 <TableBody className="grid lg:grid-cols-2 sm:grid-cols-1 gap-5 p-5">
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Project Name:</TableCell>
-                                        <TableCell>{payment?.project_name}</TableCell>
+                                        <TableCell>{clientPO?.project_name}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received No:</TableCell>
-                                        <TableCell>{payment?.received_no}</TableCell>
+                                        <TableCell className="font-bold text-lg">PO No:</TableCell>
+                                        <TableCell>{clientPO?.po_no || "Not Available"}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Amount:</TableCell>
-                                        <TableCell>₹{payment?.received_amount}</TableCell>
+                                        <TableCell>₹{clientPO?.po_amount}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received Date:</TableCell>
-                                        <TableCell>{new Date(payment?.received_date).toLocaleDateString()}</TableCell>
+                                        <TableCell className="font-bold text-lg">PO Date:</TableCell>
+                                        <TableCell>{new Date(clientPO?.po_date).toLocaleDateString()}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Payment Schedule (Days):</TableCell>
+                                        <TableCell>{clientPO?.payment_schedule_days} days</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Details:</TableCell>
-                                        <TableCell>{payment?.received_details}</TableCell>
+                                        <TableCell>{clientPO?.project_order_details}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Status:</TableCell>
                                         <TableCell>
-                                            {payment?.status === "1" ? (
+                                            {clientPO?.status === "1" ? (
                                                 <span className="bg-green-500 px-3 py-1 rounded-xl text-white shadow">
                                                     Active
                                                 </span>
@@ -83,34 +87,44 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                             )}
                                         </TableCell>
                                     </TableRow>
-                                    {payment?.received_img && (
+                                    {clientPO?.po_img && (
                                         <TableRow className="flex justify-between">
-                                            <TableCell className="font-bold text-lg">Receipt:</TableCell>
+                                            <TableCell className="font-bold text-lg">PO Image:</TableCell>
                                             <TableCell>
-                                                <img
-                                                    src={payment.received_img}
-                                                    alt="Receipt"
-                                                    className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
-                                                    onClick={() => handleImageClick(payment.received_img)} // Make the image clickable
-                                                />
+                                                {/* Check if po_img is a PDF or an image */}
+                                                {clientPO.po_img.endsWith(".pdf") ? (
+                                                    <button
+                                                        className="text-blue-500"
+                                                        onClick={() => handleFileClick(clientPO.po_img)}
+                                                    >
+                                                        View PO PDF
+                                                    </button>
+                                                ) : (
+                                                    <img
+                                                        src={clientPO.po_img}
+                                                        alt="PO Image"
+                                                        className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
+                                                        onClick={() => handleFileClick(clientPO.po_img)} // Make the image clickable
+                                                    />
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>
                             </Table>
                         ) : (
-                            <EditPaymentReceived payment={payment} /> // Add or edit the payment information here
+                            <EditClientPO clientPO={clientPO} /> // Add or edit the client PO information here
                         )}
                     </DialogDescription>
                 </DialogContent>
             </Dialog>
 
-            {/* Image Modal (Lightbox) */}
+            {/* File Modal (for image or PDF) */}
             <Dialog open={imageModalOpen} onOpenChange={() => setImageModalOpen(false)}>
                 <DialogContent className="p-0">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            Receipt Image
+                            PO {fileSrc?.endsWith(".pdf") ? "PDF" : "Image"}
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -121,11 +135,22 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                         </DialogClose>
                     </DialogHeader>
                     <DialogDescription className="p-5">
-                        <img
-                            src={imageSrc}
-                            alt="Original Receipt"
-                            className="w-full h-auto object-contain"
-                        />
+                        {/* Check if the file is a PDF or image and render accordingly */}
+                        {fileSrc?.endsWith(".pdf") ? (
+                            <iframe
+                                src={fileSrc}
+                                width="100%"
+                                height="500"
+                                title="PO PDF"
+                                className="border-none"
+                            />
+                        ) : (
+                            <img
+                                src={fileSrc}
+                                alt="PO Image"
+                                className="w-full h-auto object-contain"
+                            />
+                        )}
                     </DialogDescription>
                 </DialogContent>
             </Dialog>
@@ -133,4 +158,4 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
     );
 };
 
-export default ViewPaymentReceived;
+export default ViewClientPO;

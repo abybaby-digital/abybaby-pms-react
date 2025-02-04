@@ -7,10 +7,10 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
-import { addPaymentReceived, getProjectList } from "../../../services/api"; // Import the API function for projects
+import { addClientPO, getProjectList } from "../../../services/api"; // Import the API function for PO
 import { useState } from "react"; // Import useState
 
-export default function AddPaymentReceived() {
+export default function AddClientPO() {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -26,40 +26,42 @@ export default function AddPaymentReceived() {
     }
   });
 
-  const addPaymentMutation = useMutation({
+  const addPOMutation = useMutation({
     mutationFn: async (data) => {
-      return await addPaymentReceived(
+      return await addClientPO(
         token,
         data.project_id,
-        data.received_no,
-        data.received_amount,
-        data.received_date,
-        data.received_img, // File input
-        data.received_details,
+        data.po_no,
+        data.po_amount,
+        data.po_date,
+        data.po_img, // File input
+        data.payment_schedule_days,
+        data.project_order_details,
+        "1" // Default status
       );
     },
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
-        toast.success("Payment received added successfully!");
-        navigate("/payment-receipt-list");
+        toast.success("Purchase Order added successfully!");
+        navigate("/client-po-list"); // Navigate to PO list after successful creation
       }
     },
     onError: (error) => {
-      toast.error("Failed to add payment: " + error.message);
+      toast.error("Failed to add Purchase Order: " + error.message);
     },
   });
 
   const onSubmit = (data) => {
     console.log(data);
-    addPaymentMutation.mutate(data);
+    addPOMutation.mutate(data);
   };
 
-  // Handle image file input change and display preview
-  const handleImageChange = (e) => {
+  // Handle image or PDF file input change and display preview
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const objectUrl = URL.createObjectURL(file);
-      setImagePreview(objectUrl); // Set the preview image URL
+      setImagePreview(objectUrl); // Set the preview URL
     }
   };
 
@@ -67,14 +69,14 @@ export default function AddPaymentReceived() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <AdminHead breadcrumb_name="Payment Received" />
+        <AdminHead breadcrumb_name="Purchase Order" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white rounded-2xl shadow mx-auto xl:w-[50%] w-full overflow-hidden"
           >
             <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
-              ADD PAYMENT RECEIVED
+              ADD CLIENT PURCHASE ORDER
             </h2>
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
 
@@ -96,72 +98,89 @@ export default function AddPaymentReceived() {
                 {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
               </div>
 
-              {/* Received No Input */}
+              {/* PO No Input */}
               <div className="form-group">
-                <label htmlFor="received_no">Received No <span className="text-red-600">*</span></label>
+                <label htmlFor="po_no">PO No <span className="text-red-600">*</span></label>
                 <input
                   type="text"
-                  id="received_no"
-                  {...register("received_no", { required: "Received No is required" })}
+                  id="po_no"
+                  {...register("po_no", { required: "PO No is required" })}
                   className="block"
-                  placeholder="Enter Received No"
+                  placeholder="Enter PO No"
                 />
-                {errors.received_no && <span className="text-red-600 text-sm">{errors.received_no.message}</span>}
+                {errors.po_no && <span className="text-red-600 text-sm">{errors.po_no.message}</span>}
               </div>
 
-              {/* Received Amount Input */}
+              {/* PO Amount Input */}
               <div className="form-group">
-                <label htmlFor="received_amount">Received Amount <span className="text-red-600">*</span></label>
+                <label htmlFor="po_amount">PO Amount <span className="text-red-600">*</span></label>
                 <input
                   type="number"
-                  id="received_amount"
-                  {...register("received_amount", { required: "Received Amount is required" })}
+                  id="po_amount"
+                  {...register("po_amount", { required: "PO Amount is required" })}
                   className="block"
                   placeholder="Enter Amount"
                 />
-                {errors.received_amount && <span className="text-red-600 text-sm">{errors.received_amount.message}</span>}
+                {errors.po_amount && <span className="text-red-600 text-sm">{errors.po_amount.message}</span>}
               </div>
 
-              {/* Received Date Input */}
+              {/* PO Date Input */}
               <div className="form-group">
-                <label htmlFor="received_date">Received Date <span className="text-red-600">*</span></label>
+                <label htmlFor="po_date">PO Date <span className="text-red-600">*</span></label>
                 <input
                   type="date"
-                  id="received_date"
-                  {...register("received_date", { required: "Received Date is required" })}
+                  id="po_date"
+                  {...register("po_date", { required: "PO Date is required" })}
                   className="block"
                 />
-                {errors.received_date && <span className="text-red-600 text-sm">{errors.received_date.message}</span>}
+                {errors.po_date && <span className="text-red-600 text-sm">{errors.po_date.message}</span>}
               </div>
 
-              {/* Upload Receipt */}
+              {/* Upload PO Image/PDF */}
               <div className="form-group lg:col-span-2">
-                <label htmlFor="received_img">Upload Receipt (Optional)</label>
+                <label htmlFor="po_img">Upload PO Image or PDF (Optional)</label>
                 <input
                   type="file"
-                  id="received_img"
-                  accept="image/*"
-                  {...register("received_img")}
+                  id="po_img"
+                  accept="image/*, application/pdf"
+                  {...register("po_img")}
                   className="block border w-full rounded-lg p-3"
-                  onChange={handleImageChange} // Add this line
+                  onChange={handleFileChange} // Add this line for preview or file handling
                 />
               </div>
 
-              {/* Image Preview */}
+              {/* Image/PDF Preview */}
               {imagePreview && (
                 <div className="mt-2 text-center lg:col-span-2">
-                  <img src={imagePreview} alt="Preview" className="w-[350px] h-[350px] rounded-lg inline-block" />
+                  {imagePreview.includes("pdf") ? (
+                    <iframe src={imagePreview} width="350px" height="350px" className="rounded-lg"></iframe>
+                  ) : (
+                    <img src={imagePreview} alt="Preview" className="w-[350px] h-[350px] rounded-lg inline-block" />
+                  )}
                 </div>
               )}
 
-              {/* Payment Details */}
+              {/* Payment Schedule Days Input */}
+              <div className="form-group">
+                <label htmlFor="payment_schedule_days">Payment Schedule Days <span className="text-red-600">*</span></label>
+                <input
+                  type="number"
+                  id="payment_schedule_days"
+                  {...register("payment_schedule_days", { required: "Payment Schedule Days is required" })}
+                  className="block"
+                  placeholder="Enter Payment Schedule Days"
+                />
+                {errors.payment_schedule_days && <span className="text-red-600 text-sm">{errors.payment_schedule_days.message}</span>}
+              </div>
+
+              {/* PO Details */}
               <div className="form-group lg:col-span-2">
-                <label htmlFor="received_details">Received Details</label>
+                <label htmlFor="project_order_details">PO Details</label>
                 <textarea
-                  id="received_details"
-                  {...register("received_details")}
+                  id="project_order_details"
+                  {...register("project_order_details")}
                   className="block border w-full rounded-lg p-3"
-                  placeholder="Enter Payment Details"
+                  placeholder="Enter PO Details"
                 />
               </div>
 
@@ -171,9 +190,9 @@ export default function AddPaymentReceived() {
               <button
                 type="submit"
                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                disabled={addPaymentMutation.isPending}
+                disabled={addPOMutation.isPending}
               >
-                {addPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
+                {addPOMutation.isPending ? <ButtonLoader /> : "Submit"}
               </button>
             </div>
           </form>

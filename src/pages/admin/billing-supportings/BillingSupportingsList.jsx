@@ -5,7 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
-import { getPaymentReceivedList } from "../../../services/api";
+import { getClientPOList } from "../../../services/api"; // Add API for fetching client POs
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -17,21 +17,22 @@ import { FaFilePdf } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import ViewPaymentReceived from "./ViewPaymentReceived";
-import EditPaymentReceived from "./EditPaymentReceived"; // Import EditPaymentReceived component
+import ViewClientPO from "./ViewClientPO"; // Add ViewClientPO component
+import EditClientPO from "./EditBillingSupportings"; // Add EditClientPO component
 
-export default function PaymentReceivedList() {
+export default function ClientPOList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
 
-    const { data: paymentList = [], isLoading } = useQuery({
-        queryKey: ["payment-received-list", refetchList],
+    // Fetch client PO list data
+    const { data: clientPOList = [], isLoading } = useQuery({
+        queryKey: ["client-po-list", refetchList],
         queryFn: async () => {
-            return await getPaymentReceivedList(token);
+            return await getClientPOList(token); // Add the function for fetching client POs
         }
     });
 
-    const [singlePaymentData, setSinglePaymentData] = useState({});
+    const [singleClientPOData, setSingleClientPOData] = useState({});
     const [addOrEdit, setAddOrEdit] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState("");
     const [debouncedSearchKeyword, setDebouncedSearchKeyword] = useState("");
@@ -44,57 +45,57 @@ export default function PaymentReceivedList() {
     }, [searchKeyword]);
 
     const openModal = (id) => {
-        const allPayments = paymentList?.response;
-        const singlePayment = allPayments.find(payment => payment.id === id);
-        setSinglePaymentData(singlePayment);
+        const allClientPOs = clientPOList?.response;
+        const singleClientPO = allClientPOs.find(clientPO => clientPO.id === id);
+        setSingleClientPOData(singleClientPO);
         setModal(true);
     };
 
-    const filteredPayments = paymentList?.response?.filter(payment => {
+    const filteredClientPOs = clientPOList?.response?.filter(clientPO => {
         const keyword = debouncedSearchKeyword.toLowerCase();
         return (
-            payment.project_name.toLowerCase().includes(keyword) ||
-            payment.received_no.toLowerCase().includes(keyword) ||
-            payment.received_details.toLowerCase().includes(keyword)
+            clientPO.project_name.toLowerCase().includes(keyword) ||
+            clientPO.po_no?.toLowerCase().includes(keyword) ||
+            clientPO.project_order_details.toLowerCase().includes(keyword)
         );
     });
 
     // Export to Excel
     const exportToExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(paymentList?.response || []);
+        const ws = XLSX.utils.json_to_sheet(clientPOList?.response || []);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
-        XLSX.writeFile(wb, "payment_received_list.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Client PO List");
+        XLSX.writeFile(wb, "client_po_list.xlsx");
     };
 
     // Export to PDF
     const exportToPDF = () => {
         const doc = new jsPDF('l', 'mm', 'a4');
         doc.autoTable({
-            head: [["Project Name", "Received No", "Amount", "Received Date", "Details", "Status"]],
-            body: paymentList?.response.map(payment => [
-                payment.project_name,
-                payment.received_no,
-                `₹${payment.received_amount}`,
-                new Date(payment.received_date).toLocaleDateString(),
-                payment.received_details,
-                payment.status === "1" ? "Active" : "Inactive",
+            head: [["Project Name", "PO No", "Amount", "PO Date", "Details", "Status"]],
+            body: clientPOList?.response.map(clientPO => [
+                clientPO.project_name,
+                clientPO.po_no || "N/A",
+                `₹${clientPO.po_amount}`,
+                new Date(clientPO.po_date).toLocaleDateString(),
+                clientPO.project_order_details,
+                clientPO.status === "1" ? "Active" : "Inactive",
             ]),
         });
-        doc.save("payment_received_list.pdf");
+        doc.save("client_po_list.pdf");
     };
 
     return (
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <AdminHead breadcrumb_name="Payment Received" />
+                <AdminHead breadcrumb_name="Client PO" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">PAYMENT RECEIVED LIST</h2>
+                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">CLIENT PO LIST</h2>
                         <div className="card-body p-5 bg-white shadow overflow-hidden">
                             {isLoading ? (
-                                <TableSkeleton columns="5" />
+                                <TableSkeleton columns="6" />
                             ) : (
                                 <div>
                                     {/* Export & Search Box */}
@@ -141,13 +142,13 @@ export default function PaymentReceivedList() {
                                     </div>
 
                                     {/* DataTable */}
-                                    <DataTable value={filteredPayments} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+                                    <DataTable value={filteredClientPOs} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
                                         <Column field="project_name" sortable header="Project Name"></Column>
-                                        <Column field="received_no" sortable header="Received No"></Column>
-                                        <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>
-                                        <Column field="received_date" sortable header="Received Date" body={(rowData) => new Date(rowData.received_date).toLocaleDateString()}></Column>
-                                        <Column field="received_details" sortable header="Details"></Column>
+                                        <Column field="po_no" sortable header="PO No"></Column>
+                                        <Column field="po_amount" sortable header="Amount" body={(rowData) => `₹${rowData.po_amount}`}></Column>
+                                        <Column field="po_date" sortable header="PO Date" body={(rowData) => new Date(rowData.po_date).toLocaleDateString()}></Column>
+                                        <Column field="project_order_details" sortable header="Details"></Column>
                                         <Column header="Status" body={(rowData) => (
                                             <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>
                                                 {rowData.status === "1" ? "Active" : "Inactive"}
@@ -166,7 +167,7 @@ export default function PaymentReceivedList() {
                                                             </button>
                                                         </TooltipTrigger>
                                                         <TooltipContent>
-                                                            <p>View Payment</p>
+                                                            <p>View PO</p>
                                                         </TooltipContent>
                                                     </Tooltip>
                                                 </TooltipProvider>
@@ -182,7 +183,7 @@ export default function PaymentReceivedList() {
                                                             </button>
                                                         </TooltipTrigger>
                                                         <TooltipContent>
-                                                            <p>Edit Payment</p>
+                                                            <p>Edit PO</p>
                                                         </TooltipContent>
                                                     </Tooltip>
                                                 </TooltipProvider>
@@ -192,9 +193,8 @@ export default function PaymentReceivedList() {
                                 </div>
                             )}
 
-                            {/* View/Edit Payment Received Popup */}
-                            <ViewPaymentReceived payment={singlePaymentData} add_or_edit={addOrEdit} />
-
+                            {/* View/Edit Client PO Popup */}
+                            <ViewClientPO clientPO={singleClientPOData} add_or_edit={addOrEdit} />
                         </div>
                     </div>
                 </div>

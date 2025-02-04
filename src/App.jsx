@@ -23,6 +23,12 @@ import RoleList from "./pages/admin/role-management/RoleList";
 import UserList from "./pages/admin/user/UserList";
 import AddPaymentReceived from "./pages/admin/payment-received/AddPaymentReceived";
 import PaymentReceivedList from "./pages/admin/payment-received/PaymentReceivedList";
+import AddInvoice from "./pages/admin/invoice/AddInvoice";
+import InvoiceList from "./pages/admin/invoice/InvoiceList";
+import AddClientPO from "./pages/admin/client-po/AddClientPO";
+import ClientPOList from "./pages/admin/client-po/ClientPOList";
+import AddPaymentRequisition from "./pages/admin/payment-requisition/AddPaymentRequisition";
+import PaymentRequisitionList from "./pages/admin/payment-requisition/PaymentRequisitionList";
 
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
@@ -72,6 +78,12 @@ const App = () => {
                   <Route path="/role-list" element={<RoleList />} />
                   <Route path="/payment-receipt-add" element={<AddPaymentReceived />} />
                   <Route path="/payment-receipt-list" element={<PaymentReceivedList />} />
+                  <Route path="/invoice-add" element={<AddInvoice />} />
+                  <Route path="/invoice-list" element={<InvoiceList />} />
+                  <Route path="/client-po-add" element={<AddClientPO />} />
+                  <Route path="/client-po-list" element={<ClientPOList />} />
+                  <Route path="/payment-requisition-add" element={<AddPaymentRequisition />} />
+                  <Route path="/payment-requisition-list" element={<PaymentRequisitionList />} />
                 </Route>
               </Routes>
             </Suspense>

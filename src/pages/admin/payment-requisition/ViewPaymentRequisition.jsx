@@ -17,7 +17,7 @@ import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 
-import EditPaymentReceived from "./EditPaymentReceived"; // Assuming you have an EditPaymentReceived component
+import EditPaymentRequisition from "./EditPaymentRequisition"; // Assuming you have an EditPaymentReceived component
 
 const ViewPaymentReceived = ({ payment, add_or_edit }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
@@ -29,13 +29,18 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
         setImageModalOpen(true); // open the image modal
     };
 
+    // Function to check if the file is a PDF
+    const isPdf = (filePath) => {
+        return filePath && filePath.endsWith(".pdf");
+    };
+
     return (
         <>
             <Dialog open={modal}>
                 <DialogContent className="pb-5">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            Payment Received {add_or_edit === "view" ? "Details" : "Edit"}
+                            Payment Requisition {add_or_edit === "view" ? "Details" : "Edit"}
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -54,52 +59,66 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                         <TableCell>{payment?.project_name}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received No:</TableCell>
-                                        <TableCell>{payment?.received_no}</TableCell>
+                                        <TableCell className="font-bold text-lg">Branch Name:</TableCell>
+                                        <TableCell>{payment?.branch_name}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Amount:</TableCell>
-                                        <TableCell>₹{payment?.received_amount}</TableCell>
+                                        <TableCell className="font-bold text-lg">Vendor Name:</TableCell>
+                                        <TableCell>{payment?.vendor_name}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received Date:</TableCell>
-                                        <TableCell>{new Date(payment?.received_date).toLocaleDateString()}</TableCell>
+                                        <TableCell className="font-bold text-lg">Requisition Amount:</TableCell>
+                                        <TableCell>₹{payment?.requisition_amount}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Details:</TableCell>
-                                        <TableCell>{payment?.received_details}</TableCell>
+                                        <TableCell className="font-bold text-lg">Date of Payment:</TableCell>
+                                        <TableCell>{new Date(payment?.date_of_payments).toLocaleDateString()}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Requisition Remarks:</TableCell>
+                                        <TableCell>{payment?.requisition_remarks}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Status:</TableCell>
                                         <TableCell>
                                             {payment?.status === "1" ? (
                                                 <span className="bg-green-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Active
+                                                    Paid
                                                 </span>
                                             ) : (
                                                 <span className="bg-red-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Inactive
+                                                    Pending
                                                 </span>
                                             )}
                                         </TableCell>
                                     </TableRow>
-                                    {payment?.received_img && (
+                                    {payment?.requisition_img && (
                                         <TableRow className="flex justify-between">
-                                            <TableCell className="font-bold text-lg">Receipt:</TableCell>
+                                            <TableCell className="font-bold text-lg">Requisition Image:</TableCell>
                                             <TableCell>
-                                                <img
-                                                    src={payment.received_img}
-                                                    alt="Receipt"
-                                                    className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
-                                                    onClick={() => handleImageClick(payment.received_img)} // Make the image clickable
-                                                />
+                                                {isPdf(payment.requisition_img) ? (
+                                                    <iframe
+                                                        src={payment.requisition_img}
+                                                        width="400"
+                                                        height="400"
+                                                        className="rounded-md shadow"
+                                                        title="Requisition PDF"
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={payment.requisition_img}
+                                                        alt="Requisition"
+                                                        className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
+                                                        onClick={() => handleImageClick(payment.requisition_img)} // Make the image clickable
+                                                    />
+                                                )}
                                             </TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>
                             </Table>
                         ) : (
-                            <EditPaymentReceived payment={payment} /> // Add or edit the payment information here
+                            <EditPaymentRequisition payment={payment} /> // Add or edit the payment information here
                         )}
                     </DialogDescription>
                 </DialogContent>
@@ -110,7 +129,7 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                 <DialogContent className="p-0">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            Receipt Image
+                            Requisition Image
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -121,11 +140,21 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                         </DialogClose>
                     </DialogHeader>
                     <DialogDescription className="p-5">
-                        <img
-                            src={imageSrc}
-                            alt="Original Receipt"
-                            className="w-full h-auto object-contain"
-                        />
+                        {isPdf(imageSrc) ? (
+                            <iframe
+                                src={imageSrc}
+                                width="100%"
+                                height="500"
+                                className="rounded-md shadow"
+                                title="Requisition PDF"
+                            />
+                        ) : (
+                            <img
+                                src={imageSrc}
+                                alt="Original Requisition Image"
+                                className="w-full h-auto object-contain"
+                            />
+                        )}
                     </DialogDescription>
                 </DialogContent>
             </Dialog>

@@ -9,6 +9,14 @@
   animation: rotation 1s linear infinite;
 }
 
+.p-datatable-wrapper table {
+  border-collapse: collapse;
+}
+
+.p-datatable-wrapper table, .p-datatable-wrapper th, .p-datatable-wrapper td {
+  border: 1px solid rgb(211, 209, 209);
+}
+
 @keyframes rotation {
   0% {
     transform: rotate(0deg);

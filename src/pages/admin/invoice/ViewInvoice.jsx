@@ -17,11 +17,11 @@ import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 
-import EditPaymentReceived from "./EditPaymentReceived"; // Assuming you have an EditPaymentReceived component
+import EditInvoice from "./EditInvoice"; // Assuming you have an EditInvoice component
 
-const ViewPaymentReceived = ({ payment, add_or_edit }) => {
+const ViewInvoice = ({ invoice, add_or_edit }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
-    const [imageModalOpen, setImageModalOpen] = useState(false); // state to control image modal visibility
+    const [imageModalOpen, setImageModalOpen] = useState(false);  // state to control image modal visibility
     const [imageSrc, setImageSrc] = useState(null); // state to store the image source
 
     const handleImageClick = (src) => {
@@ -35,7 +35,7 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                 <DialogContent className="pb-5">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            Payment Received {add_or_edit === "view" ? "Details" : "Edit"}
+                            Invoice {add_or_edit === "view" ? "Details" : "Edit"}
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -51,28 +51,28 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                 <TableBody className="grid lg:grid-cols-2 sm:grid-cols-1 gap-5 p-5">
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Project Name:</TableCell>
-                                        <TableCell>{payment?.project_name}</TableCell>
+                                        <TableCell>{invoice?.project_name}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received No:</TableCell>
-                                        <TableCell>{payment?.received_no}</TableCell>
+                                        <TableCell className="font-bold text-lg">Invoice No:</TableCell>
+                                        <TableCell>{invoice?.invoice_no}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Amount:</TableCell>
-                                        <TableCell>₹{payment?.received_amount}</TableCell>
+                                        <TableCell>₹{invoice?.invoice_amount}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received Date:</TableCell>
-                                        <TableCell>{new Date(payment?.received_date).toLocaleDateString()}</TableCell>
+                                        <TableCell className="font-bold text-lg">Invoice Date:</TableCell>
+                                        <TableCell>{new Date(invoice?.invoice_date).toLocaleDateString()}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Details:</TableCell>
-                                        <TableCell>{payment?.received_details}</TableCell>
+                                        <TableCell>{invoice?.invoice_details}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Status:</TableCell>
                                         <TableCell>
-                                            {payment?.status === "1" ? (
+                                            {invoice?.status === "1" ? (
                                                 <span className="bg-green-500 px-3 py-1 rounded-xl text-white shadow">
                                                     Active
                                                 </span>
@@ -83,15 +83,15 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                             )}
                                         </TableCell>
                                     </TableRow>
-                                    {payment?.received_img && (
+                                    {invoice?.invoice_img && (
                                         <TableRow className="flex justify-between">
-                                            <TableCell className="font-bold text-lg">Receipt:</TableCell>
+                                            <TableCell className="font-bold text-lg">Invoice Image:</TableCell>
                                             <TableCell>
                                                 <img
-                                                    src={payment.received_img}
-                                                    alt="Receipt"
+                                                    src={invoice.invoice_img}
+                                                    alt="Invoice Image"
                                                     className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
-                                                    onClick={() => handleImageClick(payment.received_img)} // Make the image clickable
+                                                    onClick={() => handleImageClick(invoice.invoice_img)} // Make the image clickable
                                                 />
                                             </TableCell>
                                         </TableRow>
@@ -99,7 +99,7 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                 </TableBody>
                             </Table>
                         ) : (
-                            <EditPaymentReceived payment={payment} /> // Add or edit the payment information here
+                            <EditInvoice invoice={invoice} /> // Add or edit the invoice information here
                         )}
                     </DialogDescription>
                 </DialogContent>
@@ -110,7 +110,7 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                 <DialogContent className="p-0">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            Receipt Image
+                            Invoice Image
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -123,7 +123,7 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                     <DialogDescription className="p-5">
                         <img
                             src={imageSrc}
-                            alt="Original Receipt"
+                            alt="Original Invoice"
                             className="w-full h-auto object-contain"
                         />
                     </DialogDescription>
@@ -133,4 +133,4 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
     );
 };
 
-export default ViewPaymentReceived;
+export default ViewInvoice;

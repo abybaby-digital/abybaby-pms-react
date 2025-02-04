@@ -309,10 +309,24 @@ export const getVendorCategoryList = async (token) => {
   }
 };
 
-// VENDOR CATEGORY LIST
+// STATE LIST
 export const getStateList = async (token) => {
   try {
     const response = await api.get("/state-list", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+// MENU LIST
+export const getMenuList = async (token) => {
+  try {
+    const response = await api.get("/menu-list", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -786,7 +800,6 @@ export const addUser = async (
   }
 };
 
-
 // EDIT USER
 export const editUser = async (
   token,
@@ -872,7 +885,7 @@ export const addPaymentReceived = async (
   received_no,
   received_amount,
   received_date,
-  received_img, // This will be a file object (image)
+  received_img,
   received_details,
   status
 ) => {
@@ -888,10 +901,11 @@ export const addPaymentReceived = async (
     formData.append("status", status);
 
     // Append the received image if it exists
-    if (received_img) {
+    if (received_img && received_img[0]) {
       formData.append("received_img", received_img[0]); // received_img should be a File object
     }
 
+    // Make the POST request
     const response = await api.post("/add-payment-received", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -899,6 +913,7 @@ export const addPaymentReceived = async (
       },
     });
 
+    // You might want to check response status or structure here for safety
     return response.data.result;
   } catch (error) {
     console.error("Error adding payment received:", error);
@@ -967,4 +982,371 @@ export const getPaymentReceivedList = async (token) => {
     throw error;
   }
 };
+
+// ADD INVOICE
+export const addInvoice = async (
+  token,
+  project_id,
+  invoice_no,
+  invoice_amount,
+  invoice_date,
+  invoice_img,
+  invoice_details,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("project_id", project_id);
+    formData.append("invoice_no", invoice_no);
+    formData.append("invoice_amount", invoice_amount);
+    formData.append("invoice_date", invoice_date);
+    formData.append("invoice_details", invoice_details);
+    formData.append("status", status);
+
+    // Append the invoice image if it exists
+    if (invoice_img && invoice_img[0]) {
+      formData.append("invoice_img", invoice_img[0]); // invoice_img should be a File object
+    }
+
+    // Make the POST request
+    const response = await api.post("/add-invoice", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    // You might want to check response status or structure here for safety
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding invoice:", error);
+    throw error;
+  }
+};
+
+// EDIT INVOICE
+export const editInvoice = async (
+  token,
+  id,
+  project_id,
+  invoice_no,
+  invoice_amount,
+  invoice_date,
+  invoice_img, // This will be a file object (image)
+  invoice_details,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("id", id);
+    formData.append("project_id", project_id);
+    formData.append("invoice_no", invoice_no);
+    formData.append("invoice_amount", invoice_amount);
+    formData.append("invoice_date", invoice_date);
+    formData.append("invoice_details", invoice_details);
+    formData.append("status", status);
+
+    // Append the invoice image if it exists
+    if (invoice_img) {
+      formData.append("invoice_img", invoice_img[0]); // invoice_img should be a File object
+    }
+
+    const response = await api.post("/edit-invoice", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing invoice:", error);
+    throw error;
+  }
+};
+
+// INVOICE LIST
+export const getInvoiceList = async (token) => {
+  try {
+    const response = await api.post(
+      "/invoice-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching invoice list:", error);
+    throw error;
+  }
+};
+
+// ADD PO
+export const addPO = async (
+  token,
+  project_id,
+  po_no,
+  po_amount,
+  po_date,
+  po_img, // Image or PDF file
+  payment_schedule_days,
+  project_order_details,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("project_id", project_id);
+    formData.append("po_no", po_no);
+    formData.append("po_amount", po_amount);
+    formData.append("po_date", po_date);
+    formData.append("payment_schedule_days", payment_schedule_days);
+    formData.append("project_order_details", project_order_details);
+    formData.append("status", status);
+
+    // Append the PO image (either image or PDF) if it exists
+    if (po_img && po_img[0]) {
+      formData.append("po_img", po_img[0]); // po_img should be a File object
+    }
+
+    // Make the POST request
+    const response = await api.post("/add-po", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    // You might want to check response status or structure here for safety
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding PO:", error);
+    throw error;
+  }
+};
+
+// ADD PO
+export const addClientPO = async (
+  token,
+  project_id,
+  po_no,
+  po_amount,
+  po_date,
+  po_img, // Image or PDF file
+  payment_schedule_days,
+  project_order_details,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("project_id", project_id);
+    formData.append("po_no", po_no);
+    formData.append("po_amount", po_amount);
+    formData.append("po_date", po_date);
+    formData.append("payment_schedule_days", payment_schedule_days);
+    formData.append("project_order_details", project_order_details);
+    formData.append("status", status);
+
+    // Append the PO image (either image or PDF) if it exists
+    if (po_img && po_img[0]) {
+      formData.append("po_img", po_img[0]); // po_img should be a File object
+    }
+
+    // Make the POST request
+    const response = await api.post("/add-client-po", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    // You might want to check response status or structure here for safety
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding PO:", error);
+    throw error;
+  }
+};
+
+// EDIT PO
+export const editClientPO = async (
+  token,
+  id, // PO ID (to edit an existing PO)
+  project_id,
+  po_no,
+  po_amount,
+  po_date,
+  po_img, // This will be a file object (image or pdf)
+  payment_schedule_days,
+  project_order_details,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("id", id); // Existing PO ID
+    formData.append("project_id", project_id);
+    formData.append("po_no", po_no);
+    formData.append("po_amount", po_amount);
+    formData.append("po_date", po_date);
+    formData.append("payment_schedule_days", payment_schedule_days);
+    formData.append("project_order_details", project_order_details);
+    formData.append("status", status);
+
+    // Append the PO image (either image or PDF) if it exists
+    if (po_img) {
+      formData.append("po_img", po_img[0]); // po_img should be a File object
+    }
+
+    const response = await api.post("/edit-client-po", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing PO:", error);
+    throw error;
+  }
+};
+
+// PO LIST
+export const getClientPOList = async (token) => {
+  try {
+    const response = await api.post(
+      "/client-po-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching PO list:", error);
+    throw error;
+  }
+};
+
+// ADD PAYMENT REQUISITION
+export const addPaymentRequisition = async (
+  token,
+  project_id,
+  vendor_id,
+  requisition_amount,
+  requisition_img, // Image or PDF file
+  requisition_remarks,
+  date_of_payments,
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("project_id", project_id);
+    formData.append("vendor_id", vendor_id);
+    formData.append("requisition_amount", requisition_amount);
+    formData.append("requisition_remarks", requisition_remarks);
+    formData.append("date_of_payments", date_of_payments);
+
+    // Append the requisition image (either image or PDF) if it exists
+    if (requisition_img && requisition_img[0]) {
+      formData.append("requisition_img", requisition_img[0]); // requisition_img should be a File object
+    }
+
+    // Make the POST request
+    const response = await api.post("/add-payment-requition", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    // You might want to check response status or structure here for safety
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding Payment Requisition:", error);
+    throw error;
+  }
+};
+
+// EDIT PAYMENT REQUISITION
+export const editPaymentRequisition = async (
+  token,
+  id, // Requisition ID (to edit an existing payment requisition)
+  project_id,
+  branch_id,
+  vendor_id,
+  requisition_amount,
+  requisition_img, // This will be a file object (image or pdf)
+  requisition_remarks,
+  date_of_payments,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("id", id); // Existing Payment Requisition ID
+    formData.append("project_id", project_id);
+    formData.append("branch_id", branch_id);
+    formData.append("vendor_id", vendor_id);
+    formData.append("requisition_amount", requisition_amount);
+    formData.append("requisition_remarks", requisition_remarks);
+    formData.append("date_of_payments", date_of_payments);
+    formData.append("status", status);
+
+    // Append the requisition image (either image or PDF) if it exists
+    if (requisition_img) {
+      formData.append("requisition_img", requisition_img[0]); // requisition_img should be a File object
+    }
+
+    const response = await api.post("/edit-payment-requition", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing Payment Requisition:", error);
+    throw error;
+  }
+};
+
+// PAYMENT REQUISITION LIST
+export const getPaymentRequisitionList = async (token) => {
+  try {
+    const response = await api.post(
+      "/payment-requition-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching Payment Requisition list:", error);
+    throw error;
+  }
+};
+
+
+
 

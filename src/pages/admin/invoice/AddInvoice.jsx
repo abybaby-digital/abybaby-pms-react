@@ -7,10 +7,10 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
-import { addPaymentReceived, getProjectList } from "../../../services/api"; // Import the API function for projects
+import { addInvoice, getProjectList } from "../../../services/api"; // Import the API function for projects
 import { useState } from "react"; // Import useState
 
-export default function AddPaymentReceived() {
+export default function AddInvoice() {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -26,32 +26,33 @@ export default function AddPaymentReceived() {
     }
   });
 
-  const addPaymentMutation = useMutation({
+  const addInvoiceMutation = useMutation({
     mutationFn: async (data) => {
-      return await addPaymentReceived(
+      return await addInvoice(
         token,
         data.project_id,
-        data.received_no,
-        data.received_amount,
-        data.received_date,
-        data.received_img, // File input
-        data.received_details,
+        data.invoice_no,
+        data.invoice_amount,
+        data.invoice_date,
+        data.invoice_img, // File input
+        data.invoice_details,
+        "1" // Default status
       );
     },
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
-        toast.success("Payment received added successfully!");
-        navigate("/payment-receipt-list");
+        toast.success("Invoice added successfully!");
+        navigate("/invoice-list"); // Navigate to invoice list after successful creation
       }
     },
     onError: (error) => {
-      toast.error("Failed to add payment: " + error.message);
+      toast.error("Failed to add invoice: " + error.message);
     },
   });
 
   const onSubmit = (data) => {
     console.log(data);
-    addPaymentMutation.mutate(data);
+    addInvoiceMutation.mutate(data);
   };
 
   // Handle image file input change and display preview
@@ -67,14 +68,14 @@ export default function AddPaymentReceived() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <AdminHead breadcrumb_name="Payment Received" />
+        <AdminHead breadcrumb_name="Invoice" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white rounded-2xl shadow mx-auto xl:w-[50%] w-full overflow-hidden"
           >
             <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
-              ADD PAYMENT RECEIVED
+              ADD INVOICE
             </h2>
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
 
@@ -96,54 +97,54 @@ export default function AddPaymentReceived() {
                 {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
               </div>
 
-              {/* Received No Input */}
+              {/* Invoice No Input */}
               <div className="form-group">
-                <label htmlFor="received_no">Received No <span className="text-red-600">*</span></label>
+                <label htmlFor="invoice_no">Invoice No <span className="text-red-600">*</span></label>
                 <input
                   type="text"
-                  id="received_no"
-                  {...register("received_no", { required: "Received No is required" })}
+                  id="invoice_no"
+                  {...register("invoice_no", { required: "Invoice No is required" })}
                   className="block"
-                  placeholder="Enter Received No"
+                  placeholder="Enter Invoice No"
                 />
-                {errors.received_no && <span className="text-red-600 text-sm">{errors.received_no.message}</span>}
+                {errors.invoice_no && <span className="text-red-600 text-sm">{errors.invoice_no.message}</span>}
               </div>
 
-              {/* Received Amount Input */}
+              {/* Invoice Amount Input */}
               <div className="form-group">
-                <label htmlFor="received_amount">Received Amount <span className="text-red-600">*</span></label>
+                <label htmlFor="invoice_amount">Invoice Amount <span className="text-red-600">*</span></label>
                 <input
                   type="number"
-                  id="received_amount"
-                  {...register("received_amount", { required: "Received Amount is required" })}
+                  id="invoice_amount"
+                  {...register("invoice_amount", { required: "Invoice Amount is required" })}
                   className="block"
                   placeholder="Enter Amount"
                 />
-                {errors.received_amount && <span className="text-red-600 text-sm">{errors.received_amount.message}</span>}
+                {errors.invoice_amount && <span className="text-red-600 text-sm">{errors.invoice_amount.message}</span>}
               </div>
 
-              {/* Received Date Input */}
+              {/* Invoice Date Input */}
               <div className="form-group">
-                <label htmlFor="received_date">Received Date <span className="text-red-600">*</span></label>
+                <label htmlFor="invoice_date">Invoice Date <span className="text-red-600">*</span></label>
                 <input
                   type="date"
-                  id="received_date"
-                  {...register("received_date", { required: "Received Date is required" })}
+                  id="invoice_date"
+                  {...register("invoice_date", { required: "Invoice Date is required" })}
                   className="block"
                 />
-                {errors.received_date && <span className="text-red-600 text-sm">{errors.received_date.message}</span>}
+                {errors.invoice_date && <span className="text-red-600 text-sm">{errors.invoice_date.message}</span>}
               </div>
 
-              {/* Upload Receipt */}
+              {/* Upload Invoice Image */}
               <div className="form-group lg:col-span-2">
-                <label htmlFor="received_img">Upload Receipt (Optional)</label>
+                <label htmlFor="invoice_img">Upload Invoice Image (Optional)</label>
                 <input
                   type="file"
-                  id="received_img"
+                  id="invoice_img"
                   accept="image/*"
-                  {...register("received_img")}
+                  {...register("invoice_img")}
                   className="block border w-full rounded-lg p-3"
-                  onChange={handleImageChange} // Add this line
+                  onChange={handleImageChange} // Add this line for image preview
                 />
               </div>
 
@@ -154,14 +155,14 @@ export default function AddPaymentReceived() {
                 </div>
               )}
 
-              {/* Payment Details */}
+              {/* Invoice Details */}
               <div className="form-group lg:col-span-2">
-                <label htmlFor="received_details">Received Details</label>
+                <label htmlFor="invoice_details">Invoice Details</label>
                 <textarea
-                  id="received_details"
-                  {...register("received_details")}
+                  id="invoice_details"
+                  {...register("invoice_details")}
                   className="block border w-full rounded-lg p-3"
-                  placeholder="Enter Payment Details"
+                  placeholder="Enter Invoice Details"
                 />
               </div>
 
@@ -171,9 +172,9 @@ export default function AddPaymentReceived() {
               <button
                 type="submit"
                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                disabled={addPaymentMutation.isPending}
+                disabled={addInvoiceMutation.isPending}
               >
-                {addPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
+                {addInvoiceMutation.isPending ? <ButtonLoader /> : "Submit"}
               </button>
             </div>
           </form>
