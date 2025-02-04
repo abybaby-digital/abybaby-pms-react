@@ -1347,6 +1347,178 @@ export const getPaymentRequisitionList = async (token) => {
   }
 };
 
+export const addBillingSupportings = async (
+  token,
+  project_id,
+  center_vehicle_hire_bill,
+  center_vehicle_hire_img,
+  center_vehicle_hire_comment,
+  manpower_bill,
+  manpower_bill_img,
+  manpower_bill_comment,
+  gift_bill,
+  gift_bill_img,
+  gift_bill_comment,
+  billing_ppt,
+  billing_ppt_img,
+  billing_ppt_comment,
+  report,
+  report_img,
+  report_comment,
+  day_wise_log_book,
+  day_wise_log_book_img,
+  day_wise_log_book_comment,
+  day_wise_meter_console,
+  day_wise_meter_console_img,
+  day_wise_meter_console_comment,
+  no_objection_certificate,
+  no_objection_certificate_img,
+  no_objection_certificate_comment,
+  snacks_bill,
+  snacks_bill_img,
+  snacks_bill_comment,
+  element_wise_photo,
+  element_wise_photo_img,
+  element_wise_photo_comment,
+  nagar_nigan,
+  nagar_nigan_img,
+  nagar_nigan_comment,
+  fuel_bill,
+  fuel_bill_img,
+  fuel_bill_comment,
+  customer_gift,
+  customer_gift_img,
+  customer_gift_comment,
+  customer_acknowledge,
+  customer_acknowledge_img,
+  customer_acknowledge_comment,
+  route_plan,
+  route_plan_img,
+  route_plan_comment,
+  approvel_copy,
+  approvel_copy_img,
+  approvel_copy_comment,
+  po,
+  po_img,
+  po_comment,
+  wayforward_learning,
+  wayforward_learning_img,
+  wayforward_learning_comment,
+  courier_delivery_challan,
+  courier_delivery_challan_img,
+  courier_delivery_challan_comment,
+  transport_bill,
+  transport_bill_img,
+  transport_bill_comment,
+  anocher_bill,
+  anocher_bill_img,
+  anocher_bill_comment,
+  any_other_supporting,
+  any_other_supporting_img,
+  any_other_supporting_comment,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    const data = {
+      project_id,
+      center_vehicle_hire_bill,
+      center_vehicle_hire_img,
+      center_vehicle_hire_comment,
+      manpower_bill,
+      manpower_bill_img,
+      manpower_bill_comment,
+      gift_bill,
+      gift_bill_img,
+      gift_bill_comment,
+      billing_ppt,
+      billing_ppt_img,
+      billing_ppt_comment,
+      report,
+      report_img,
+      report_comment,
+      day_wise_log_book,
+      day_wise_log_book_img,
+      day_wise_log_book_comment,
+      day_wise_meter_console,
+      day_wise_meter_console_img,
+      day_wise_meter_console_comment,
+      no_objection_certificate,
+      no_objection_certificate_img,
+      no_objection_certificate_comment,
+      snacks_bill,
+      snacks_bill_img,
+      snacks_bill_comment,
+      element_wise_photo,
+      element_wise_photo_img,
+      element_wise_photo_comment,
+      nagar_nigan,
+      nagar_nigan_img,
+      nagar_nigan_comment,
+      fuel_bill,
+      fuel_bill_img,
+      fuel_bill_comment,
+      customer_gift,
+      customer_gift_img,
+      customer_gift_comment,
+      customer_acknowledge,
+      customer_acknowledge_img,
+      customer_acknowledge_comment,
+      route_plan,
+      route_plan_img,
+      route_plan_comment,
+      approvel_copy,
+      approvel_copy_img,
+      approvel_copy_comment,
+      po,
+      po_img,
+      po_comment,
+      wayforward_learning,
+      wayforward_learning_img,
+      wayforward_learning_comment,
+      courier_delivery_challan,
+      courier_delivery_challan_img,
+      courier_delivery_challan_comment,
+      transport_bill,
+      transport_bill_img,
+      transport_bill_comment,
+      anocher_bill,
+      anocher_bill_img,
+      anocher_bill_comment,
+      any_other_supporting,
+      any_other_supporting_img,
+      any_other_supporting_comment,
+      status,
+    };
+
+    Object.keys(data).forEach((key) => {
+      if (data[key] !== null && data[key] !== undefined) {
+        if (key.endsWith("_img") && data[key][0]) {
+          formData.append(key, data[key][0]); // Handling file uploads
+        } else {
+          formData.append(key, data[key]);
+        }
+      }
+    });
+
+    // Make the POST request
+    const response = await api.post("/add-billing-supportings", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding billing supportings:", error);
+    throw error;
+  }
+};
+
+
 
 
 

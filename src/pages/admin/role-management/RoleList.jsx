@@ -155,10 +155,10 @@ export default function RoleList() {
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}">
                                             <Column field="role_name" sortable header="Role Name" style={{ textTransform: "capitalize" }}></Column>
                                             <Column header="Access Type Add" body={(rowData) => {
-                                                return rowData.access_type_add.split(',').slice(0, 3).join(", ") + (rowData.access_type_add.split(',').length > 3 ? "..." : "");
+                                                return rowData.add_access_name.split(',').slice(0, 3).join(", ") + (rowData.access_type_add.split(',').length > 3 ? "..." : "");
                                             }}></Column>
                                             <Column header="Access Type Edit" body={(rowData) => {
-                                                return rowData.access_type_edit.split(',').slice(0, 3).join(", ") + (rowData.access_type_edit.split(',').length > 3 ? "..." : "");
+                                                return rowData.edit_access_name.split(',').slice(0, 3).join(", ") + (rowData.access_type_edit.split(',').length > 3 ? "..." : "");
                                             }}></Column>
                                             <Column header="Status" body={(rowData) => (
                                                 <span className={`px-3 py-1 rounded-xl ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"} text-white shadow`}>

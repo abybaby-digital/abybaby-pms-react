@@ -253,7 +253,7 @@ const data = {
       items: [
         {
           title: "Add Billing Supportings",
-          url: "/billing-supprotings-add",
+          url: "/billing-supportings-add",
           role: []
         },
         {
@@ -277,7 +277,7 @@ const data = {
         },
         {
           title: "Payment Requisition Info",
-          url: "/payment-requisition-info",
+          url: "/payment-requisition-list",
           role: []
         },
       ],
