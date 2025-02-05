@@ -1504,7 +1504,7 @@ export const addBillingSupportings = async (
     });
 
     // Make the POST request
-    const response = await api.post("/add-billing-supportings", formData, {
+    const response = await api.post("/add-billing-support", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -1517,6 +1517,30 @@ export const addBillingSupportings = async (
     throw error;
   }
 };
+
+
+// PAYMENT REQUISITION LIST
+export const getBillingSupportList = async (token) => {
+  try {
+    const response = await api.post(
+      "/billing-support-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching Payment Requisition list:", error);
+    throw error;
+  }
+};
+
+
+
+
 
 
 

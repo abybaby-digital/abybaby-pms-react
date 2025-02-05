@@ -30,6 +30,7 @@ import ClientPOList from "./pages/admin/client-po/ClientPOList";
 import AddPaymentRequisition from "./pages/admin/payment-requisition/AddPaymentRequisition";
 import PaymentRequisitionList from "./pages/admin/payment-requisition/PaymentRequisitionList";
 import AddBillingSupportings from "./pages/admin/billing-supportings/AddBillingSupportings";
+import BillingSupportingList from "./pages/admin/billing-supportings/BillingSupportingsList";
 
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
@@ -86,6 +87,7 @@ const App = () => {
                   <Route path="/payment-requisition-add" element={<AddPaymentRequisition />} />
                   <Route path="/payment-requisition-list" element={<PaymentRequisitionList />} />
                   <Route path="/billing-supportings-add" element={<AddBillingSupportings />} />
+                  <Route path="/billing-supportings-info" element={<BillingSupportingList />} />
                 </Route>
               </Routes>
             </Suspense>

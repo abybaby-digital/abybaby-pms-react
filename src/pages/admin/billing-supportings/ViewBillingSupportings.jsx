@@ -17,11 +17,9 @@ import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 
-import EditClientPO from "./EditBillingSupportings"; // Assuming you have an EditClientPO component
-
-const ViewClientPO = ({ clientPO, add_or_edit }) => {
+const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
-    const [imageModalOpen, setImageModalOpen] = useState(false);  // state to control image modal visibility
+    const [imageModalOpen, setImageModalOpen] = useState(false); // state to control image modal visibility
     const [fileSrc, setFileSrc] = useState(null); // state to store the file source (image or PDF)
 
     const handleFileClick = (src) => {
@@ -35,7 +33,7 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                 <DialogContent className="pb-5">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            Client PO {add_or_edit === "view" ? "Details" : "Edit"}
+                            Billing Supportings {add_or_edit === "view" ? "Details" : "Edit"}
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -49,71 +47,496 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                         {add_or_edit === "view" ? (
                             <Table className="text-black">
                                 <TableBody className="grid lg:grid-cols-2 sm:grid-cols-1 gap-5 p-5">
+                                    {/* Directly displaying fields by key name */}
+
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Project Name:</TableCell>
-                                        <TableCell>{clientPO?.project_name}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">PO No:</TableCell>
-                                        <TableCell>{clientPO?.po_no || "Not Available"}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Amount:</TableCell>
-                                        <TableCell>₹{clientPO?.po_amount}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">PO Date:</TableCell>
-                                        <TableCell>{new Date(clientPO?.po_date).toLocaleDateString()}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Payment Schedule (Days):</TableCell>
-                                        <TableCell>{clientPO?.payment_schedule_days} days</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Details:</TableCell>
-                                        <TableCell>{clientPO?.project_order_details}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Status:</TableCell>
+                                        <TableCell className="font-bold text-lg">Center Vehicle Hire Bill:</TableCell>
                                         <TableCell>
-                                            {clientPO?.status === "1" ? (
-                                                <span className="bg-green-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Active
-                                                </span>
-                                            ) : (
-                                                <span className="bg-red-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Inactive
-                                                </span>
+                                            {billingSupportings?.center_vehicle_hire_bill === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.center_vehicle_hire_bill === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>}
+                                            {billingSupportings?.center_vehicle_hire_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.center_vehicle_hire_img)}
+                                                >
+                                                    {billingSupportings.center_vehicle_hire_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
                                             )}
                                         </TableCell>
                                     </TableRow>
-                                    {clientPO?.po_img && (
-                                        <TableRow className="flex justify-between">
-                                            <TableCell className="font-bold text-lg">PO Image:</TableCell>
-                                            <TableCell>
-                                                {/* Check if po_img is a PDF or an image */}
-                                                {clientPO.po_img.endsWith(".pdf") ? (
-                                                    <button
-                                                        className="text-blue-500"
-                                                        onClick={() => handleFileClick(clientPO.po_img)}
-                                                    >
-                                                        View PO PDF
-                                                    </button>
-                                                ) : (
-                                                    <img
-                                                        src={clientPO.po_img}
-                                                        alt="PO Image"
-                                                        className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
-                                                        onClick={() => handleFileClick(clientPO.po_img)} // Make the image clickable
-                                                    />
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Manpower Bill:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.manpower_bill === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.manpower_bill === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+                                            {billingSupportings?.manpower_bill_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.manpower_bill_img)}
+                                                >
+                                                    {billingSupportings.manpower_bill_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Gift Bill:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.gift_bill === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.gift_bill === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+                                            {billingSupportings?.gift_bill_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.gift_bill_img)}
+                                                >
+                                                    {billingSupportings.gift_bill_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Billing PPT:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.billing_ppt === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.billing_ppt === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+                                            {billingSupportings?.billing_ppt_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.billing_ppt_img)}
+                                                >
+                                                    {billingSupportings.billing_ppt_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Report:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.report === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.report === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+
+                                            {billingSupportings?.report_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.report_img)}
+                                                >
+                                                    {billingSupportings.report_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+                                    {/* Day Wise Log Book */}
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Day Wise Log Book:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.day_wise_log_book === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.day_wise_log_book === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+                                            {billingSupportings?.day_wise_log_book_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.day_wise_log_book_img)}
+                                                >
+                                                    {billingSupportings.day_wise_log_book_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+                                    {/* Day Wise Meter Console */}
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Day Wise Meter Console:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.day_wise_meter_console === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.day_wise_meter_console === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+                                            {billingSupportings?.day_wise_meter_console_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.day_wise_meter_console_img)}
+                                                >
+                                                    {billingSupportings.day_wise_meter_console_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+                                    {/* No Objection Certificate */}
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">No Objection Certificate:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.no_objection_certificate === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.no_objection_certificate === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+                                            {billingSupportings?.no_objection_certificate_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.no_objection_certificate_img)}
+                                                >
+                                                    {billingSupportings.no_objection_certificate_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+                                    {/* Snacks Bill */}
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Snacks Bill:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.snacks_bill === "1" ? <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                                : billingSupportings?.snacks_bill === "" ? <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                                    : <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>}
+                                            {billingSupportings?.snacks_bill_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.snacks_bill_img)}
+                                                >
+                                                    {billingSupportings.snacks_bill_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Element Wise Photo:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.element_wise_photo === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.element_wise_photo === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.element_wise_photo_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.element_wise_photo_img)}
+                                                >
+                                                    {billingSupportings.element_wise_photo_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Nagar Nigan:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.nagar_nigan === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.nagar_nigan === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.nagar_nigan_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.nagar_nigan_img)}
+                                                >
+                                                    {billingSupportings.nagar_nigan_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Fuel Bill:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.fuel_bill === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.fuel_bill === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.fuel_bill_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.fuel_bill_img)}
+                                                >
+                                                    {billingSupportings.fuel_bill_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Customer Gift:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.customer_gift === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.customer_gift === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.customer_gift_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.customer_gift_img)}
+                                                >
+                                                    {billingSupportings.customer_gift_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Route Plan:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.route_plan === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.route_plan === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.route_plan_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.route_plan_img)}
+                                                >
+                                                    {billingSupportings.route_plan_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Approval Copy:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.approvel_copy === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.approvel_copy === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.approvel_copy_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.approvel_copy_img)}
+                                                >
+                                                    {billingSupportings.approvel_copy_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">PO:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.po === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.po === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Wayforward Learning:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.wayforward_learning === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.wayforward_learning === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.wayforward_learning_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.wayforward_learning_img)}
+                                                >
+                                                    {billingSupportings.wayforward_learning_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Courier Delivery Challan:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.courier_delivery_challan === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.courier_delivery_challan === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.courier_delivery_challan_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.courier_delivery_challan_img)}
+                                                >
+                                                    {billingSupportings.courier_delivery_challan_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Transport Bill:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.transport_bill === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.transport_bill === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.transport_bill_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.transport_bill_img)}
+                                                >
+                                                    {billingSupportings.transport_bill_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Anocher Bill:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.anocher_bill === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.anocher_bill === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.anocher_bill_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.anocher_bill_img)}
+                                                >
+                                                    {billingSupportings.anocher_bill_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Any Other Supporting:</TableCell>
+                                        <TableCell>
+                                            {billingSupportings?.any_other_supporting === "1" ? (
+                                                <span className="bg-green-500 px-5 py-1 rounded-xl text-white font-semibold inline-block">Yes</span>
+                                            ) : billingSupportings?.any_other_supporting === "" ? (
+                                                <span className="bg-black px-5 py-1 rounded-xl text-white font-semibold">Not Applicable</span>
+                                            ) : (
+                                                <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">No</span>
+                                            )}
+                                            {billingSupportings?.any_other_supporting_img && (
+                                                <button
+                                                    className="text-blue-500 ms-5"
+                                                    onClick={() => handleFileClick(billingSupportings.any_other_supporting_img)}
+                                                >
+                                                    {billingSupportings.any_other_supporting_img.endsWith(".pdf")
+                                                        ? "View PDF"
+                                                        : "View Image"}
+                                                </button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+
+
+
+
+
+
                                 </TableBody>
                             </Table>
                         ) : (
-                            <EditClientPO clientPO={clientPO} /> // Add or edit the client PO information here
+                            <div>Edit Billing Supportings</div> // You can add your edit component here
                         )}
                     </DialogDescription>
                 </DialogContent>
@@ -124,7 +547,7 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                 <DialogContent className="p-0">
                     <DialogHeader>
                         <DialogTitle className="text-center text-xl font-bold font-merri">
-                            PO {fileSrc?.endsWith(".pdf") ? "PDF" : "Image"}
+                            {fileSrc?.endsWith(".pdf") ? "Billing Supportings PDF" : "Billing Supportings Image"}
                         </DialogTitle>
                         <DialogClose
                             asChild
@@ -141,13 +564,13 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                 src={fileSrc}
                                 width="100%"
                                 height="500"
-                                title="PO PDF"
+                                title="Billing Supportings PDF"
                                 className="border-none"
                             />
                         ) : (
                             <img
                                 src={fileSrc}
-                                alt="PO Image"
+                                alt="Billing Supportings"
                                 className="w-full h-auto object-contain"
                             />
                         )}
@@ -158,4 +581,4 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
     );
 };
 
-export default ViewClientPO;
+export default ViewBillingSupportings;

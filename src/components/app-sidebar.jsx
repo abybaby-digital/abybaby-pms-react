@@ -144,25 +144,25 @@ const data = {
         },
       ],
     },
-    {
-      title: "Department",
-      url: "#",
-      icon: FaBuildingColumns,
-      hasSubMenu: true,
-      isActive: false,
-      items: [
-        {
-          title: "Add Department",
-          url: "/department-add",
-          role: []
-        },
-        {
-          title: "Department List",
-          url: "/department-list",
-          role: []
-        },
-      ],
-    },
+    // {
+    //   title: "Department",
+    //   url: "#",
+    //   icon: FaBuildingColumns,
+    //   hasSubMenu: true,
+    //   isActive: false,
+    //   items: [
+    //     {
+    //       title: "Add Department",
+    //       url: "/department-add",
+    //       role: []
+    //     },
+    //     {
+    //       title: "Department List",
+    //       url: "/department-list",
+    //       role: []
+    //     },
+    //   ],
+    // },
     {
       title: "Vendor",
       url: "#",
@@ -258,7 +258,7 @@ const data = {
         },
         {
           title: "Billing Supportings Info",
-          url: "/billing-supprotings-info",
+          url: "/billing-supportings-info",
           role: []
         },
       ],
