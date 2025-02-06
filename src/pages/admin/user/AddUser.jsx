@@ -12,6 +12,7 @@ import ButtonLoader from "../../../components/common/ButtonLoader";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { useEffect, useState } from "react";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 const animatedComponents = makeAnimated();
 
@@ -435,6 +436,13 @@ export default function AddUser() {
 
 
                         </div>
+
+                        {/* LOADER */}
+
+                        {
+                            addUserMutation.isPending ?
+                                <FormSubmitLoader loading_msg="Creating User..." /> : null
+                        }
                         {/* Submit Button */}
                         <div className="card-footer text-center bg-gray-100 py-5">
                             <button

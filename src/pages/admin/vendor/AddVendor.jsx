@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddVendor() {
     const token = useSelector((state) => state.auth.token);
@@ -349,6 +350,13 @@ export default function AddVendor() {
                             </div>
 
                         </div>
+
+                        {/* LOADER */}
+
+                        {
+                            addVendorMutation.isPending ?
+                                <FormSubmitLoader loading_msg="Adding Vendor..." /> : null
+                        }
 
                         <div className="card-footer text-center bg-gray-100 py-5">
                             <button

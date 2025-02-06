@@ -9,6 +9,7 @@ import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { addInvoice, getProjectList } from "../../../services/api"; // Import the API function for projects
 import { useState } from "react"; // Import useState
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddInvoice() {
   const token = useSelector((state) => state.auth.token);
@@ -167,6 +168,13 @@ export default function AddInvoice() {
               </div>
 
             </div>
+
+            {/* LOADER */}
+
+            {
+              addInvoiceMutation.isPending ?
+                <FormSubmitLoader loading_msg="Creating Invoice..." /> : null
+            }
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button

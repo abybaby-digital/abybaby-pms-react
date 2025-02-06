@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { useEffect, useState } from "react";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 // const accessOptions = [
 //     "Company", "Branch", "Role Management", "Vendor", "Client", "Users",
@@ -161,6 +162,13 @@ export default function AddRole() {
                             </div>
 
                         </div>
+
+                        {/* LOADER */}
+
+                        {
+                            addRoleMutation.isPending ?
+                                <FormSubmitLoader loading_msg="Creating Role..." /> : null
+                        }
 
                         {/* Submit Button */}
                         <div className="card-footer text-center bg-gray-100 py-5">

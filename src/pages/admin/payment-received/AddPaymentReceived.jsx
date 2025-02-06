@@ -9,6 +9,7 @@ import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { addPaymentReceived, getProjectList } from "../../../services/api"; // Import the API function for projects
 import { useState } from "react"; // Import useState
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddPaymentReceived() {
   const token = useSelector((state) => state.auth.token);
@@ -166,6 +167,13 @@ export default function AddPaymentReceived() {
               </div>
 
             </div>
+
+            {/* LOADER */}
+
+            {
+              addPaymentMutation.isPending ?
+                <FormSubmitLoader loading_msg="Creating Payment Receipt..." /> : null
+            }
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button

@@ -9,6 +9,7 @@ import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { addPaymentRequisition, getProjectList, getBranchList, getVendorList } from "../../../services/api";
 import { useState, useEffect } from "react";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddPaymentRequisition() {
   const token = useSelector((state) => state.auth.token);
@@ -265,6 +266,13 @@ export default function AddPaymentRequisition() {
               {/* Submit Button */}
 
             </div>
+
+            {/* LOADER */}
+
+            {
+              addPaymentMutation.isPending ?
+                <FormSubmitLoader loading_msg="Creating Payment Requisition..." /> : null
+            }
             <div className="card-footer text-center bg-gray-100 py-5">
               <button
                 type="submit"

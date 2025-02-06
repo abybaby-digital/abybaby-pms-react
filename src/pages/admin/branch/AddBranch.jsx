@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddBranch() {
     const token = useSelector((state) => state.auth.token);
@@ -97,6 +98,13 @@ export default function AddBranch() {
                                 />
                             </div>
                         </div>
+
+                        {/* LOADER */}
+                        {
+                            addBranchMutation.isPending ?
+                                <FormSubmitLoader loading_msg="Creating Branch..." /> : null
+                        }
+
                         {/* /.card-body */}
                         <div className="card-footer text-center bg-gray-100 py-5">
                             <button

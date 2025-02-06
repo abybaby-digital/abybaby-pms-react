@@ -11,6 +11,7 @@ import ButtonLoader from "../../../components/common/ButtonLoader";
 
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated';
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 const animatedComponents = makeAnimated();
 
 export default function AddProject() {
@@ -384,6 +385,13 @@ export default function AddProject() {
                             </div>
 
                         </div>
+
+                        {/* LOADER */}
+
+                        {
+                            addProjectMutation.isPending ?
+                                <FormSubmitLoader loading_msg="Creating Project..." /> : null
+                        }
 
                         {/* Submit Button */}
                         <div className="card-footer text-center bg-gray-100 py-5">

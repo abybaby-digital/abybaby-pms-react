@@ -9,6 +9,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { addBillingSupportings, getProjectList } from "../../../services/api";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddBillingSupportings() {
   const token = useSelector((state) => state.auth.token);
@@ -95,7 +96,7 @@ export default function AddBillingSupportings() {
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
         toast.success("Billing support added successfully!");
-        navigate("/billing-support-list");
+        navigate("/billing-supportings-info");
       }
       else {
         toast.error("Something Went Wrong !!!")
@@ -122,6 +123,7 @@ export default function AddBillingSupportings() {
       <AppSidebar />
       <SidebarInset>
         <AdminHead breadcrumb_name="Billing Supportings" />
+        
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
           <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl shadow mx-auto xl:w-[80%] w-full overflow-hidden">
             <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">ADD BILLING SUPPORTINGS</h2>
@@ -653,6 +655,11 @@ export default function AddBillingSupportings() {
 
 
             </div>
+
+            {
+              addBillingMutation.isPending?
+              <FormSubmitLoader loading_msg="Hold on, it will take some time..." /> :  null
+            }
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button type="submit" className="px-10 py-2 text-white bg-lightdark rounded-2xl" disabled={addBillingMutation.isPending}>

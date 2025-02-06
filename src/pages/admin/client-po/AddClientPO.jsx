@@ -9,6 +9,7 @@ import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { addClientPO, getProjectList } from "../../../services/api"; // Import the API function for PO
 import { useState } from "react"; // Import useState
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddClientPO() {
   const token = useSelector((state) => state.auth.token);
@@ -185,6 +186,13 @@ export default function AddClientPO() {
               </div>
 
             </div>
+
+            {/* LOADER */}
+
+            {
+              addPOMutation.isPending ?
+                <FormSubmitLoader loading_msg="Creating Client PO..." /> : null
+            }
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button

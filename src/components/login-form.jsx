@@ -17,6 +17,7 @@ import { makeLogin } from "../services/api";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { setLogInState } from "../redux/features/Auth/AuthSlice";
+import ButtonLoader from "./common/ButtonLoader";
 
 export function LoginForm({
   className,
@@ -26,25 +27,21 @@ export function LoginForm({
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  
+
 
   const loginMutation = useMutation({
-    mutationFn: ({ username, password }) => makeLogin(username, password),
-    onSuccess: () => {
-      toast.success("You are successfully logged in!");
-      sessionStorage.setItem("isLoggedIn", "true"); // Store as string
-      const logInState = sessionStorage.getItem("isLoggedIn");
-      if (logInState) {
-        dispatch(setLogInState(logInState)); // Update Redux state with successful login
-        navigate("/");
-      }
-      else {
-        navigate("/login")
-      }
 
-    },
-    onError: (error) => {
-      toast.error(error?.response?.data?.message || "Login failed, please try again!");
+    mutationFn: ({ username, password }) => makeLogin(username, password),
+
+    onSuccess: (response) => {
+      if (response.status === 200 || response.status === 201) {
+        toast.success("You are successfully logged in!");
+      }
+      else{
+        console.log(response);
+        
+        toast.error(response.message);
+      }
     },
   });
 
@@ -113,9 +110,9 @@ export function LoginForm({
               <Button
                 type="submit"
                 className="w-full bg-lightdark"
-                disabled={loginMutation.isLoading} // Disable button while loading
+                disabled={loginMutation.isPending} // Disable button while loading
               >
-                {loginMutation.isLoading ? "Logging In..." : "Login"}
+                {loginMutation.isPending ? <ButtonLoader /> : "Login"}
               </Button>
             </div>
           </form>

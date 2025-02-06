@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddCompany() {
     const token = useSelector((state) => state.auth.token);
@@ -190,6 +191,13 @@ export default function AddCompany() {
                             </div>
                         </div>
                         {/* /.card-body */}
+
+                        {/* LOADER */}
+
+                        {
+                            addCompanyMutation.isPending ?
+                                <FormSubmitLoader loading_msg="Adding Company..." /> : null
+                        }
                         <div className="card-footer text-center bg-gray-100 py-5">
                             <button
                                 type="submit"

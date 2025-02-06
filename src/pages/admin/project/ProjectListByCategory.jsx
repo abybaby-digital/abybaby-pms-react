@@ -30,9 +30,11 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-export default function ProjectList() {
+export default function ProjectListByCategory() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
+
+    const titleTable = sessionStorage.getItem("project_list_title");
 
     // FILTERING STATE VARIABLES FOR PROJECT FILTER
     const [fincYear, setFincYear] = useState(null);
@@ -44,6 +46,15 @@ export default function ProjectList() {
     const [status, setStatus] = useState(null);
     const [billing, setBilled] = useState(null);
     const [payment, setPayment] = useState(null);
+
+    useEffect(() => {
+        setStatus(sessionStorage.getItem("status"));
+        setBilled(sessionStorage.getItem("billed"));
+        setPayment(sessionStorage.getItem("paid"));
+    }, [status, billing, payment])
+
+    console.log(status);
+    
 
     const { data: projectList = [], isLoading } = useQuery({
         queryKey: ["project-list", refetchList, +fincYear, companyFilter, branchFilter, clientFilter, skip, take, status, billing, payment],
@@ -175,7 +186,7 @@ export default function ProjectList() {
                 <AdminHead breadcrumb_name="project" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">PROJECT LIST</h2>
+                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200 uppercase">{titleTable}</h2>
                         <div className="card-body p-5 bg-white shadow overflow-hidden">
                             {/* filtering Projects */}
 
@@ -231,37 +242,6 @@ export default function ProjectList() {
                                                     <option value={item.id} key={item.id}>{item.company_name}</option>
                                                 ))
                                             }
-                                        </select>
-                                    </div>
-                                    <div className="status">
-                                        <label htmlFor="status" className="text-sm">Project Status</label>
-                                        <select name="status" className="text-sm" onChange={(e) => {
-                                            setStatus(e.target.value);
-                                        }}>
-                                            <option value="">--SELECT--</option>
-                                            <option value="1">Running</option>
-                                            <option value="2">Closed</option>
-                                            {/* <option value="3">Cancelled</option> */}
-                                        </select>
-                                    </div>
-                                    <div className="billing_status">
-                                        <label htmlFor="billing_status" className="text-sm">Bill Status</label>
-                                        <select name="billing_status" className="text-sm" onChange={(e) => {
-                                            setBilled(e.target.value);
-                                        }}>
-                                            <option value="">--SELECT--</option>
-                                            <option value="1">Billed</option>
-                                            <option value="0">Unbilled</option>
-                                        </select>
-                                    </div>
-                                    <div className="payment_status">
-                                        <label htmlFor="payment_status" className="text-sm">Payment Status</label>
-                                        <select name="payment_status" className="text-sm" onChange={(e) => {
-                                            setPayment(e.target.value);
-                                        }}>
-                                            <option value="">--SELECT--</option>
-                                            <option value="1">Paid</option>
-                                            <option value="0">Unpaid</option>
                                         </select>
                                     </div>
                                 </div>
@@ -336,7 +316,7 @@ export default function ProjectList() {
                                             <Column field="project_amount" sortable header="Project Amount" style={{ textTransform: "capitalize" }}></Column>
 
                                             <Column header="Status" body={(rowData) => (
-                                                <span className={`bg-dark text-sm ${rowData.status === "1" ? "bg-green-500" : rowData.status === "2" ? "bg-red-500" : "bg-gray-500"} px-3 py-1 rounded-xl text-white shadow`}>
+                                                <span className={`bg-dark text-sm ${rowData.status === "1" ? "bg-green-500" : rowData.status === "0" ? "bg-red-500" : "bg-gray-500"} px-3 py-1 rounded-xl text-white shadow`}>
                                                     {rowData.status === "1" ? "Running" : rowData.status === "2" ? "Closed" : "Cancelled"}
                                                 </span>
                                             )}></Column>

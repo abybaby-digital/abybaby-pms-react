@@ -5,21 +5,6 @@ import {
     SidebarProvider,
 } from "@/components/ui/sidebar"
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-
-
-
-
-import { BsFileEarmarkPost } from "react-icons/bs";
-import { BsFillPostageFill } from "react-icons/bs";
-import { BsFilePost } from "react-icons/bs";
-import { BsPeopleFill } from "react-icons/bs";
 import CommonTable from "../../components/admin/dashboard/CommonTable";
 import AdminHead from "../../components/common/AdminHead";
 import { MdOutlineCurrencyRupee } from "react-icons/md";
@@ -29,19 +14,55 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { FaMoneyBillWave } from "react-icons/fa6";
 import { FaMoneyBills } from "react-icons/fa6";
-import { IoMdSearch } from "react-icons/io";
+
 
 import { MdOutlinePendingActions } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PiArrowFatLinesRightFill } from "react-icons/pi";
+import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { getFYList, getReport } from "../../services/api";
+import { useState } from "react";
 
 export default function Dashboard() {
+    const token = useSelector((state) => state.auth.token);
+    // console.log(token);
+
+    const navigate = useNavigate();
+
 
     const runningProjectTableHead = ["Project No.", "Project Name", "Company", "Client", "Start Date", "End Date"];
     const unbilledClosedProjects = ["Project No.", "Project Name", "Company", "Client", "Amount"];
     const billedClosedProjects = ["Project No.", "Project Name", "Company", "Client", "Amount"];
     const paymentOutstandingProjects
         = ["Project No.", "Project Name", "Company", "Client", "Amount"];
+
+
+    // FY LIST CALL
+    const { data: fincYearList } = useQuery({
+        queryKey: ["finc-year-list", token],
+        queryFn: async () => {
+            return await getFYList(token)
+        }
+    })
+
+    const [fincYear, setFincYear] = useState(fincYearList?.response[0].id);
+    // REPORT API CALL
+    const { data: projectReport, isLoading: reportDataLoading } = useQuery({
+        queryKey: ["project-report", token, fincYear],
+        queryFn: async () => {
+            return await getReport(token, fincYear)
+        }
+    })
+    // console.log(fincYear);
+
+    const projectListByCategory = (title, navigate_url, status, billed, paid) => {
+        sessionStorage.setItem("project_list_title", title);
+        sessionStorage.setItem("status", status);
+        sessionStorage.setItem("billed",billed);
+        sessionStorage.setItem("paid", paid);
+        navigate(navigate_url);
+    }
 
     return (
         <SidebarProvider>
@@ -54,19 +75,17 @@ export default function Dashboard() {
                         Search Data for financial year :
 
                         <form action="#" className="flex items-center gap-3">
-                            <Select>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="2025-2026" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="2025-2026">2024-2025</SelectItem>
-                                    <SelectItem value="2023-2024">2023-2024</SelectItem>
-                                    <SelectItem value="2022-2023">2022-2023</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <button type="button" className="bg-lightdark rounded-xl text-white px-5 py-1 shadow active:scale-105" >
-                                <IoMdSearch className="inline" />Search
-                            </button>
+
+                            <select name="" id="" className="block" onChange={(e) => {
+                                setFincYear(e.target.value);
+                            }}>
+                                {
+                                    fincYearList?.response?.map((option) => (
+                                        <option key={option.id} value={option.id} >{option.financial_year}</option>
+                                    ))
+                                }
+                            </select>
+
                         </form>
 
                     </div>
@@ -77,33 +96,33 @@ export default function Dashboard() {
                                 <MdOutlinePendingActions className="text-3xl text-white inline" />
                             </div>
                             <div className="dash-card-content text-end mb-8">
-                                <p className="text-2xl font-bold">6144</p>
-                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />12345</p>
+                                <p className="text-2xl font-bold">{projectReport?.response[0]?.project_count}</p>
+                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[0]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Running Projects</p>
                             </div>
-                            <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
+                            <button type="button" onClick={()=>{projectListByCategory("running project", "/project-list/running", "1" , null , null)}} className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</button>
                         </div>
                         <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5" >
                             <div className="bg-[#27a844] shadow-lg shadow-[#27a844]  -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                                 <GiCardboardBoxClosed className="text-3xl text-white inline" />
                             </div>
                             <div className="dash-card-content text-end mb-8">
-                                <p className="text-2xl font-bold">6144</p>
-                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />12345</p>
+                                <p className="text-2xl font-bold">{projectReport?.response[1]?.project_count}</p>
+                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[1]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Closed Projects</p>
                             </div>
-                            <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
+                            <button type="button" onClick={()=>{projectListByCategory("closed project", "/project-list/closed", "2" , null , null)}}  className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</button>
                         </div>
                         <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5" >
                             <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                                 <MdBallot className="text-3xl text-white inline" />
                             </div>
                             <div className="dash-card-content text-end mb-8">
-                                <p className="text-2xl font-bold">6144</p>
-                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />12345</p>
+                                <p className="text-2xl font-bold">{projectReport?.response[6]?.project_count}</p>
+                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[6]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Total Projects</p>
                             </div>
-                            <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow-lg px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
+                            <Link to="/project-list" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow-lg px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
                         </div>
 
 
@@ -114,8 +133,8 @@ export default function Dashboard() {
                                 <FaMoneyBillTransfer className="text-3xl text-white inline" />
                             </div>
                             <div className="dash-card-content text-end">
-                                <p className="text-2xl font-bold">6144</p>
-                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />12345</p>
+                                <p className="text-2xl font-bold">{projectReport?.response[2]?.project_count}</p>
+                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[2]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Unbilled Closed Projects</p>
                             </div>
                             <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
@@ -125,9 +144,9 @@ export default function Dashboard() {
                                 <FaMoneyBillTrendUp className="text-3xl text-white inline" />
                             </div>
                             <div className="dash-card-content text-end">
-                                <p className="text-2xl font-bold">6144</p>
-                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />12345</p>
-                                <p className="text-sm text-lightdark font-merri italic font-bold ">Billed Closed Projects</p>
+                                <p className="text-2xl font-bold">{projectReport?.response[3]?.project_count}</p>
+                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[3]?.project_amount}</p>
+                                <p className="text-sm text-lightdark font-merri italic font-bold ">Billed Closed Project</p>
                             </div>
                             <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
                         </div>
@@ -137,8 +156,8 @@ export default function Dashboard() {
                                 <FaMoneyBillWave className="text-3xl text-white inline" />
                             </div>
                             <div className="dash-card-content text-end mb-8">
-                                <p className="text-2xl font-bold">6144</p>
-                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />12345</p>
+                                <p className="text-2xl font-bold">{projectReport?.response[4]?.project_count}</p>
+                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[4]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Payment Outstanding Projects</p>
                             </div>
                             <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
@@ -149,8 +168,8 @@ export default function Dashboard() {
                                 <FaMoneyBills className="text-3xl text-white inline" />
                             </div>
                             <div className="dash-card-content text-end mb-8">
-                                <p className="text-2xl font-bold">6144</p>
-                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee  className="inline mb-1" />12345</p>
+                                <p className="text-2xl font-bold">{projectReport?.response[5]?.project_count}</p>
+                                <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[5]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Payment Received Projects</p>
                             </div>
                             <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>

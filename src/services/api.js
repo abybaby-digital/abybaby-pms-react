@@ -16,7 +16,7 @@ export const makeLogin = async (username, password) => {
     password: password,
     firebase_token: "fghfghgfhfghfghfg",
   });
-  return response.data.result.response;
+  return response.data.result;
 };
 
 // ADD BRANCH
@@ -434,15 +434,11 @@ export const getClientList = async (token) => {
 // FY LIST
 export const getFYList = async (token) => {
   try {
-    const response = await api.post(
-      "/financial-year",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await api.get("/financial-year", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.result;
   } catch (error) {
     console.error("Error fetching branch list:", error);
@@ -562,7 +558,12 @@ export const getProjectList = async (
   client_id,
   branch_id,
   company_id,
-  financial_year
+  financial_year,
+  skip,
+  take,
+  status,
+  billing_status,
+  payment_status
 ) => {
   try {
     const response = await api.post(
@@ -572,6 +573,11 @@ export const getProjectList = async (
         branch_id: branch_id,
         company_id: company_id,
         financial_year: financial_year,
+        skip: skip,
+        take: take,
+        status: status,
+        billing_status: billing_status,
+        payment_status: payment_status,
       },
       {
         headers: {
@@ -1250,7 +1256,7 @@ export const addPaymentRequisition = async (
   requisition_amount,
   requisition_img, // Image or PDF file
   requisition_remarks,
-  date_of_payments,
+  date_of_payments
 ) => {
   try {
     const formData = new FormData();
@@ -1518,7 +1524,6 @@ export const addBillingSupportings = async (
   }
 };
 
-
 // PAYMENT REQUISITION LIST
 export const getBillingSupportList = async (token) => {
   try {
@@ -1538,11 +1543,25 @@ export const getBillingSupportList = async (token) => {
   }
 };
 
+// DASHBOARD PROJECT REPORT
 
-
-
-
-
-
-
-
+// PAYMENT REQUISITION LIST
+export const getReport = async (token, financial_year) => {
+  try {
+    const response = await api.post(
+      "/project-report",
+      {
+        financial_year: financial_year,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching Payment Requisition list:", error);
+    throw error;
+  }
+};

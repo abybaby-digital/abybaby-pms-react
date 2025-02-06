@@ -41,9 +41,9 @@ const ViewProject = ({ project, add_or_edit }) => {
                         {
                             add_or_edit === "view" ? (
                                 <Table className="text-black">
-                                    <TableBody>
+                                    <TableBody className="grid lg:grid-cols-3 grid-cols-1 p-5 gap-5">
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Project Number</TableCell>
+                                            <TableCell className="font-bold text-lg">Project Number :</TableCell>
                                             <TableCell>{project?.project_number}</TableCell>
                                         </TableRow>
                                         {/* <TableRow>
@@ -51,59 +51,59 @@ const ViewProject = ({ project, add_or_edit }) => {
                                             <TableCell>{project?.purchase_order_no}</TableCell>
                                         </TableRow> */}
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Project Name</TableCell>
+                                            <TableCell className="font-bold text-lg">Project Name :</TableCell>
                                             <TableCell>{project?.project_name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Client</TableCell>
+                                            <TableCell className="font-bold text-lg">Client :</TableCell>
                                             <TableCell>{project?.client_name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Branch</TableCell>
+                                            <TableCell className="font-bold text-lg">Branch :</TableCell>
                                             <TableCell>{project?.branch_name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Company</TableCell>
+                                            <TableCell className="font-bold text-lg">Company :</TableCell>
                                             <TableCell>{project?.company_name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Vertical Head</TableCell>
+                                            <TableCell className="font-bold text-lg">Vertical Head :</TableCell>
                                             <TableCell>{project?.vertical_head_name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Branch Manager</TableCell>
+                                            <TableCell className="font-bold text-lg">Branch Manager :</TableCell>
                                             <TableCell>{project?.business_manager_name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Client Service</TableCell>
+                                            <TableCell className="font-bold text-lg">Client Service :</TableCell>
                                             <TableCell>{project?.client_service_name}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Others</TableCell>
+                                            <TableCell className="font-bold text-lg">Others :</TableCell>
                                             <TableCell>{project?.other_service_names}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Quotation No</TableCell>
+                                            <TableCell className="font-bold text-lg">Quotation No :</TableCell>
                                             <TableCell>{project?.quotation_no}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Project Amount</TableCell>
+                                            <TableCell className="font-bold text-lg">Project Amount :</TableCell>
                                             <TableCell>{project?.project_amount}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Start Date</TableCell>
+                                            <TableCell className="font-bold text-lg">Start Date :</TableCell>
                                             <TableCell>{project?.project_start_date}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">End Date</TableCell>
+                                            <TableCell className="font-bold text-lg">End Date :</TableCell>
                                             <TableCell>{project?.project_end_date}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Financial Year</TableCell>
+                                            <TableCell className="font-bold text-lg">Financial Year :</TableCell>
                                             <TableCell>{project?.financial_year}</TableCell>
                                         </TableRow>
                                         <TableRow>
-                                            <TableCell className="font-bold text-lg">Status</TableCell>
+                                            <TableCell className="font-bold text-lg">Status :</TableCell>
                                             <TableCell>
                                                 {project?.status === "1" ? (
                                                     <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
@@ -111,7 +111,35 @@ const ViewProject = ({ project, add_or_edit }) => {
                                                     </span>
                                                 ) : (
                                                     <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
-                                                        Inactive
+                                                        Closed
+                                                    </span>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Billing Status :</TableCell>
+                                            <TableCell>
+                                                {project?.status === "1" ? (
+                                                    <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                        Billed
+                                                    </span>
+                                                ) : (
+                                                    <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                        Unbilled
+                                                    </span>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Payment Status :</TableCell>
+                                            <TableCell>
+                                                {project?.status === "1" ? (
+                                                    <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                        Paid
+                                                    </span>
+                                                ) : (
+                                                    <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                        Unpaid
                                                     </span>
                                                 )}
                                             </TableCell>
