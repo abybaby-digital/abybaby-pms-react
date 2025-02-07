@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 import AddUser from "./pages/admin/user/AddUser";
@@ -32,7 +32,9 @@ import PaymentRequisitionList from "./pages/admin/payment-requisition/PaymentReq
 import AddBillingSupportings from "./pages/admin/billing-supportings/AddBillingSupportings";
 import BillingSupportingList from "./pages/admin/billing-supportings/BillingSupportingsList";
 import ProjectListByCategory from "./pages/admin/project/ProjectListByCategory";
-
+import CryptoJS from "crypto-js";
+import { useDispatch } from "react-redux";
+import { setToken, setUsers } from "./redux/features/Auth/AuthSlice";
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
@@ -48,8 +50,29 @@ const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
 // };
 
 const App = () => {
-  const location = useLocation();
-  console.log(location.state);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const SECRET_KEY = "login-secret-key";
+  const encryptedToken = sessionStorage.getItem("token");
+  const user = sessionStorage.getItem("user");
+
+  // console.log(encryptedToken);
+  useEffect(() => {
+    if(user){
+      // console.log(JSON.parse(user));
+      dispatch(setUsers(JSON.parse(user)));
+    }
+    if (!encryptedToken) {
+      navigate("/login");
+    } else {
+      const bytes = CryptoJS.AES.decrypt(encryptedToken, SECRET_KEY);
+      const decryptedToken = bytes.toString(CryptoJS.enc.Utf8);
+      dispatch(setToken(decryptedToken));
+    }
+  }, [encryptedToken, dispatch, navigate]);
+  
+
 
   const queryClient = new QueryClient()
 

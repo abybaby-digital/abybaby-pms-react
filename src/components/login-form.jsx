@@ -14,35 +14,54 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { makeLogin } from "../services/api";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
-import { setLogInState } from "../redux/features/Auth/AuthSlice";
 import ButtonLoader from "./common/ButtonLoader";
+import CryptoJS from "crypto-js";
+import { loginSuccess, setUsers } from "../redux/features/Auth/AuthSlice";
 
-export function LoginForm({
-  className,
-  ...props
-}) {
+export function LoginForm({ className, ...props }) {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
+  const SECRET_KEY = "login-secret-key"; // Replace with a secure key
 
   const loginMutation = useMutation({
-
     mutationFn: ({ username, password }) => makeLogin(username, password),
 
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
         toast.success("You are successfully logged in!");
-      }
-      else{
-        console.log(response);
-        
-        toast.error(response.message);
+
+        console.log("Login response", response.response);
+        dispatch(setUsers(response.response));
+
+        // Encrypt the access token using AES
+        const encryptedToken = CryptoJS.AES.encrypt(
+          response.response.access_token,
+          SECRET_KEY
+        ).toString();
+
+        // Store encrypted token and authentication state
+        sessionStorage.setItem('token', encryptedToken);
+        sessionStorage.setItem('isAuthenticated', true);
+        sessionStorage.setItem('user', JSON.stringify(response.response));
+
+        // Dispatch Redux action with user data and token
+        dispatch(loginSuccess());
+
+        // Navigate to the dashboard or last visited page
+        const lastVisitedPath = sessionStorage.getItem("lastPath") || "/";
+        navigate(lastVisitedPath, { replace: true });
+      } else {
+        toast.error(response.message || "Login failed. Please try again.");
       }
     },
+
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "An error occurred. Please try again.");
+    }
   });
 
   const submitData = (data) => {
@@ -57,11 +76,7 @@ export function LoginForm({
       <Card>
         <CardHeader>
           <CardTitle className="text-xl text-center">
-            <img
-              src={pmsLogo}
-              alt="PMS Logo"
-              className="w-[80%] mx-auto"
-            />
+            <img src={pmsLogo} alt="PMS Logo" className="w-[80%] mx-auto" />
             <p className="mt-5">Login</p>
           </CardTitle>
           <CardDescription className="text-center">
@@ -71,12 +86,13 @@ export function LoginForm({
         <CardContent>
           <form onSubmit={handleSubmit(submitData)}>
             <div className="flex flex-col gap-x-6 gap-y-3">
+
               {/* Username Input */}
               <div className="grid gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
-                  type="text" // Change to "text" if it's not an email
+                  type="text"
                   placeholder="user123"
                   {...register("username", {
                     required: "Username is required",
@@ -97,9 +113,7 @@ export function LoginForm({
                 <Input
                   id="password"
                   type="password"
-                  {...register("password", {
-                    required: "Password is required",
-                  })}
+                  {...register("password", { required: "Password is required" })}
                 />
                 {errors.password && (
                   <p className="text-sm text-red-600">{errors.password.message}</p>
@@ -110,7 +124,7 @@ export function LoginForm({
               <Button
                 type="submit"
                 className="w-full bg-lightdark"
-                disabled={loginMutation.isPending} // Disable button while loading
+                disabled={loginMutation.isPending}
               >
                 {loginMutation.isPending ? <ButtonLoader /> : "Login"}
               </Button>

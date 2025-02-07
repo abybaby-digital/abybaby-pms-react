@@ -26,6 +26,8 @@ import { useState } from "react";
 
 export default function Dashboard() {
     const token = useSelector((state) => state.auth.token);
+    // const auth = useSelector((state) => state.auth);
+    // console.log(auth);
     // console.log(token);
 
     const navigate = useNavigate();

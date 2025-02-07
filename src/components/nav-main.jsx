@@ -19,10 +19,16 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export function NavMain({
   items = []
 }) {
+
+  const accessAdd = useSelector((state) => state.auth.user?.add_access_name).split(",");
+  const accessEdit = useSelector((state) => state.auth.user?.edit_access_name).split(",");
+  console.log(accessAdd);
+  
   return (
     (<SidebarGroup className="list-none p-2">
       {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
@@ -32,7 +38,7 @@ export function NavMain({
             item.hasSubMenu ?
               (
                 <Collapsible
-                  key="{item.title}"
+                  key={item.title}
                   asChild
                   defaultOpen={item.isActive}
                   className="group/collapsible">
@@ -47,7 +53,6 @@ export function NavMain({
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-
                         {
                           item.items.map((submenu, idx) => (
                             <SidebarMenuSubItem key={idx}>
@@ -59,7 +64,6 @@ export function NavMain({
                             </SidebarMenuSubItem>
                           ))
                         }
-
                       </SidebarMenuSub>
                     </CollapsibleContent>
                   </SidebarMenuItem>

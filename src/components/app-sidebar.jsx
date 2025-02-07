@@ -1,32 +1,14 @@
 import * as React from "react"
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
 
-import { FaTruck } from "react-icons/fa";
+
+
 import { PiTractorFill } from "react-icons/pi";
-import { GiFarmTractor } from "react-icons/gi";
-import { GiFarmer } from "react-icons/gi";
-import { GiTyre } from "react-icons/gi";
-import { GiPlantSeed } from "react-icons/gi";
-import { MdPestControl } from "react-icons/md";
-import { GiFertilizerBag } from "react-icons/gi";
-import { CgCreditCard } from "react-icons/cg";
 
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
+
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+
 import {
   Sidebar,
   SidebarContent,
@@ -85,7 +67,7 @@ const data = {
       icon: PiTractorFill,
       hasSubMenu: false,
       isActive: false,
-      role: []
+      access: "Admin",
     },
     {
       title: "Role Management",
@@ -93,16 +75,17 @@ const data = {
       icon: PiNetworkBold,
       hasSubMenu: true,
       isActive: false,
+      access: "Role Management",
       items: [
         {
           title: "Add Role",
           url: "/role-add",
-          role: []
+          access: "Role Management",
         },
         {
           title: " Role List",
           url: "/role-list",
-          role: []
+          access: "Role Management",
         },
       ],
     },
@@ -112,16 +95,17 @@ const data = {
       icon: BsBuildingsFill,
       hasSubMenu: true,
       isActive: false,
+      access: "Company",
       items: [
         {
           title: "Add Company",
           url: "/company-add",
-          role: []
+          access: "Company",
         },
         {
           title: " Company List",
           url: "/company-list",
-          role: []
+          access: "Company",
         },
       ],
     },
@@ -131,16 +115,17 @@ const data = {
       icon: FaBuilding,
       hasSubMenu: true,
       isActive: false,
+      access: "Branch",
       items: [
         {
           title: "Add Branch",
           url: "/branch-add",
-          role: []
+          access: "Branch",
         },
         {
           title: " Branch List",
           url: "/branch-list",
-          role: []
+          access: "Branch",
         },
       ],
     },
@@ -163,41 +148,43 @@ const data = {
     //     },
     //   ],
     // },
-    {
-      title: "Vendor",
-      url: "#",
-      icon: FaBuildingUser,
-      hasSubMenu: true,
-      isActive: false,
-      items: [
-        {
-          title: "Add Vendor",
-          url: "/vendor-add",
-          role: []
-        },
-        {
-          title: "Vendor List",
-          url: "/vendor-list",
-          role: []
-        },
-      ],
-    },
+    // {
+    //   title: "Vendor",
+    //   url: "#",
+    //   icon: FaBuildingUser,
+    //   hasSubMenu: true,
+    //   isActive: false,
+    //   access: "Role Management",
+    //   items: [
+    //     {
+    //       title: "Add Vendor",
+    //       url: "/vendor-add",
+    //       role: []
+    //     },
+    //     {
+    //       title: "Vendor List",
+    //       url: "/vendor-list",
+    //       role: []
+    //     },
+    //   ],
+    // },
     {
       title: "Client",
       url: "#",
       icon: FaUserTie,
       hasSubMenu: true,
       isActive: false,
+      access: "Client",
       items: [
         {
           title: "Add Client",
           url: "/client-add",
-          role: []
+          access: "Client",
         },
         {
           title: "Client List",
           url: "/client-list",
-          role: []
+          access: "Client",
         },
       ],
     },
@@ -207,21 +194,22 @@ const data = {
       icon: FaUsers,
       hasSubMenu: true,
       isActive: false,
+      access: "Users",
       items: [
         {
           title: "Add User",
           url: "/user-add",
-          role: []
+          access: "Users",
         },
         {
           title: "Users List",
           url: "/user-list",
-          role: []
+          access: "Users",
         },
         {
           title: "Change User Password",
           url: "/change-user-password",
-          role: []
+          access: "Users",
         },
       ],
     },
@@ -231,16 +219,17 @@ const data = {
       icon: FaClipboardList,
       hasSubMenu: true,
       isActive: false,
+      access: "Project",
       items: [
         {
           title: "Add Project",
           url: "/project-add",
-          role: []
+          access: "Project",
         },
         {
           title: "Project List",
           url: "/project-list",
-          role: []
+          access: "Project",
         },
       ],
     },
@@ -250,16 +239,17 @@ const data = {
       icon: BsClipboard2DataFill,
       hasSubMenu: true,
       isActive: false,
+      access: "Billing Supportings",
       items: [
         {
           title: "Add Billing Supportings",
           url: "/billing-supportings-add",
-          role: []
+          access: "Billing Supportings",
         },
         {
           title: "Billing Supportings Info",
           url: "/billing-supportings-info",
-          role: []
+          access: "Billing Supportings",
         },
       ],
     },
@@ -269,16 +259,17 @@ const data = {
       icon: FaMoneyCheck,
       hasSubMenu: true,
       isActive: false,
+      access: "Payment Requition",
       items: [
         {
           title: "Add Payment Requisition",
           url: "/payment-requisition-add",
-          role: []
+          access: "Payment Requition",
         },
         {
           title: "Payment Requisition Info",
           url: "/payment-requisition-list",
-          role: []
+          access: "Payment Requition",
         },
       ],
     },
@@ -288,16 +279,17 @@ const data = {
       icon: PiUserListFill,
       hasSubMenu: true,
       isActive: false,
+      access: "Client PO",
       items: [
         {
           title: "Add Client Purchase Order",
           url: "/client-po-add",
-          role: []
+          access: "Client PO",
         },
         {
           title: "Client Purchase Order",
           url: "/client-po-list",
-          role: []
+          access: "Client PO",
         },
       ],
     },
@@ -307,16 +299,17 @@ const data = {
       icon: FaFileInvoice,
       hasSubMenu: true,
       isActive: false,
+      access: "Invoice",
       items: [
         {
           title: "Add Invoice",
           url: "/invoice-add",
-          role: []
+          access: "Invoice",
         },
         {
           title: "Invoice List",
           url: "/invoice-list",
-          role: []
+          access: "Invoice",
         },
       ],
     },
@@ -326,53 +319,55 @@ const data = {
       icon: GiTakeMyMoney,
       hasSubMenu: true,
       isActive: false,
+      access: "Payment Received",
       items: [
         {
           title: "Add Payment Receipt",
           url: "/payment-receipt-add",
-          role: []
+          access: "Payment Received",
         },
         {
           title: "Payment Receipt List",
           url: "/payment-receipt-list",
-          role: []
+          access: "Payment Received",
         },
       ],
     },
-    {
-      title: "Report",
-      url: "#",
-      icon: GiPieChart,
-      hasSubMenu: true,
-      isActive: false,
-      items: [
-        {
-          title: "Running Project",
-          url: "/running-project",
-          role: []
-        },
-        {
-          title: "Closed Project",
-          url: "/closed-project",
-          role: []
-        },
-        {
-          title: "Unbilled Closed",
-          url: "/unbilled-closed-project",
-          role: []
-        },
-        {
-          title: "Billed Closed",
-          url: "/billed-closed-project",
-          role: []
-        },
-        {
-          title: "Outstanding Report",
-          url: "/outstanding-report",
-          role: []
-        },
-      ],
-    },
+    // {
+    //   title: "Report",
+    //   url: "#",
+    //   icon: GiPieChart,
+    //   hasSubMenu: true,
+    //   isActive: false,
+    //   access: "Role Management",
+    //   items: [
+    //     {
+    //       title: "Running Project",
+    //       url: "/running-project",
+    //       role: []
+    //     },
+    //     {
+    //       title: "Closed Project",
+    //       url: "/closed-project",
+    //       role: []
+    //     },
+    //     {
+    //       title: "Unbilled Closed",
+    //       url: "/unbilled-closed-project",
+    //       role: []
+    //     },
+    //     {
+    //       title: "Billed Closed",
+    //       url: "/billed-closed-project",
+    //       role: []
+    //     },
+    //     {
+    //       title: "Outstanding Report",
+    //       url: "/outstanding-report",
+    //       role: []
+    //     },
+    //   ],
+    // },
 
   ],
 
