@@ -25,10 +25,15 @@ export function NavMain({
   items = []
 }) {
 
-  const accessAdd = useSelector((state) => state.auth.user?.add_access_name).split(",");
-  const accessEdit = useSelector((state) => state.auth.user?.edit_access_name).split(",");
-  console.log(accessAdd);
-  
+  const accessAdd = useSelector((state) => state.auth.user?.add_access_name)?.split(",");
+
+  // console.log(accessAdd);
+
+  const setMenuActive = (title) => {
+    console.log(title);
+    sessionStorage.setItem("menuActive", title);
+  }
+
   return (
     (<SidebarGroup className="list-none p-2">
       {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
@@ -40,11 +45,13 @@ export function NavMain({
                 <Collapsible
                   key={item.title}
                   asChild
-                  defaultOpen={item.isActive}
+                  defaultOpen={sessionStorage.getItem("menuActive") === item.title}
                   className="group/collapsible">
                   <SidebarMenuItem className="shadow mb-2 rounded-xl">
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton tooltip="tooltipnmae" className="hover:bg-transparent active:bg-transparent text-[15px] py-6">
+                      <SidebarMenuButton tooltip={item.title} onClick={() => {
+                        setMenuActive(item.title)
+                      }} className="hover:bg-transparent active:bg-transparent text-[15px] py-6">
                         {item.icon && <item.icon className="w-96" />}
                         <span>{item.title}</span>
                         <ChevronRight
@@ -53,8 +60,18 @@ export function NavMain({
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {
-                          item.items.map((submenu, idx) => (
+                        {item.items.map((submenu, idx) =>
+                          idx === 0 ? (
+                            accessAdd?.includes(submenu.access) && (
+                              <SidebarMenuSubItem key={idx}>
+                                <NavLink to={submenu.url} className="admin-navlink">
+                                  <SidebarMenuSubButton asChild>
+                                    <span>{submenu.title}</span>
+                                  </SidebarMenuSubButton>
+                                </NavLink>
+                              </SidebarMenuSubItem>
+                            )
+                          ) : (
                             <SidebarMenuSubItem key={idx}>
                               <NavLink to={submenu.url} className="admin-navlink">
                                 <SidebarMenuSubButton asChild>
@@ -62,9 +79,10 @@ export function NavMain({
                                 </SidebarMenuSubButton>
                               </NavLink>
                             </SidebarMenuSubItem>
-                          ))
-                        }
+                          )
+                        )}
                       </SidebarMenuSub>
+
                     </CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
@@ -74,7 +92,9 @@ export function NavMain({
                 <NavLink to="/" className="admin-navlink" key={idx}>
                   <SidebarMenuItem className="shadow mb-2 rounded-xl">
 
-                    <SidebarMenuButton tooltip="Dashboard" className="hover:bg-transparent active:bg-transparent text-[15px] py-6">
+                    <SidebarMenuButton tooltip="Dashboard" className="hover:bg-transparent active:bg-transparent text-[15px] py-6" onClick={() => {
+                        setMenuActive(item.title)
+                      }}>
                       {/* {item.icon && <item.icon />} */}
                       <MdDashboard />
                       <span>{item.title}</span>

@@ -18,11 +18,12 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewUser from "./ViewUser";  // Updated from ViewRole to ViewUser
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function UserList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
-    
+
     const { data: userList = [], isLoading } = useQuery({
         queryKey: ["user-list", refetchList],
         queryFn: async () => {
@@ -133,12 +134,12 @@ export default function UserList() {
                                         </div>
 
                                         {/* DataTable */}
-                                        <DataTable 
-                                            value={filteredUsers} 
-                                            stripedRows 
-                                            rows={5} 
-                                            rowsPerPageOptions={[5, 10, 25, 50]} 
-                                            paginator 
+                                        <DataTable
+                                            value={filteredUsers}
+                                            stripedRows
+                                            rows={5}
+                                            rowsPerPageOptions={[5, 10, 25, 50]}
+                                            paginator
                                             paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}"
                                         >
@@ -147,21 +148,21 @@ export default function UserList() {
                                             <Column field="role_name" sortable header="Role"></Column>
 
                                             {/* Profile Image Column */}
-                                            <Column 
-                                                header="Profile" 
+                                            <Column
+                                                header="Profile"
                                                 body={(rowData) => (
-                                                    <img 
-                                                        src={rowData.profile_img} 
-                                                        alt="User Profile" 
-                                                        className="w-10 h-10 rounded-full border shadow" 
+                                                    <img
+                                                        src={rowData.profile_img}
+                                                        alt="User Profile"
+                                                        className="w-10 h-10 rounded-full border shadow"
                                                     />
                                                 )}
                                             />
 
                                             <Column header="Company" field="company_name"></Column>
 
-                                            <Column 
-                                                header="Status" 
+                                            <Column
+                                                header="Status"
                                                 body={(rowData) => (
                                                     <span className={`px-3 py-1 rounded-xl ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"} text-white shadow`}>
                                                         {rowData.status === "1" ? "Active" : "Inactive"}
@@ -170,13 +171,13 @@ export default function UserList() {
                                             />
 
                                             {/* Actions Column */}
-                                            <Column 
-                                                header="Actions" 
+                                            <Column
+                                                header="Actions"
                                                 body={(rowData) => (
                                                     <>
                                                         <TooltipProvider>
                                                             <Tooltip>
-                                                                <TooltipTrigger> 
+                                                                <TooltipTrigger>
                                                                     <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
                                                                         singleUser(rowData.id);
                                                                         setAddOrEdit("view");
@@ -190,21 +191,23 @@ export default function UserList() {
                                                             </Tooltip>
                                                         </TooltipProvider>
 
-                                                        <TooltipProvider>
-                                                            <Tooltip>
-                                                                <TooltipTrigger> 
-                                                                    <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                        singleUser(rowData.id);
-                                                                        setAddOrEdit("edit");
-                                                                    }}>
-                                                                        <MdEditSquare />
-                                                                    </button>
-                                                                </TooltipTrigger>
-                                                                <TooltipContent>
-                                                                    <p>Edit User</p>
-                                                                </TooltipContent>
-                                                            </Tooltip>
-                                                        </TooltipProvider>
+                                                        <CheckAccessEdit edit_access="Users">
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger>
+                                                                        <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                            singleUser(rowData.id);
+                                                                            setAddOrEdit("edit");
+                                                                        }}>
+                                                                            <MdEditSquare />
+                                                                        </button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>Edit User</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                        </CheckAccessEdit>
                                                     </>
                                                 )}
                                             />

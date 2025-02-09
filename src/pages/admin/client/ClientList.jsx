@@ -28,6 +28,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewClient from "./ViewClient";
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function ClientList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -195,18 +196,20 @@ export default function ClientList() {
                                                         </Tooltip>
                                                     </TooltipProvider>
 
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger>
-                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                    singleClient(rowData.id); setAddOrEdit("edit");
-                                                                }}><MdEditSquare /></button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>
-                                                                <p>Edit Client</p>
-                                                            </TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
+                                                    <CheckAccessEdit edit_access="Client">
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger>
+                                                                    <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                        singleClient(rowData.id); setAddOrEdit("edit");
+                                                                    }}><MdEditSquare /></button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Edit Client</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+                                                    </CheckAccessEdit>
                                                 </>
                                             )}></Column>
                                         </DataTable>

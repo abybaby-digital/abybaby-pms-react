@@ -42,7 +42,7 @@ const ViewClient = ({ client, add_or_edit }) => {
                     {
                         add_or_edit === "view" ? (
                             <Table className="text-black">
-                                <TableBody>
+                                <TableBody className="grid md:grid-cols-2 grid-cols-1 gap-4 p-5">
                                     <TableRow>
                                         <TableCell className="font-bold text-lg">Company Name</TableCell>
                                         <TableCell>{client?.company_name}</TableCell>

@@ -33,6 +33,9 @@ import { FaFileInvoice } from "react-icons/fa6";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { GiPieChart } from "react-icons/gi";
 import { PiNetworkBold } from "react-icons/pi";
+import { use } from "react";
+import { useRef } from "react";
+import { useEffect } from "react";
 
 
 
@@ -376,13 +379,28 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
+
+  const targetRef = useRef(null);
+
+  useEffect(() => {
+
+    const handleScroll = () => {
+      sessionStorage.setItem("scrollPosition", targetRef.current.scrollTop);
+    };
+
+    targetRef.current.addEventListener("scroll", handleScroll);
+    targetRef.current.scrollTop = (sessionStorage.getItem("scrollPosition"));
+  }, []);
+
+
+
   return (
-    (<Sidebar collapsible="icon" {...props}>
+    (<Sidebar collapsible="icon" {...props} >
       <SidebarHeader className="p-3 bg-white">
         {/* <TeamSwitcher teams={data.teams} /> */}
         <img src={pmsLogo} alt="logo" className=" mx-auto" />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent ref={targetRef}>
         <NavMain items={data.navMain} />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>

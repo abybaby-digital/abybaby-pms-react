@@ -18,6 +18,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewPaymentRequisition from "./ViewPaymentRequisition";
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 
 export default function PaymentRequisitionList() {
@@ -122,21 +123,23 @@ export default function PaymentRequisitionList() {
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </TooltipProvider>
-                                            <TooltipProvider>
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <button
-                                                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
-                                                            onClick={exportToPDF}
-                                                        >
-                                                            <FaFilePdf />
-                                                        </button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>
-                                                        <p>Export to PDF</p>
-                                                    </TooltipContent>
-                                                </Tooltip>
-                                            </TooltipProvider>
+                                            <CheckAccessEdit edit_access="Payment Requition">
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <button
+                                                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
+                                                                onClick={exportToPDF}
+                                                            >
+                                                                <FaFilePdf />
+                                                            </button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Export to PDF</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            </CheckAccessEdit>
                                         </div>
                                     </div>
 

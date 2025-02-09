@@ -28,6 +28,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewVendor from "./ViewVendor";
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function VendorList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -51,8 +52,8 @@ export default function VendorList() {
     const [searchKeyword, setSearchKeyword] = useState(""); // State for search input
     const [debouncedSearchKeyword, setDebouncedSearchKeyword] = useState(""); // State for debounced search input
 
-     // Debounce logic using setTimeout
-     useEffect(() => {
+    // Debounce logic using setTimeout
+    useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearchKeyword(searchKeyword); // Update the debounced keyword after 500ms
         }, 500); // Set the delay time in milliseconds (500ms in this case)
@@ -196,18 +197,20 @@ export default function VendorList() {
                                                         </Tooltip>
                                                     </TooltipProvider>
 
-                                                    <TooltipProvider>
-                                                        <Tooltip>
-                                                            <TooltipTrigger>
-                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                    singleVendor(rowData.id); setAddOrEdit("edit");
-                                                                }}><MdEditSquare /></button>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent>
-                                                                <p>Edit Vendor</p>
-                                                            </TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
+                                                    <CheckAccessEdit edit_access="Vendor">
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger>
+                                                                    <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                        singleVendor(rowData.id); setAddOrEdit("edit");
+                                                                    }}><MdEditSquare /></button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Edit Vendor</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+                                                    </CheckAccessEdit>
                                                 </>
                                             )}></Column>
                                         </DataTable>

@@ -19,6 +19,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewPaymentReceived from "./ViewPaymentReceived";
 import EditPaymentReceived from "./EditPaymentReceived"; // Import EditPaymentReceived component
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function PaymentReceivedList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -88,7 +89,7 @@ export default function PaymentReceivedList() {
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <AdminHead breadcrumb_name="Payment Received" />
+                <AdminHead breadcrumb_name="Payment Received"  />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
                         <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">PAYMENT RECEIVED LIST</h2>
@@ -171,21 +172,23 @@ export default function PaymentReceivedList() {
                                                     </Tooltip>
                                                 </TooltipProvider>
 
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger>
-                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                openModal(rowData.id);
-                                                                setAddOrEdit("edit");
-                                                            }}>
-                                                                <MdEditSquare />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Edit Payment</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
+                                                <CheckAccessEdit edit_access="Payment Received">
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger>
+                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                    openModal(rowData.id);
+                                                                    setAddOrEdit("edit");
+                                                                }}>
+                                                                    <MdEditSquare />
+                                                                </button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Edit Payment</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </CheckAccessEdit>
                                             </>
                                         )}></Column>
                                     </DataTable>

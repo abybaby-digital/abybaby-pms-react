@@ -22,6 +22,7 @@ import EditCompany from "./EditCompany"; // Assuming there's a modal component f
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import TableSkeleton from "../../../components/common/TableSkeleton";
 import { useSelector } from "react-redux";
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function CompanyList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -104,21 +105,23 @@ export default function CompanyList() {
                                                     </Tooltip>
                                                 </TooltipProvider>
 
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger>
-                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                openModal(rowData.id);
-                                                                setAddOrEdit("edit");
-                                                            }}>
-                                                                <MdEditSquare />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Edit Company</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
+                                                <CheckAccessEdit edit_access="Company">
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger>
+                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                    openModal(rowData.id);
+                                                                    setAddOrEdit("edit");
+                                                                }}>
+                                                                    <MdEditSquare />
+                                                                </button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Edit Company</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </CheckAccessEdit>
                                             </>
                                         )}></Column>
                                     </DataTable>

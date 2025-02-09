@@ -44,11 +44,11 @@ const ViewRole = ({ role, add_or_edit }) => {
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell className="font-bold text-lg">Access Type (Add)</TableCell>
-                                                <TableCell>{role?.access_type_add?.split(',').join(', ')}</TableCell>
+                                                <TableCell>{role?.add_access_name?.split(',').join(', ')}</TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell className="font-bold text-lg">Access Type (Edit)</TableCell>
-                                                <TableCell>{role?.access_type_edit?.split(',').join(', ')}</TableCell>
+                                                <TableCell>{role?.edit_access_name?.split(',').join(', ')}</TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell className="font-bold text-lg">Status</TableCell>

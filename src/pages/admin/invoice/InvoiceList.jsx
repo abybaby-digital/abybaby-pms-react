@@ -19,6 +19,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewInvoice from "./ViewInvoice"; // Add ViewInvoice component
 import EditInvoice from "./EditInvoice"; // Add EditInvoice component
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function InvoiceList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -172,21 +173,23 @@ export default function InvoiceList() {
                                                     </Tooltip>
                                                 </TooltipProvider>
 
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger>
-                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                openModal(rowData.id);
-                                                                setAddOrEdit("edit");
-                                                            }}>
-                                                                <MdEditSquare />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Edit Invoice</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
+                                                <CheckAccessEdit edit_access="Invoice">
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger>
+                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                    openModal(rowData.id);
+                                                                    setAddOrEdit("edit");
+                                                                }}>
+                                                                    <MdEditSquare />
+                                                                </button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Edit Invoice</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </CheckAccessEdit>
                                             </>
                                         )}></Column>
                                     </DataTable>

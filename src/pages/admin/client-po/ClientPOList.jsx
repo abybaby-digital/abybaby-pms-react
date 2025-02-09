@@ -19,6 +19,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewClientPO from "./ViewClientPO"; // Add ViewClientPO component
 import EditClientPO from "./EditClientPO"; // Add EditClientPO component
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function ClientPOList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -172,21 +173,23 @@ export default function ClientPOList() {
                                                     </Tooltip>
                                                 </TooltipProvider>
 
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger>
-                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                openModal(rowData.id);
-                                                                setAddOrEdit("edit");
-                                                            }}>
-                                                                <MdEditSquare />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Edit PO</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
+                                                <CheckAccessEdit edit_access="Client PO">
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger>
+                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                    openModal(rowData.id);
+                                                                    setAddOrEdit("edit");
+                                                                }}>
+                                                                    <MdEditSquare />
+                                                                </button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Edit PO</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </CheckAccessEdit>
                                             </>
                                         )}></Column>
                                     </DataTable>
