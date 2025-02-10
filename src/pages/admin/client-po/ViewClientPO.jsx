@@ -55,7 +55,7 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">PO No:</TableCell>
-                                        <TableCell>{clientPO?.po_no || "Not Available"}</TableCell>
+                                        <TableCell>{clientPO?.project_no || "Not Available"}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Amount:</TableCell>

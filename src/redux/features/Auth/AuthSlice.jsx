@@ -22,9 +22,7 @@ const authSlice = createSlice({
         logout: (state) => {
             state.isAuthenticated = false;
             state.user = null;
-            sessionStorage.removeItem('isAuthenticated');
-            sessionStorage.removeItem('user');
-            sessionStorage.removeItem('token');
+            sessionStorage.clear();
         },
     }
 })

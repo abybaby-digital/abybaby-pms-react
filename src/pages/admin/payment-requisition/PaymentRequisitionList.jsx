@@ -26,7 +26,7 @@ export default function PaymentRequisitionList() {
     const token = useSelector((state) => state.auth.token);
 
     const { data: paymentList = [], isLoading } = useQuery({
-        queryKey: ["payment-requisition-list", refetchList],
+        queryKey: ["payment-requisition-list", refetchList, modal ],
         queryFn: async () => {
             return await getPaymentRequisitionList(token);
         }
@@ -151,9 +151,32 @@ export default function PaymentRequisitionList() {
                                         <Column field="requisition_amount" sortable header="Requisition Amount" body={(rowData) => `₹${rowData.requisition_amount}`}></Column>
                                         <Column field="date_of_payments" sortable header="Payment Date" body={(rowData) => new Date(rowData.date_of_payments).toLocaleDateString()}></Column>
                                         <Column field="requisition_remarks" sortable header="Remarks"></Column>
-                                        <Column header="Payment Status" body={(rowData) => (
+                                        <Column field="created_by_name" sortable header="Created By"></Column>
+                                        {/* <Column header="Payment Status" body={(rowData) => (
                                             <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>
                                                 {rowData.status === "1" ? "Paid" : "Pending"}
+                                            </span>
+                                        )}></Column> */}
+                                        <Column header="Admin Approval" body={(rowData) => (
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.admin_approve_status === "1" ? "bg-green-500" : rowData.admin_approve_status === "0" ? "bg-orange-400" : "bg-red-500"}`}>
+                                                {rowData.admin_approve_status === "0" ? "Pending" : rowData.admin_approve_status === "1" ? "Approved" : "Rejected"}
+                                            </span>
+                                        )}></Column>
+                                        <Column header="Finance Approval" body={(rowData) => (
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.finance_approve_status === "1" ? "bg-green-500" : rowData.finance_approve_status === "0" ? "bg-orange-400" : "bg-red-500"}`}>
+                                                {rowData.finance_approve_status === "0" ? "Pending" : rowData.finance_approve_status === "1" ? "Approved" : "Rejected"}
+                                            </span>
+                                        )}></Column>
+                                        <Column header="Purchase Approval" body={(rowData) => (
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.purchase_approve_status === "1" ? "bg-green-500" :
+                                                rowData.purchase_approve_status === "0" ? "bg-orange-400" : "bg-red-500"}`}>
+                                                {rowData.purchase_approve_status === "0" ? "Pending" : rowData.purchase_approve_status === "1" ? "Approved" : "Rejected"}
+                                            </span>
+                                        )}></Column>
+                                        <Column header="Accountant Approval" body={(rowData) => (
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.accountent_approve_status === "1" ? "bg-green-500" :
+                                                rowData.accountent_approve_status === "0" ? "bg-black" : "bg-red-500"}`}>
+                                                {rowData.accountent_approve_status === "1" ? "Paid" : rowData.accountent_approve_status === "0" ? "Unpaid" : "Rejected"}
                                             </span>
                                         )}></Column>
                                         <Column header="Actions" body={(rowData) => (
@@ -174,7 +197,7 @@ export default function PaymentRequisitionList() {
                                                     </Tooltip>
                                                 </TooltipProvider>
 
-                                                <TooltipProvider>
+                                                {/* <TooltipProvider>
                                                     <Tooltip>
                                                         <TooltipTrigger>
                                                             <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
@@ -188,7 +211,7 @@ export default function PaymentRequisitionList() {
                                                             <p>Edit Payment</p>
                                                         </TooltipContent>
                                                     </Tooltip>
-                                                </TooltipProvider>
+                                                </TooltipProvider> */}
                                             </>
                                         )}></Column>
                                     </DataTable>

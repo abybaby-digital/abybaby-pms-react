@@ -18,11 +18,17 @@ import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 
 import EditPaymentRequisition from "./EditPaymentRequisition"; // Assuming you have an EditPaymentReceived component
+import { useSelector } from "react-redux";
+import RequisitionApproval from "./RequisitionApproval";
 
 const ViewPaymentReceived = ({ payment, add_or_edit }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
     const [imageModalOpen, setImageModalOpen] = useState(false); // state to control image modal visibility
     const [imageSrc, setImageSrc] = useState(null); // state to store the image source
+    const user = useSelector((state) => state.auth.user);
+    const token = useSelector((state) => state.auth.token);
+    console.log(user?.role_id);
+    console.log(payment.accountent_approve_status);
 
     const handleImageClick = (src) => {
         setImageSrc(src); // set the image source to the clicked image
@@ -78,22 +84,45 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                         <TableCell className="font-bold text-lg">Requisition Remarks:</TableCell>
                                         <TableCell>{payment?.requisition_remarks}</TableCell>
                                     </TableRow>
+                                    {/* Admin Approval Status */}
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Status:</TableCell>
+                                        <TableCell className="font-bold text-lg">Admin Approval:</TableCell>
                                         <TableCell>
-                                            {payment?.status === "1" ? (
-                                                <span className="bg-green-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Paid
-                                                </span>
-                                            ) : (
-                                                <span className="bg-red-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Pending
-                                                </span>
-                                            )}
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${payment?.admin_approve_status === "1" ? "bg-green-500" : payment?.admin_approve_status === "0" ? "bg-orange-400" : "bg-red-500"}`}>
+                                                {payment?.admin_approve_status === "0" ? "Pending" : payment?.admin_approve_status === "1" ? "Approved" : "Rejected"}
+                                            </span>
                                         </TableCell>
                                     </TableRow>
+                                    {/* Finance Approval Status */}
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Finance Approval:</TableCell>
+                                        <TableCell>
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${payment?.finance_approve_status === "1" ? "bg-green-500" : payment?.finance_approve_status === "0" ? "bg-orange-400" : "bg-red-500"}`}>
+                                                {payment?.finance_approve_status === "0" ? "Pending" : payment?.finance_approve_status === "1" ? "Approved" : "Rejected"}
+                                            </span>
+                                        </TableCell>
+                                    </TableRow>
+                                    {/* Purchase Approval Status */}
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Purchase Approval:</TableCell>
+                                        <TableCell>
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${payment?.purchase_approve_status === "1" ? "bg-green-500" : payment?.purchase_approve_status === "0" ? "bg-orange-400" : "bg-red-500"}`}>
+                                                {payment?.purchase_approve_status === "0" ? "Pending" : payment?.purchase_approve_status === "1" ? "Approved" : "Rejected"}
+                                            </span>
+                                        </TableCell>
+                                    </TableRow>
+                                    {/* Accountant Approval Status */}
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Accountant Approval:</TableCell>
+                                        <TableCell>
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${payment?.accountent_approve_status === "1" ? "bg-green-500" : payment?.accountent_approve_status === "0" ? "bg-black" : "bg-red-500"}`}>
+                                                {payment?.accountent_approve_status === "1" ? "Paid" : payment?.accountent_approve_status === "0" ? "Unpaid" : "Rejected"}
+                                            </span>
+                                        </TableCell>
+                                    </TableRow>
+                                    {/* Requisition Image */}
                                     {payment?.requisition_img && (
-                                        <TableRow className="flex justify-between">
+                                        <TableRow className="flex flex-col justify-between">
                                             <TableCell className="font-bold text-lg">Requisition Image:</TableCell>
                                             <TableCell>
                                                 {isPdf(payment.requisition_img) ? (
@@ -115,8 +144,76 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                             </TableCell>
                                         </TableRow>
                                     )}
+
+
+                                    {/* Approval Action Button Showing Logic for Each Role */}
+                                    {/* Admin Approval */}
+
+                                    {user?.role_id === 1 ? (
+                                        <RequisitionApproval
+                                            payment={payment}
+                                            role_id={user?.role_id}
+                                            role_name={user?.role}
+                                            veto_power={user?.veto_power}
+                                            approval_status={payment?.admin_approve_status}
+                                            pr_id={payment?.id}
+                                        />) : null}
+
+                                    {/* Finance Approval */}
+                                    {user?.role_id === 2 ? (
+                                        <RequisitionApproval
+                                            payment={payment}
+                                            role_id={user?.role_id}
+                                            role_name={user?.role}
+                                            veto_power={user?.veto_power}
+                                            approval_status={payment?.finance_approve_status}
+                                            pr_id={payment?.id}
+                                        />
+                                    ) : null}
+
+
+                                    {/* Purchase Approval */}
+                                    {user?.role_id === 3 ? (
+                                        <RequisitionApproval
+                                            payment={payment}
+                                            role_id={user?.role_id}
+                                            role_name={user?.role}
+                                            veto_power={user?.veto_power}
+                                            approval_status={payment?.purchase_approve_status}
+                                            pr_id={payment?.id}
+                                        />
+                                    ) : null}
+
+
+                                    {/* Accountant Approval */}
+                                    {user?.role_id === 4 ? (
+                                        <RequisitionApproval
+                                            payment={payment}
+                                            role_id={user?.role_id}
+                                            role_name={user?.role}
+                                            veto_power={user?.veto_power}
+                                            approval_status={payment?.accountent_approve_status}
+                                            pr_id={payment?.id}
+                                        />) : null}
+
+
+
+
+                                    {/* <TableRow className="bg-whitesmoke lg:p-5 rounded-3xl shadow-lg">
+                                        <TableCell className="font-bold text-2xl block text-center">Your Approval:</TableCell>
+                                        <TableCell className="flex lg:flex-row flex-col justify-center gap-5">
+                                            <div className="approve-reject-button">
+                                                <button type="button" className="bg-green-500 active:scale-95 w-[150px] rounded-xl text-xl text-white p-3" >Approve</button>
+                                            </div>
+                                            <div className="approve-reject-button">
+                                                <button type="button" className="bg-red-500 active:scale-95 w-[150px] rounded-xl text-xl text-white p-3" >Reject</button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow> */}
+
                                 </TableBody>
                             </Table>
+
                         ) : (
                             <EditPaymentRequisition payment={payment} /> // Add or edit the payment information here
                         )}

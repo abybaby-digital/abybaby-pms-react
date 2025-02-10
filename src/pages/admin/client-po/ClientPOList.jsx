@@ -146,7 +146,7 @@ export default function ClientPOList() {
                                     <DataTable value={filteredClientPOs} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
                                         <Column field="project_name" sortable header="Project Name"></Column>
-                                        <Column field="po_no" sortable header="PO No"></Column>
+                                        <Column field="project_no" sortable header="PO No"></Column>
                                         <Column field="po_amount" sortable header="Amount" body={(rowData) => `₹${rowData.po_amount}`}></Column>
                                         <Column field="po_date" sortable header="PO Date" body={(rowData) => new Date(rowData.po_date).toLocaleDateString()}></Column>
                                         <Column field="project_order_details" sortable header="Details"></Column>

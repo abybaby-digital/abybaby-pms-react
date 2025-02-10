@@ -41,8 +41,8 @@ const EditClientPO = ({ clientPO }) => {
     // Pre-fill the form with existing data
     useEffect(() => {
         setValue("project_id", clientPO.project_id);  // Ensure selected project is set
-        setValue("po_no", clientPO.po_no);
-        setValue("po_amount", clientPO.po_amount);
+        setValue("po_no", clientPO.project_no);
+        setValue("po_amount", Math.floor(clientPO.po_amount));
         setValue("po_date", clientPO.po_date.split(" ")[0]);
         setValue("payment_schedule_days", clientPO.payment_schedule_days);
         setValue("po_details", clientPO.project_order_details);
@@ -124,6 +124,7 @@ const EditClientPO = ({ clientPO }) => {
                         id="project_id"
                         {...register("project_id", { required: "Project is required" })}
                         className="block w-full"
+                        disabled
                     >
                         <option value="">Select Project</option>
                         {isLoadingProjects ? (

@@ -14,12 +14,39 @@ import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 export default function AddPaymentRequisition() {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
 
   // State to hold vendor details
   const [selectedVendor, setSelectedVendor] = useState(null);
-   // State for file preview (image or PDF)
-   const [filePreview, setFilePreview] = useState(null);
+  // State for file preview (image or PDF)
+  const [filePreview, setFilePreview] = useState(null);
+
+  const [singlePorj, setSingleProj] = useState(null);
+
+  const project_id = watch("project_id");
+  const entered_requisition_amount = watch("requisition_amount");
+  // console.log(entered_requisition_amount);
+
+  const getSingleProject = (id) => {
+    const singleProject = projectList?.response?.find(project => project.id === id);
+    setSingleProj(singleProject);
+  }
+
+  useEffect(() => {
+    getSingleProject(+project_id);
+    console.log(singlePorj);
+
+  }, [project_id])
+
+  const project_amount = Math.floor(+singlePorj?.project_amount);
+  const requisition_amount = Math.floor(+singlePorj?.requition_amount);
+
+  console.log(entered_requisition_amount);
+  console.log(project_amount);
+
+
+
+
 
   // Fetch projects, branches, and vendors from APIs
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
@@ -28,6 +55,8 @@ export default function AddPaymentRequisition() {
       return await getProjectList(token);
     }
   });
+
+
 
   const { data: vendorList = [], isLoading: isLoadingVendors } = useQuery({
     queryKey: ["vendor-list"],
@@ -155,7 +184,7 @@ export default function AddPaymentRequisition() {
               <div className="form-group">
                 <label htmlFor="bank_name">Bank Name <span className="text-red-600">*</span></label>
                 <input
-                readOnly
+                  readOnly
                   type="text"
                   id="bank_name"
                   {...register("bank_name", { required: "Bank Name is required" })}
@@ -169,7 +198,7 @@ export default function AddPaymentRequisition() {
               <div className="form-group">
                 <label htmlFor="bank_account">Bank Account No <span className="text-red-600">*</span></label>
                 <input
-                readOnly
+                  readOnly
                   type="text"
                   id="bank_account"
                   {...register("bank_account", { required: "Bank Account No is required" })}
@@ -194,18 +223,33 @@ export default function AddPaymentRequisition() {
               </div>
 
               {/* Requisition Amount Input */}
-              <div className="form-group">
-                <label htmlFor="requisition_amount">Requisition Amount <span className="text-red-600">*</span></label>
-                <input
-                
-                  type="number"
-                  id="requisition_amount"
-                  {...register("requisition_amount", { required: "Requisition Amount is required" })}
-                  className="block"
-                  placeholder="Enter Amount"
-                />
-                {errors.requisition_amount && <span className="text-red-600 text-sm">{errors.requisition_amount.message}</span>}
-              </div>
+              {
+                watch("project_id") !== "" ? (
+                  <div className="form-group">
+                    <label htmlFor="requisition_amount">
+                      Requisition Amount <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="requisition_amount"
+                      {...register("requisition_amount", {
+                        required: "Requisition Amount is required",
+                        max: {
+                          value: project_amount - requisition_amount,
+                          message: `Amount should not exceed ${project_amount - requisition_amount}`,
+                        },
+                      })}
+                      className="block"
+                      placeholder="Enter Amount"
+                    />
+                    {errors.requisition_amount && (
+                      <span className="text-red-600 text-sm">
+                        {errors.requisition_amount.message}
+                      </span>
+                    )}
+                  </div>
+                ) : null
+              }
 
               {/* Requisition Image Input */}
               <div className="form-group">
@@ -261,7 +305,7 @@ export default function AddPaymentRequisition() {
                 {errors.date_of_payments && <span className="text-red-600 text-sm">{errors.date_of_payments.message}</span>}
               </div>
 
-              
+
 
               {/* Submit Button */}
 

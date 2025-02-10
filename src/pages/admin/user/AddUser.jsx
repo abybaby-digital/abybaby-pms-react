@@ -131,7 +131,7 @@ export default function AddUser() {
                 // navigate("/user-list");
             }
             else {
-                toast.error("Somethin went wrong !!")
+                toast.error("Something went wrong !!")
             }
         },
         onError: (error) => {

@@ -1565,3 +1565,26 @@ export const getReport = async (token, financial_year) => {
     throw error;
   }
 };
+
+// PAYMENT REQUISITION APPROVAL
+
+export const approvePaymentRequisition = async (token, payment_requition_id, status) => {
+  try {
+    const response = await api.post(
+      "/payment-requisition-approved-status",
+      {
+        payment_requition_id: payment_requition_id,
+        status: status
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error Approving Payment:", error);
+    throw error;
+  }
+};
