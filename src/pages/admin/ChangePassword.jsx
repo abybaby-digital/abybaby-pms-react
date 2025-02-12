@@ -3,20 +3,38 @@ import pmsLogInBg from "../../assets/images/loginbg.png"
 import { changePassword } from "../../services/api";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form"; // Import useForm
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import AdminHead from "../../components/common/AdminHead";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ChangePassword = () => {
 
     // Initialize React Hook Form
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+    const user = useSelector((state) => state.auth.user);
+    const token = useSelector((state) => state.auth.token);
+    const navigate = useNavigate();
+    const newPassword = watch("newPassword");
+    const confirmPassword = watch("confirmPassword");
+
+
+    console.log(newPassword);
+    console.log(confirmPassword);
+
+
 
     // Mutation for changing the password
     const changePasswordMutation = useMutation({
-        mutationFn: ({ email, oldPassword, newPassword, confirmPassword }) => changePassword(email, oldPassword, newPassword, confirmPassword),
+        mutationFn: ({ token, email, oldPassword, newPassword, confirmPassword }) => changePassword(token, email, oldPassword, newPassword, confirmPassword),
         onSuccess: (response) => {
             if (response.status === 200 || response.status === 201) {
                 toast.success("Password changed successfully!");
+                navigate("/");
             } else {
-                toast.error(response.message || "Password change failed. Please try again.");
+                toast.error(response.message);
+                toast.error(response?.response.new_password);
             }
         },
         onError: (error) => {
@@ -32,9 +50,11 @@ const ChangePassword = () => {
             return;
         }
         changePasswordMutation.mutate({
+            token: token,
             email: data.email,
             oldPassword: data.oldPassword,
             newPassword: data.newPassword,
+            confirmPassword: data.confirmPassword,
         });
     };
 
@@ -43,7 +63,7 @@ const ChangePassword = () => {
             <SidebarProvider>
                 <AppSidebar />
                 <SidebarInset>
-                    <AdminHead breadcrumb_name="branch" />
+                    <AdminHead breadcrumb_name="change password" />
                     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 " style={{ background: `linear-gradient(#141414e6, #ffffffb7),url(${pmsLogInBg}) no-repeat top/cover` }}>
                         <div className="w-full max-w-sm">
                             <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-5 rounded-3xl shadow-lg">
@@ -54,6 +74,8 @@ const ChangePassword = () => {
                                     <input
                                         type="email"
                                         id="email"
+                                        value={user?.email}
+                                        disabled
                                         {...register("email", { required: "Email is required" })}
                                         className="mt-1 p-2 px-4 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                     />
@@ -92,9 +114,9 @@ const ChangePassword = () => {
                                     />
                                     {errors.confirmPassword && <span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>}
                                 </div>
-
+                                <p className="text-sm text-red-500">{newPassword !== confirmPassword ? " ** new passward should be equal to confirm password" : null}</p>
                                 <div className="mb-4 text-center">
-                                    <button type="submit" className="px-5 py-2 bg-lightdark text-white rounded-lg">Submit</button>
+                                    <button type="submit" disabled={newPassword !== confirmPassword} className="px-5 py-2 bg-lightdark text-white rounded-lg">Submit</button>
                                 </div>
                             </form>
                         </div>

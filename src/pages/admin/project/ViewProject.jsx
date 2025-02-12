@@ -119,7 +119,7 @@ const ViewProject = ({ project, add_or_edit }) => {
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Billing Status :</TableCell>
                                             <TableCell>
-                                                {project?.status === "1" ? (
+                                                {project?.billing_status === "1" ? (
                                                     <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
                                                         Billed
                                                     </span>
@@ -133,7 +133,7 @@ const ViewProject = ({ project, add_or_edit }) => {
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Payment Status :</TableCell>
                                             <TableCell>
-                                                {project?.status === "1" ? (
+                                                {project?.payment_status === "1" ? (
                                                     <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
                                                         Paid
                                                     </span>

@@ -209,11 +209,11 @@ const data = {
           url: "/user-list",
           access: "Users",
         },
-        {
-          title: "Change User Password",
-          url: "/change-user-password",
-          access: "Users",
-        },
+        // {
+        //   title: "Change User Password",
+        //   url: "/change-user-password",
+        //   access: "Users",
+        // },
       ],
     },
     {

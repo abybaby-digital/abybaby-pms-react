@@ -81,7 +81,7 @@ export default function ProjectList() {
         }
     });
 
-    console.log(FYList);
+    // console.log(FYList);
 
     // useEffect(() => {
     //     if (projectList) {
@@ -342,12 +342,12 @@ export default function ProjectList() {
                                                 </span>
                                             )}></Column>
                                             <Column header="Billing Status" body={(rowData) => (
-                                                <span className={`bg-dark text-sm ${rowData.billed_status === "1" ? "bg-green-500" : "bg-red-500"} px-3 py-1 rounded-xl text-white shadow`}>
+                                                <span className={`bg-dark text-sm ${rowData.billing_status === "1" ? "bg-green-500" : "bg-red-500"} px-3 py-1 rounded-xl text-white shadow`}>
                                                     {rowData.billed_status === "1" ? "Billed" : "Unbilled"}
                                                 </span>
                                             )}></Column>
                                             <Column header="Payment Status" body={(rowData) => (
-                                                <span className={`bg-dark text-sm ${rowData.received_status === "1" ? "bg-green-500" : "bg-red-500"} px-3 py-1 rounded-xl text-white shadow`}>
+                                                <span className={`bg-dark text-sm ${rowData.payment_status === "1" ? "bg-green-500" : "bg-red-500"} px-3 py-1 rounded-xl text-white shadow`}>
                                                     {rowData.received_status === "1" ? "Paid" : "Unpaid"}
                                                 </span>
                                             )}></Column>
