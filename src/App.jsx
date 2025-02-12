@@ -35,6 +35,7 @@ import ProjectListByCategory from "./pages/admin/project/ProjectListByCategory";
 import CryptoJS from "crypto-js";
 import { useDispatch } from "react-redux";
 import { setToken, setUsers } from "./redux/features/Auth/AuthSlice";
+import ChangePassword from "./pages/admin/ChangePassword";
 // Lazy-loaded components
 const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
@@ -86,6 +87,7 @@ const App = () => {
             <Suspense fallback={<div className="loading-spinner">Loading...</div>}>
               <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/change-password" element={<ChangePassword />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/company-add" element={<AddCompany />} />
@@ -113,6 +115,7 @@ const App = () => {
                   <Route path="/billing-supportings-add" element={<AddBillingSupportings />} />
                   <Route path="/billing-supportings-info" element={<BillingSupportingList />} />
                   <Route path="/project-list/:category" element={<ProjectListByCategory />} />
+
                 </Route>
               </Routes>
             </Suspense>

@@ -1588,3 +1588,28 @@ export const approvePaymentRequisition = async (token, payment_requition_id, sta
     throw error;
   }
 };
+
+// CHANGE PASSWORD
+
+export const changePassword = async (token, email_id, old_password, new_password , confirm_password) => {
+  try {
+    const response = await api.post(
+      "/change-password",
+      {
+        email_id: email_id,
+        old_password: old_password,
+        new_password: new_password,
+        confirm_password: confirm_password,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Failed to change password:", error);
+    throw error;
+  }
+};
