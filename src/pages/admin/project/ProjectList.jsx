@@ -339,11 +339,11 @@ export default function ProjectList() {
                                                 style={{ width: '5rem', textAlign: 'center' }}
                                             />
                                             {/* <Column field="project_number" sortable header="Project Number" style={{ textTransform: "capitalize" }}></Column> */}
-                                            <Column field="project_name" sortable header="Project Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="project_name" sortable header="Project Name" style={{ whiteSpace: "nowrap" }}></Column>
                                             <Column field="client_name" sortable header="Client" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="branch_name" sortable header="Branch" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="project_start_date" sortable header="Start Date" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="project_end_date" sortable header="End Date" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="project_start_date" sortable header="Start Date" style={{ textTransform: "capitalize", whiteSpace: "nowrap" }}></Column>
+                                            <Column field="project_end_date" sortable header="End Date" style={{ textTransform: "capitalize", whiteSpace: "nowrap" }}></Column>
                                             <Column field="project_amount" sortable header="Project Amount" style={{ textTransform: "capitalize" }}></Column>
 
                                             <Column header="Status" body={(rowData) => (
