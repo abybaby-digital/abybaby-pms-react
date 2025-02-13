@@ -63,6 +63,11 @@ export default function AddProject() {
             return await getVerticalHeadList(token);
         }
     });
+
+    const verticalHeadId = watch("vertical_head_id")?.value;
+    const VHname = verticalHeadList?.response?.find((item) => item.id === verticalHeadId)?.name;
+
+
     // Fetch Branch Manager List
     const { data: branchManagerList } = useQuery({
         queryKey: ["branch-manager-list", selectedVerticalHead],
@@ -235,7 +240,7 @@ export default function AddProject() {
 
                             {/* Vertical Head Select Field */}
                             <div className="form-group">
-                                <label htmlFor="vertical_head_id">Vertical Head <span className="text-red-600">*</span></label>
+                                <label htmlFor="vertical_head_id">Vertical Head <span className="text-red-600">*</span> {VHname ? <span className="ms-1 text-green-500 text-[15px]">[ <span className="text-black">VH Name</span> : {VHname} ]</span> : null}</label>
                                 <Controller
                                     name="vertical_head_id"
                                     control={control}
@@ -243,7 +248,7 @@ export default function AddProject() {
                                     render={({ field }) => (
                                         <Select
                                             {...field}
-                                            options={verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name }))}
+                                            options={verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name_prefix }))}
                                             components={animatedComponents}
                                             onChange={(selectedOption) => {
                                                 setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
