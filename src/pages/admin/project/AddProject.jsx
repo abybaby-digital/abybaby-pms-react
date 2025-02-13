@@ -118,7 +118,7 @@ export default function AddProject() {
 
     const onSubmit = (data) => {
         console.log("Submitting data:", data);
-        // addProjectMutation.mutate(data); // Call mutation with form data
+        addProjectMutation.mutate(data); // Call mutation with form data
     };
 
     return (
