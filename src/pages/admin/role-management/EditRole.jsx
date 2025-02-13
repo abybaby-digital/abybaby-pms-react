@@ -38,6 +38,7 @@ export default function EditRole({ role }) {
             role_name: role.role_name,
             access_type_add: role.access_type_add ? role.access_type_add.split(',') : [],
             access_type_edit: role.access_type_edit ? role.access_type_edit.split(',') : [],
+            access_type_list: role.access_type_list ? role.access_type_list.split(',') : [],
             status: role.status === "1" ? "active" : "inactive", // Set the default status based on the role's current status
         },
     });
@@ -85,7 +86,7 @@ export default function EditRole({ role }) {
             <div className="flex flex-1 flex-col gap-2  lg:justify-center">
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="bg-white mx-auto xl:w-[50%] w-full overflow-hidden"
+                    className="bg-white mx-auto w-full overflow-hidden"
                 >
                     <div className="card-body grid gap-3 lg:grid-cols-1 grid-cols-1 p-5">
 
@@ -109,7 +110,7 @@ export default function EditRole({ role }) {
                         </div>
 
                         {/* Access Type Add (Checkboxes) */}
-                        <div className="form-group">
+                        <div className="form-group mb-5">
                             <label className="block">Access Type Add</label>
                             <div className="flex gap-5 flex-wrap text-nowrap items-center">
                                 {accessOptions.map((option) => (
@@ -136,7 +137,7 @@ export default function EditRole({ role }) {
                         </div>
 
                         {/* Access Type Edit (Checkboxes) */}
-                        <div className="form-group">
+                        <div className="form-group mb-5">
                             <label className="block">Access Type Edit</label>
                             <div className="flex gap-5 flex-wrap text-nowrap items-center">
                                 {accessOptions.map((option) => (
@@ -148,6 +149,32 @@ export default function EditRole({ role }) {
                                             value={option.id}
                                             {...register("access_type_edit")}
                                             defaultChecked={role.access_type_edit?.includes(option.id.toString())}
+                                        />
+                                        <label htmlFor={`access_type_edit_${option.id}`} className="m-0">
+                                            {option.menuName}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                            {errors.access_type_edit && (
+                                <span className="text-red-600 text-sm">
+                                    {errors.access_type_edit.message}
+                                </span>
+                            )}
+                        </div>
+                        {/* Access Type Edit List (Checkboxes) */}
+                        <div className="form-group mb-5">
+                            <label className="block">Access Type List</label>
+                            <div className="flex gap-5 flex-wrap text-nowrap items-center">
+                                {accessOptions.map((option) => (
+                                    <div key={option.id} className="flex items-center gap-1 px-5 py-1 rounded-3xl bg-whitesmoke shadow-lg">
+                                        <input
+                                            type="checkbox"
+                                            className="accent-lightdark"
+                                            id={`access_type_edit_${option.id}`}
+                                            value={option.id}
+                                            {...register("access_type_list")}
+                                            defaultChecked={role.access_type_list?.includes(option.id.toString())}
                                         />
                                         <label htmlFor={`access_type_edit_${option.id}`} className="m-0">
                                             {option.menuName}

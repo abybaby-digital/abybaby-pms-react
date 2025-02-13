@@ -710,6 +710,7 @@ export const editRole = async (
   role_name,
   access_type_add,
   access_type_edit,
+  access_type_list,
   status
 ) => {
   try {
@@ -720,6 +721,7 @@ export const editRole = async (
         role_name: role_name,
         access_type_add: access_type_add,
         access_type_edit: access_type_edit,
+        access_type_list: access_type_list,
         status: status,
       },
       {

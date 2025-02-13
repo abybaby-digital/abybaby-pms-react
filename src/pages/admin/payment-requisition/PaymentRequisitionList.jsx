@@ -26,7 +26,7 @@ export default function PaymentRequisitionList() {
     const token = useSelector((state) => state.auth.token);
 
     const { data: paymentList = [], isLoading } = useQuery({
-        queryKey: ["payment-requisition-list", refetchList, modal ],
+        queryKey: ["payment-requisition-list", refetchList, modal],
         queryFn: async () => {
             return await getPaymentRequisitionList(token);
         }
@@ -146,6 +146,15 @@ export default function PaymentRequisitionList() {
                                     {/* DataTable */}
                                     <DataTable value={filteredPayments} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
+                                        <Column
+                                            header="S.No"
+                                            body={(rowData, { rowIndex }) => (
+                                                <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                    {rowIndex + 1}
+                                                </span>
+                                            )}
+                                            style={{ width: '5rem', textAlign: 'center' }}
+                                        />
                                         <Column field="project_name" sortable header="Project Name"></Column>
                                         <Column field="vendor_name" sortable header="Vendor Name"></Column>
                                         <Column field="requisition_amount" sortable header="Requisition Amount" body={(rowData) => `₹${rowData.requisition_amount}`}></Column>

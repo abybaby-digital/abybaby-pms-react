@@ -145,6 +145,15 @@ export default function InvoiceList() {
                                     {/* DataTable */}
                                     <DataTable value={filteredInvoices} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
+                                        <Column
+                                            header="S.No"
+                                            body={(rowData, { rowIndex }) => (
+                                                <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                    {rowIndex + 1}
+                                                </span>
+                                            )}
+                                            style={{ width: '5rem', textAlign: 'center' }}
+                                        />
                                         <Column field="project_name" sortable header="Project Name"></Column>
                                         <Column field="invoice_no" sortable header="Invoice No"></Column>
                                         <Column field="invoice_amount" sortable header="Amount" body={(rowData) => `₹${rowData.invoice_amount}`}></Column>

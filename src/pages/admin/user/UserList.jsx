@@ -19,6 +19,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewUser from "./ViewUser";  // Updated from ViewRole to ViewUser
 import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
+import { CiImageOff } from "react-icons/ci";
 
 export default function UserList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -143,6 +144,15 @@ export default function UserList() {
                                             paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}"
                                         >
+                                            <Column
+                                                header="S.No"
+                                                body={(rowData, { rowIndex }) => (
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowIndex + 1}
+                                                    </span>
+                                                )}
+                                                style={{ width: '5rem', textAlign: 'center' }}
+                                            />
                                             <Column field="name" sortable header="Name" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="email" sortable header="Email"></Column>
                                             <Column field="role_name" sortable header="Role"></Column>
@@ -151,11 +161,17 @@ export default function UserList() {
                                             <Column
                                                 header="Profile"
                                                 body={(rowData) => (
-                                                    <img
-                                                        src={rowData.profile_img}
-                                                        alt="User Profile"
-                                                        className="w-10 h-10 rounded-full border shadow"
-                                                    />
+
+                                                    rowData.profile_img !== "https://test.abybabyoffice.com/storage/user/profile/" ?
+                                                        <img
+                                                            src={rowData.profile_img}
+                                                            alt="User Profile"
+                                                            className="w-10 h-10 rounded-full border shadow"
+                                                        />
+                                                        :
+                                                        <div className="text-center flex flex-col items-center">
+                                                            <CiImageOff className="text-2xl me-1"  /> No Image
+                                                        </div>
                                                 )}
                                             />
 

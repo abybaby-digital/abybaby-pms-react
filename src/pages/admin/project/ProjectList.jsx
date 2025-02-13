@@ -328,7 +328,16 @@ export default function ProjectList() {
                                         {/* DataTable */}
                                         <DataTable value={filteredProjects} stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}">
-                                            <Column field="project_number" sortable header="Project Number" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column
+                                                header="S.No"
+                                                body={(rowData, { rowIndex }) => (
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowIndex + 1}
+                                                    </span>
+                                                )}
+                                                style={{ width: '5rem', textAlign: 'center' }}
+                                            />
+                                            {/* <Column field="project_number" sortable header="Project Number" style={{ textTransform: "capitalize" }}></Column> */}
                                             <Column field="project_name" sortable header="Project Name" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="client_name" sortable header="Client" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="branch_name" sortable header="Branch" style={{ textTransform: "capitalize" }}></Column>

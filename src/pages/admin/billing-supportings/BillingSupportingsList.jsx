@@ -78,6 +78,15 @@ export default function BillingSupportingList() {
                                     {/* DataTable */}
                                     <DataTable value={filteredBillingSupportings} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
+                                        <Column
+                                            header="S.No"
+                                            body={(rowData, { rowIndex }) => (
+                                                <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                    {rowIndex + 1}
+                                                </span>
+                                            )}
+                                            style={{ width: '5rem', textAlign: 'center' }}
+                                        />
                                         <Column field="project_name" sortable header="Project Name"></Column>
                                         <Column header="Actions" body={(rowData) => (
                                             <TooltipProvider>
@@ -101,7 +110,7 @@ export default function BillingSupportingList() {
                             )}
 
                             {/* View Billing Supporting Popup */}
-                            <ViewBillingSupportings billingSupportings={singleBillingSupportingData} add_or_edit={addOrEdit}/>
+                            <ViewBillingSupportings billingSupportings={singleBillingSupportingData} add_or_edit={addOrEdit} />
                         </div>
                     </div>
                 </div>

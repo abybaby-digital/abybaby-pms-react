@@ -89,7 +89,7 @@ export default function PaymentReceivedList() {
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <AdminHead breadcrumb_name="Payment Received"  />
+                <AdminHead breadcrumb_name="Payment Received" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
                         <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">PAYMENT RECEIVED LIST</h2>
@@ -144,6 +144,15 @@ export default function PaymentReceivedList() {
                                     {/* DataTable */}
                                     <DataTable value={filteredPayments} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
+                                        <Column
+                                            header="S.No"
+                                            body={(rowData, { rowIndex }) => (
+                                                <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                    {rowIndex + 1}
+                                                </span>
+                                            )}
+                                            style={{ width: '5rem', textAlign: 'center' }}
+                                        />
                                         <Column field="project_name" sortable header="Project Name"></Column>
                                         <Column field="received_no" sortable header="Received No"></Column>
                                         <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>
