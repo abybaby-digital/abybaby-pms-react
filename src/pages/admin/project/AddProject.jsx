@@ -22,14 +22,17 @@ export default function AddProject() {
     const { register, handleSubmit, formState: { errors }, control, watch, setValue } = useForm();
 
     // Watch selected values
-    const selectedVerticalHead = watch("vertical_head_id")?.value.toString();
+    const selectedVerticalHead = watch("vertical_head_id")?.map((item) => (item.value.toString()));
     const selectedBranchManager = watch("branch_manager_id")?.map((item) => (item.value.toString()));
     const selectedClientService = watch("client_service_id")?.map((item) => (item.value.toString()));
 
-    console.log(selectedVerticalHead);
+
+    const VH_id = selectedVerticalHead?.map(Number);
+    // console.log(selectedVerticalHead);
     //  console.log(selectedBranchManager?.join(","));
     //  console.log(selectedClientService?.join(","));
-
+    // const VHoptions = verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name_prefix }));
+    // const VHnames = VHoptions?.filter((item) => selectedVerticalHead?.map(Number).includes(item.value));
 
 
     // Fetch Branch List
@@ -64,8 +67,11 @@ export default function AddProject() {
         }
     });
 
-    const verticalHeadId = watch("vertical_head_id")?.value;
-    const VHname = verticalHeadList?.response?.find((item) => item.id === verticalHeadId)?.name;
+    const selected_vh_names = verticalHeadList?.response.filter((item) => VH_id?.includes(item.id));
+    console.log("VH", watch("vertical_head_id"));
+
+    // const verticalHeadId = watch("vertical_head_id")?.value;
+    // const VHname = verticalHeadList?.response?.find((item) => item.id === verticalHeadId)?.name;
 
 
     // Fetch Branch Manager List
@@ -101,7 +107,7 @@ export default function AddProject() {
                 data.client_id.value,
                 data.branch_id.value,
                 data.company_id.value,
-                data.vertical_head_id.value?.toString(),
+                data.vertical_head_id.map((item) => (item.value.toString())).join(","),
                 data?.branch_manager_id?.map((item) => (item.value.toString())).join(","),
                 data.client_service_id?.map((item) => (item.value.toString())).join(","),
                 data.other_members_id?.map((item) => (item.value.toString())).join(","),
@@ -112,9 +118,14 @@ export default function AddProject() {
                 "1"
             );
         },
-        onSuccess: () => {
-            toast.success("Project added successfully!");
-            navigate("/project-list"); // Redirect after successful submission
+        onSuccess: (response) => {
+            if (response.status === 200 || response.status === 201) {
+                toast.success("Project added successfully!");
+                navigate("/project-list");
+            }
+            else {
+                toast.error(response.message);
+            }
         },
         onError: (error) => {
             toast.error("Failed to add project: " + error.message);
@@ -240,7 +251,7 @@ export default function AddProject() {
 
                             {/* Vertical Head Select Field */}
                             <div className="form-group">
-                                <label htmlFor="vertical_head_id">Vertical Head <span className="text-red-600">*</span> {VHname ? <span className="ms-1 text-green-500 text-[15px]">[ <span className="text-black">VH Name</span> : {VHname} ]</span> : null}</label>
+                                <label htmlFor="vertical_head_id">Vertical Head <span className="text-red-600">*</span> </label>
                                 <Controller
                                     name="vertical_head_id"
                                     control={control}
@@ -248,6 +259,7 @@ export default function AddProject() {
                                     render={({ field }) => (
                                         <Select
                                             {...field}
+                                            isDisabled={false}
                                             options={verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name_prefix }))}
                                             components={animatedComponents}
                                             onChange={(selectedOption) => {
@@ -256,14 +268,28 @@ export default function AddProject() {
                                                 setValue("client_service_id", []); // Reset branch_manager_id when VH changes
                                             }}
                                             placeholder="Select Vertical Head"
+                                            isMulti
                                         />
                                     )}
                                 />
+                                {
+                                    selected_vh_names?.length === 0 || selected_vh_names === undefined ?
+                                        null :
+                                        <ul className="border border-green-500 p-3 rounded-lg text-sm flex gap-2 flex-wrap items-center mt-2">
+                                            {
+                                                selected_vh_names?.map((item) => (
+
+                                                    <li key={item.id} className="">{item.name_prefix} : <span className="text-green-500">{item.name}</span> ,</li>
+
+                                                ))
+                                            }
+                                        </ul>
+                                }
                                 {errors.vertical_head_id && <span className="text-red-600 text-sm">{errors.vertical_head_id.message}</span>}
                             </div>
 
-
                             {/* Branch Manager Multi-Select Field */}
+
                             <div className="form-group">
                                 <label htmlFor="branch_manager_id">Branch Manager <span className="text-red-600">*</span></label>
                                 <Controller
@@ -273,6 +299,7 @@ export default function AddProject() {
                                     render={({ field }) => (
                                         <Select
                                             {...field}
+                                            isDisabled={watch("vertical_head_id") === undefined || watch("vertical_head_id")?.length === 0}
                                             options={branchManagerList?.response?.map((item) => ({ value: item.id, label: item.name }))}
                                             components={animatedComponents}
                                             onChange={(selectedOption) => {
@@ -287,7 +314,10 @@ export default function AddProject() {
                                 {errors.branch_manager_id && <span className="text-red-600 text-sm">{errors.branch_manager_id.message}</span>}
                             </div>
 
+
                             {/* Client Service Select Field */}
+
+
                             <div className="form-group">
                                 <label htmlFor="client_service_id">Client Service <span className="text-red-600">*</span></label>
                                 <Controller
@@ -301,6 +331,7 @@ export default function AddProject() {
                                             components={animatedComponents}
                                             placeholder="Select Client Service"
                                             isMulti
+                                            isDisabled={watch("branch_manager_id") === undefined || watch("branch_manager_id")?.length === 0}
                                         />
                                     )}
                                 />
@@ -308,6 +339,7 @@ export default function AddProject() {
                             </div>
 
                             {/* Others Select Field */}
+
                             <div className="form-group">
                                 <label htmlFor="other_members_id">Others <span className="text-red-600">*</span></label>
                                 <Controller
@@ -320,6 +352,7 @@ export default function AddProject() {
                                             options={othersList?.response?.map((item) => ({ value: item.id, label: item.name }))}
                                             components={animatedComponents}
                                             placeholder="Select Other Members"
+                                            isDisabled={watch("client_service_id") === undefined || watch("client_service_id")?.length === 0}
                                             isMulti
                                         />
                                     )}

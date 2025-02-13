@@ -19,7 +19,7 @@ const animatedComponents = makeAnimated();
 export default function AddUser() {
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors }, control, watch } = useForm();
+    const { register, handleSubmit, formState: { errors }, control, watch, setValue } = useForm();
 
     // PROFILE IMAGE PREVIEW
     const [profilePreview, setProfilePreview] = useState(null);
@@ -115,9 +115,9 @@ export default function AddUser() {
                 data.company_id.value,
                 data.branch_id.value,
                 data?.vertical_head_id !== undefined ? data.vertical_head_id.value?.toString() : null,
-                data?.branch_manager_id !== undefined ? data?.branch_manager_id?.map((item) => (item.value.toString())).join(",") : null,
-                data?.client_service_id !== undefined ? data.client_service_id?.map((item) => (item.value.toString())).join(",") : null,
-                data?.other_service_id !== undefined ? data.other_service_id?.map((item) => (item.value.toString())).join(",") : null,
+                data?.branch_manager_id !== undefined ? data?.branch_manager_id?.map((item) => (item.value.toString())).join(",") : "",
+                data?.client_service_id !== undefined ? data.client_service_id?.map((item) => (item.value.toString())).join(",") : "",
+                data?.other_service_id !== undefined ? data.other_service_id?.map((item) => (item.value.toString())).join(",") : "",
                 data.contact_number,
                 data.password,
                 data.profile_img, // This will be passed as a file (if uploaded)
@@ -128,7 +128,7 @@ export default function AddUser() {
         onSuccess: (response) => {
             if (response.status === 200 || response.status === 201) {
                 toast.success("User added successfully!");
-                // navigate("/user-list");
+                navigate("/user-list");
             }
             else {
                 toast.error("Something went wrong !!")
@@ -227,6 +227,11 @@ export default function AddUser() {
                                                 render={({ field }) => (
                                                     <Select
                                                         {...field}
+                                                        onChange={(selectedOption) => {
+                                                            setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
+                                                            setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
+                                                            setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                                                        }}
                                                         options={verticalHeadList?.response?.map(item => ({ value: item.id, label: item.name }))}
                                                         components={animatedComponents}
                                                         placeholder="Select Vertical Head"

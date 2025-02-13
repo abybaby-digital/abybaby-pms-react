@@ -25,17 +25,8 @@ const EditProject = ({ project }) => {
 
 
     // Initialize form with existing project data
-    const { register, handleSubmit, control, formState: { errors }, watch, setValue } = useForm({
-        defaultValues: {
-            project_number: project.project_number,
-            project_name: project.project_name,
-            quotation_no: project.quotation_no,
-            project_amount: project.project_amount,
-            project_start_date: project.project_start_date,
-            project_end_date: project.project_end_date,
-            project_status: project.status
-        }
-    });
+    // Initialize form with useForm hook but no defaultValues initially
+    const { register, handleSubmit, control, formState: { errors }, watch, setValue } = useForm();
 
     // Watch selected values
     const selectedVerticalHead = watch("vertical_head_id");
@@ -95,17 +86,17 @@ const EditProject = ({ project }) => {
     const { data: branchManagerList } = useQuery({
         queryKey: ["branch-manager-list", selectedVerticalHead],
         queryFn: async () => {
-            return await getBranchManagerList(token, `${selectedVerticalHead}`);
+            return await getBranchManagerList(token, `${selectedVerticalHead ? selectedVerticalHead : project.vertical_head_id}`);
         }
     });
     const branchManagerOptions = branchManagerList?.response?.map((item) => ({ value: item.id, label: item.name }));
     console.log(branchManagerOptions);
-    
+
     // Fetch Client Service List
     const { data: clientServiceList } = useQuery({
         queryKey: ["client-service-list", selectedBranchManager],
         queryFn: async () => {
-            return await getClientServiceList(token, `${selectedBranchManager}`);
+            return await getClientServiceList(token, `${selectedBranchManager ? selectedBranchManager : project.business_manager_id}`);
         }
     });
 
@@ -114,7 +105,7 @@ const EditProject = ({ project }) => {
     const { data: othersList } = useQuery({
         queryKey: ["others-list", selectedClientService],
         queryFn: async () => {
-            return await getOtherList(token, `${selectedClientService}`);
+            return await getOtherList(token, `${selectedClientService ? selectedClientService : project.client_service_id}`);
         }
     });
 
@@ -142,7 +133,7 @@ const EditProject = ({ project }) => {
             );
         },
         onSuccess: (value) => {
-// console.log(value);
+            // console.log(value);
 
             if (value.status === 200) {
                 toast.success("Project updated successfully!");
@@ -167,6 +158,26 @@ const EditProject = ({ project }) => {
     // useEffect(() => {
     //     setValue("project_status", project.status); // Set default selection
     // }, [setValue]);
+
+
+
+    // Set values in the form when the project data is available
+    useEffect(() => {
+        // Setting values only if project is available
+        setValue("project_number", project.project_number);
+        setValue("project_name", project.project_name);
+        setValue("quotation_no", project.quotation_no);
+        setValue("project_amount", Math.floor(project.project_amount));
+        setValue("project_start_date", project.project_start_date);
+        setValue("project_end_date", project.project_end_date);
+        setValue("project_status", project.status);
+        // setValue("vertical_head_id", project.status);
+        // setValue("client_service_id", filteredCS ? filteredCS : null);
+        // setValue("branch_manager_id", filteredBM ? filteredBM : null);
+    }, []);
+
+
+
 
     return (
         <form
@@ -219,7 +230,7 @@ const EditProject = ({ project }) => {
                     <select {...register("client_id", { required: "Client is required" })}>
                         <option value="">Select Client</option>
                         {clientListOptions?.map((client) => (
-                            <option key={client.value} value={client.value} selected={client.value === project.client_id}>
+                            <option key={client.value} value={client.value} selected={project.client_id === client.value}>
                                 {client.label}
                             </option>
                         ))}
@@ -233,7 +244,7 @@ const EditProject = ({ project }) => {
                     <select {...register("branch_id", { required: "Branch is required" })}>
                         <option value="">Select Branch</option>
                         {branchListOptions?.map((branch) => (
-                            <option key={branch.value} value={branch.value} selected={branch.value === project.branch_id}>
+                            <option key={branch.value} value={branch.value} selected={project.branch_id === branch.value}>
                                 {branch.label}
                             </option>
                         ))}
@@ -247,7 +258,7 @@ const EditProject = ({ project }) => {
                     <select {...register("company_id", { required: "Company is required" })}>
                         <option value="">Select Company</option>
                         {companyListOptions?.map((company) => (
-                            <option key={company.value} value={company.value} selected={company.value === project.company_id}>
+                            <option key={company.value} value={company.value} selected={project.company_id === company.value}>
                                 {company.label}
                             </option>
                         ))}
@@ -261,7 +272,7 @@ const EditProject = ({ project }) => {
                     <select {...register("vertical_head_id", { required: "Vertical Head is required" })}>
                         <option value="">Select Vertical Head</option>
                         {verticalHeadOptions?.map((verticalHead) => (
-                            <option key={verticalHead.value} value={verticalHead.value} selected={verticalHead.value === +project.vertical_head_id}>
+                            <option key={verticalHead.value} value={verticalHead.value} selected={+project.vertical_head_id === verticalHead.value} >
                                 {verticalHead.label}
                             </option>
                         ))}
@@ -275,7 +286,7 @@ const EditProject = ({ project }) => {
                     <Controller
                         name="branch_manager_id"
                         control={control}
-                        rules={{ required: "At least one Branch Manager is required" }}
+                        // rules={{ required: "At least one Branch Manager is required" }}
                         render={({ field }) => (
                             <Select
                                 {...field}
@@ -296,7 +307,7 @@ const EditProject = ({ project }) => {
                     <Controller
                         name="client_service_id"
                         control={control}
-                        rules={{ required: "Client Service is required" }}
+                        // rules={{ required: "Client Service is required" }}
                         render={({ field }) => (
                             <Select
                                 {...field}
@@ -316,7 +327,7 @@ const EditProject = ({ project }) => {
                     <Controller
                         name="other_members_id"
                         control={control}
-                        rules={{ required: "At least one other member is required" }}
+                        // rules={{ required: "At least one other member is required" }}
                         render={({ field }) => (
                             <Select
                                 {...field}
@@ -426,7 +437,7 @@ const EditProject = ({ project }) => {
                 {/* Project Status Field */}
                 <div className="form-group">
                     <label htmlFor="project_status">Project Status <span className="text-red-600">*</span></label>
-                    <Controller
+                    {/* <Controller
                         name="project_status"
                         control={control}
                         rules={{ required: "Project Status is required" }}
@@ -450,7 +461,13 @@ const EditProject = ({ project }) => {
                                 </div>
                             </RadioGroup>
                         )}
-                    />
+                    /> */}
+                    <select {...register("project_status", { required: "Project Status is required" })}>
+                        <option value="" selected>Select Vertical Head</option>
+                        <option value="1">Running</option>
+                        <option value="0">Closed</option>
+                        <option value="2">Cancelled</option>
+                    </select>
                     {errors.project_status && <span className="text-red-600 text-sm">{errors.project_status.message}</span>}
                 </div>
 
