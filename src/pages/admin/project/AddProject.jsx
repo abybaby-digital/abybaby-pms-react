@@ -12,22 +12,25 @@ import ButtonLoader from "../../../components/common/ButtonLoader";
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated';
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
+import { useEffect } from "react";
 const animatedComponents = makeAnimated();
 
 export default function AddProject() {
 
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors }, control, watch } = useForm();
+    const { register, handleSubmit, formState: { errors }, control, watch, setValue } = useForm();
 
     // Watch selected values
     const selectedVerticalHead = watch("vertical_head_id")?.value.toString();
     const selectedBranchManager = watch("branch_manager_id")?.map((item) => (item.value.toString()));
     const selectedClientService = watch("client_service_id")?.map((item) => (item.value.toString()));
 
-    //  console.log(selectedVerticalHead);
+    console.log(selectedVerticalHead);
     //  console.log(selectedBranchManager?.join(","));
     //  console.log(selectedClientService?.join(","));
+
+
 
     // Fetch Branch List
     const { data: branchList } = useQuery({
@@ -115,7 +118,7 @@ export default function AddProject() {
 
     const onSubmit = (data) => {
         console.log("Submitting data:", data);
-        addProjectMutation.mutate(data); // Call mutation with form data
+        // addProjectMutation.mutate(data); // Call mutation with form data
     };
 
     return (
@@ -242,12 +245,18 @@ export default function AddProject() {
                                             {...field}
                                             options={verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name }))}
                                             components={animatedComponents}
+                                            onChange={(selectedOption) => {
+                                                setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
+                                                setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
+                                                setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                                            }}
                                             placeholder="Select Vertical Head"
                                         />
                                     )}
                                 />
                                 {errors.vertical_head_id && <span className="text-red-600 text-sm">{errors.vertical_head_id.message}</span>}
                             </div>
+
 
                             {/* Branch Manager Multi-Select Field */}
                             <div className="form-group">
@@ -261,6 +270,10 @@ export default function AddProject() {
                                             {...field}
                                             options={branchManagerList?.response?.map((item) => ({ value: item.id, label: item.name }))}
                                             components={animatedComponents}
+                                            onChange={(selectedOption) => {
+                                                setValue("branch_manager_id", selectedOption); // Update the vertical_head_id
+                                                setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                                            }}
                                             placeholder="Select Branch Manager"
                                             isMulti
                                         />
@@ -295,7 +308,7 @@ export default function AddProject() {
                                 <Controller
                                     name="other_members_id"
                                     control={control}
-                                    rules={{ required: "At least one other member is required" }}
+                                    // rules={{ required: "At least one other member is required" }}
                                     render={({ field }) => (
                                         <Select
                                             {...field}

@@ -145,7 +145,7 @@ export default function AddPaymentRequisition() {
 
               {/* Project ID Dropdown */}
               <div className="form-group">
-                <label htmlFor="project_id">Project ID <span className="text-red-600">*</span></label>
+                <label htmlFor="project_id">Project Name <span className="text-red-600">*</span></label>
                 <select
                   id="project_id"
                   {...register("project_id", { required: "Project ID is required" })}
@@ -163,7 +163,7 @@ export default function AddPaymentRequisition() {
 
               {/* Vendor ID Dropdown */}
               <div className="form-group">
-                <label htmlFor="vendor_id">Vendor ID <span className="text-red-600">*</span></label>
+                <label htmlFor="vendor_id">Vendor Name <span className="text-red-600">*</span></label>
                 <select
                   id="vendor_id"
                   {...register("vendor_id", { required: "Vendor ID is required" })}
@@ -187,7 +187,7 @@ export default function AddPaymentRequisition() {
                   readOnly
                   type="text"
                   id="bank_name"
-                  {...register("bank_name", { required: "Bank Name is required" })}
+                  {...register("bank_name")}
                   className="block"
                   placeholder="Enter Bank Name"
                 />
@@ -257,7 +257,7 @@ export default function AddPaymentRequisition() {
                 <input
                   type="file"
                   id="requisition_img"
-                  {...register("requisition_img", { required: "Requisition Image is required" })}
+                  {...register("requisition_img")}
                   accept=".jpg, .jpeg, .png, .pdf"
                   className="block"
                   onChange={handleFileChange}
