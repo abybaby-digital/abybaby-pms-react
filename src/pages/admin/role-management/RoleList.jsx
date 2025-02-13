@@ -170,6 +170,9 @@ export default function RoleList() {
                                             <Column header="Access Type Edit" body={(rowData) => {
                                                 return rowData.edit_access_name.split(',').slice(0, 3).join(", ") + (rowData.access_type_edit.split(',').length > 3 ? "..." : "");
                                             }}></Column>
+                                            <Column header="Access Type List" body={(rowData) => {
+                                                return rowData.access_type_list_name.split(',').slice(0, 3).join(", ") + (rowData.access_type_edit.split(',').length > 3 ? "..." : "");
+                                            }}></Column>
                                             <Column header="Status" body={(rowData) => (
                                                 <span className={`px-3 py-1 rounded-xl ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"} text-white shadow`}>
                                                     {rowData.status === "1" ? "Active" : "Inactive"}

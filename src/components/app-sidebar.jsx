@@ -70,7 +70,7 @@ const data = {
       icon: PiTractorFill,
       hasSubMenu: false,
       isActive: false,
-      access: "Admin",
+      access: "Dashboard",
     },
     {
       title: "Role Management",
@@ -151,26 +151,26 @@ const data = {
     //     },
     //   ],
     // },
-    // {
-    //   title: "Vendor",
-    //   url: "#",
-    //   icon: FaBuildingUser,
-    //   hasSubMenu: true,
-    //   isActive: false,
-    //   access: "Role Management",
-    //   items: [
-    //     {
-    //       title: "Add Vendor",
-    //       url: "/vendor-add",
-    //       role: []
-    //     },
-    //     {
-    //       title: "Vendor List",
-    //       url: "/vendor-list",
-    //       role: []
-    //     },
-    //   ],
-    // },
+    {
+      title: "Vendor",
+      url: "#",
+      icon: FaBuildingUser,
+      hasSubMenu: true,
+      isActive: false,
+      access: "Vendor",
+      items: [
+        {
+          title: "Add Vendor",
+          url: "/vendor-add",
+          access: "Vendor",
+        },
+        {
+          title: "Vendor List",
+          url: "/vendor-list",
+          access: "Vendor",
+        },
+      ],
+    },
     {
       title: "Client",
       url: "#",

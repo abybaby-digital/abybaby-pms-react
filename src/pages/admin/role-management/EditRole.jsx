@@ -66,6 +66,8 @@ export default function EditRole({ role }) {
     });
 
     const onSubmit = (data) => {
+        console.log(data);
+        
         editRoleMutation.mutate(data); // Call the mutation with the form data
     };
 
@@ -171,12 +173,12 @@ export default function EditRole({ role }) {
                                         <input
                                             type="checkbox"
                                             className="accent-lightdark"
-                                            id={`access_type_edit_${option.id}`}
+                                            id={`access_type_list_${option.id}`}
                                             value={option.id}
                                             {...register("access_type_list")}
                                             defaultChecked={role.access_type_list?.includes(option.id.toString())}
                                         />
-                                        <label htmlFor={`access_type_edit_${option.id}`} className="m-0">
+                                        <label htmlFor={`access_type_list_${option.id}`} className="m-0">
                                             {option.menuName}
                                         </label>
                                     </div>

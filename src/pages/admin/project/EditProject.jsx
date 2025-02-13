@@ -22,8 +22,6 @@ const EditProject = ({ project }) => {
     const project_id = project.id;
     console.log(project);
 
-
-
     // Initialize form with existing project data
     // Initialize form with useForm hook but no defaultValues initially
     const { register, handleSubmit, control, formState: { errors }, watch, setValue } = useForm();

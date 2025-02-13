@@ -29,9 +29,9 @@ export function NavMain({
   const accessEdit = useSelector((state) => state.auth.user?.edit_access_name)?.split(",");
   const accessList = useSelector((state) => state.auth.user?.access_type_list_name)?.split(",");
 
-  console.log(accessAdd);
-  console.log(accessEdit);
-  console.log(accessList);
+  console.log("add",accessAdd);
+  console.log("edit",accessEdit);
+  console.log("list",accessList);
 
   const setMenuActive = (title) => {
     console.log(title);
@@ -46,6 +46,7 @@ export function NavMain({
           items?.map((item, idx) =>
             item.hasSubMenu ?
               (
+                accessAdd.includes(item.access) || accessEdit.includes(item.access) || accessList.includes(item.access) ?
                 <Collapsible
                   key={item.title}
                   asChild
@@ -76,7 +77,7 @@ export function NavMain({
                               </SidebarMenuSubItem>
                             )
                           ) : (
-                            <SidebarMenuSubItem key={idx}>
+                            accessList?.includes(submenu.access) && <SidebarMenuSubItem key={idx}>
                               <NavLink to={submenu.url} className="admin-navlink">
                                 <SidebarMenuSubButton asChild>
                                   <span>{submenu.title}</span>
@@ -89,24 +90,25 @@ export function NavMain({
 
                     </CollapsibleContent>
                   </SidebarMenuItem>
-                </Collapsible>
+                </Collapsible> : null
 
               ) :
               (
-                <NavLink to="/" className="admin-navlink" key={idx}>
-                  <SidebarMenuItem className="shadow mb-2 rounded-xl">
+                accessAdd.includes(item.access) || accessEdit.includes(item.access) || accessList.includes(item.access) ?
+                  <NavLink to="/" className="admin-navlink">
+                    <SidebarMenuItem className="shadow mb-2 rounded-xl">
 
-                    <SidebarMenuButton tooltip="Dashboard" className="hover:bg-transparent active:bg-transparent text-[15px] py-6" onClick={() => {
+                      <SidebarMenuButton tooltip="Dashboard" className="hover:bg-transparent active:bg-transparent text-[15px] py-6" onClick={() => {
                         setMenuActive(item.title)
                       }}>
-                      {/* {item.icon && <item.icon />} */}
-                      <MdDashboard />
-                      <span>{item.title}</span>
-                      <ChevronRight
-                        className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 hidden" />
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </NavLink>
+                        {/* {item.icon && <item.icon />} */}
+                        <MdDashboard />
+                        <span>{item.title}</span>
+                        <ChevronRight
+                          className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 hidden" />
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </NavLink> : null
               )
 
 

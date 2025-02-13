@@ -51,6 +51,10 @@ const ViewRole = ({ role, add_or_edit }) => {
                                                 <TableCell>{role?.edit_access_name?.split(',').join(', ')}</TableCell>
                                             </TableRow>
                                             <TableRow>
+                                                <TableCell className="font-bold text-lg">Access Type (List)</TableCell>
+                                                <TableCell>{role?.access_type_list_name?.split(',').join(', ')}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
                                                 <TableCell className="font-bold text-lg">Status</TableCell>
                                                 <TableCell>
                                                     {
