@@ -117,7 +117,8 @@ export default function ProjectList() {
         }
 
         // Define custom column headers
-        const formattedData = projectList.response.map(item => ({
+        const formattedData = projectList?.response?.map((item, index) => ({
+            "sl_no": index + 1,
             "Project Name": item.project_name,
             "Project Number": item.project_number,
             "Client": item.client_name,

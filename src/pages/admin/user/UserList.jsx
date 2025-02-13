@@ -51,13 +51,34 @@ export default function UserList() {
         );
     });
 
-    // Export to Excel function
+
     const exportToExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(userList?.response || []);
+        // Map the user data to include only the required fields
+        const filteredData = userList?.response?.map((user, index) => ({
+            sl_no: index + 1,
+            name: user.name,
+            email: user.email,
+            contact_number: user.contact_number,
+            company_name: user.company_name,
+            branch_name: user.branch_name,
+            role_name: user.role_name,
+            vertical_head_name: user.vertical_head_name,
+            business_manager_name: user.business_manager_name,
+            client_service_name: user.client_service_name,
+            other_service_name: user.other_service_name
+        })) || [];
+
+        // Create a worksheet from the filtered data
+        const ws = XLSX.utils.json_to_sheet(filteredData);
+
+        // Create a new workbook and append the sheet
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "User List");
+
+        // Write the file
         XLSX.writeFile(wb, "user_list.xlsx");
     };
+
 
     // Export to PDF function
     const exportToPDF = () => {
@@ -170,7 +191,7 @@ export default function UserList() {
                                                         />
                                                         :
                                                         <div className="text-center flex flex-col items-center">
-                                                            <CiImageOff className="text-2xl me-1"  /> No Image
+                                                            <CiImageOff className="text-2xl me-1" /> No Image
                                                         </div>
                                                 )}
                                             />
