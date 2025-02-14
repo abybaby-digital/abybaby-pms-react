@@ -40,14 +40,19 @@ export default function AddUser() {
 
     // Role Select
     const selectedRole = watch("role_id");
-    console.log(selectedRole?.label);
+    // console.log(selectedRole?.label);
+
 
 
     // Watch selected values
-    const selectedVerticalHead = watch("vertical_head_id")?.value?.toString();
+    const selectedVerticalHead = watch("vertical_head_id")?.value;
     const selectedBranchManager = watch("branch_manager_id")?.map((item) => (item.value.toString())).join(",");
     const selectedClientService = watch("client_service_id")?.map((item) => (item.value.toString())).join(",");
-    console.log(selectedBranchManager);
+
+    console.log("bm", selectedVerticalHead);
+
+
+
 
 
     // Fetch Branch List
@@ -84,10 +89,13 @@ export default function AddUser() {
         queryFn: async () => await getVerticalHeadList(token),
     });
 
+
+    const selected_vertical_id = verticalHeadList?.response?.find((item) => item.id === selectedVerticalHead)?.vertical_head_id;
+    console.log(selected_vertical_id);
     // Fetch Branch Manager List
     const { data: branchManagerList } = useQuery({
-        queryKey: ["branch-manager-list", selectedVerticalHead],
-        queryFn: async () => await getBranchManagerList(token, selectedVerticalHead),
+        queryKey: ["branch-manager-list", selected_vertical_id],
+        queryFn: async () => await getBranchManagerList(token, selected_vertical_id),
     });
 
     // Fetch Client Service List
@@ -100,13 +108,21 @@ export default function AddUser() {
     const { data: otherServiceList } = useQuery({
         queryKey: ["other-service-list", selectedClientService],
         queryFn: async () => await getOtherList(token, selectedClientService),
+
     });
+
+
+
 
     // Mutation for adding the user
     const addUserMutation = useMutation({
         mutationFn: async (data) => {
+            const vertical_head_id = verticalHeadList?.response?.find((item) => item?.id === data.vertical_head_id?.value);
+            // console.log("selected vh", vertical_head_id);           
+
             return await addUser(
                 token,
+                data.role_id.value === 5 ? data.vertical_head_id.value : "",
                 data.name,
                 data.email,
                 data.role_id.value,
@@ -114,7 +130,8 @@ export default function AddUser() {
                     data.state_id?.map((item) => (item.value.toString())).join(",") : null,
                 data.company_id.value,
                 data.branch_id.value,
-                data?.vertical_head_id !== undefined ? data.vertical_head_id.value?.toString() : null,
+                vertical_head_id.vertical_head_id,
+                // data?.vertical_head_id !== undefined ? data.vertical_head_id.value?.toString() : null,
                 data?.branch_manager_id !== undefined ? data?.branch_manager_id?.map((item) => (item.value.toString())).join(",") : "",
                 data?.client_service_id !== undefined ? data.client_service_id?.map((item) => (item.value.toString())).join(",") : "",
                 data?.other_service_id !== undefined ? data.other_service_id?.map((item) => (item.value.toString())).join(",") : "",
@@ -122,7 +139,7 @@ export default function AddUser() {
                 data.password,
                 data.profile_img, // This will be passed as a file (if uploaded)
                 data.user_details,
-                 "1" 
+                "1"
             );
         },
         onSuccess: (response) => {
@@ -131,7 +148,8 @@ export default function AddUser() {
                 navigate("/user-list");
             }
             else {
-                toast.error("Something went wrong !!")
+                toast.error(response?.message);
+                toast.error(response?.response?.email[0]);
             }
         },
         onError: (error) => {
@@ -139,8 +157,11 @@ export default function AddUser() {
         },
     });
 
+
     const onSubmit = (data) => {
         console.log(data);
+        // const vertical_head_id = verticalHeadList?.response?.find((item)=> item.id === data.vertical_head_id.value);
+        // console.log("selected vh", vertical_head_id);
 
         // console.log(data.state_id?.map((item)=>(item.value.toString())).join(","));
         addUserMutation.mutate(data);
@@ -247,7 +268,8 @@ export default function AddUser() {
                             }
 
                             {
-                                selectedRole?.label === "CS" ||
+                                selectedRole?.label === "BM" ||
+                                    selectedRole?.label === "CS" ||
                                     selectedRole?.label === "Others" ?
                                     (
 
@@ -262,6 +284,10 @@ export default function AddUser() {
                                                         {...field}
                                                         options={branchManagerList?.response?.map(item => ({ value: item.id, label: item.name }))}
                                                         components={animatedComponents}
+                                                        onChange={(selectedOption) => {
+                                                            setValue("branch_manager_id", selectedOption); // Update the vertical_head_id
+                                                            setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                                                        }}
                                                         placeholder="Select Branch Manager"
                                                         isMulti
                                                     />

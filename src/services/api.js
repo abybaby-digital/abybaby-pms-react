@@ -754,6 +754,7 @@ export const getRoleList = async (token) => {
 // ADD USER
 export const addUser = async (
   token,
+  name_prefix,
   name,
   email,
   role_id,
@@ -775,6 +776,7 @@ export const addUser = async (
 
     // Append all form data fields
     formData.append("name", name);
+    formData.append("name_prefix", name_prefix);
     formData.append("email", email);
     formData.append("role_id", role_id);
     formData.append("state_id", state_id);
