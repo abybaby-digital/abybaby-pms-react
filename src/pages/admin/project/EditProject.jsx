@@ -133,7 +133,7 @@ const EditProject = ({ project }) => {
         onSuccess: (value) => {
             // console.log(value);
 
-            if (value.status === 200) {
+            if (value.status === 200 || value.status === 201) {
                 toast.success("Project updated successfully!");
                 // setModal(false);
                 // setRefetchList(!refetchList);
