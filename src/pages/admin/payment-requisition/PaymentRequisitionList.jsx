@@ -206,23 +206,27 @@ export default function PaymentRequisitionList() {
                                                     </Tooltip>
                                                 </TooltipProvider>
 
-                                                {/* <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger>
-                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                openModal(rowData.id);
-                                                                setAddOrEdit("edit");
-                                                            }}>
-                                                                <MdEditSquare />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Edit Payment</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider> */}
+                                                <CheckAccessEdit edit_access="Payment Requition">
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger>
+                                                                <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                    openModal(rowData.id);
+                                                                    setAddOrEdit("edit");
+                                                                }}>
+                                                                    <MdEditSquare />
+                                                                </button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Edit Payment</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </CheckAccessEdit>
+
                                             </>
                                         )}></Column>
+                                        
                                     </DataTable>
 
                                 </div>

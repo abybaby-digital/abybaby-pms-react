@@ -596,7 +596,7 @@ export const getProjectList = async (
 export const getVerticalHeadList = async (token) => {
   try {
     const response = await api.post(
-      "/vertical-head-list",
+      "/vh-prefix-list",
       {},
       {
         headers: {

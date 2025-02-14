@@ -65,7 +65,7 @@ export default function EditUser({ user }) {
 
     const stateOptions = stateList?.response?.map(state => ({ value: state.id, label: state.state_name }));
 
-    console.log(stateOptions[0]);
+    // console.log(stateOptions[0]);
     
 
     // Fetch Data for Conditional Fields

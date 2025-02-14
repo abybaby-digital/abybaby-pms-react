@@ -60,6 +60,15 @@ const EditClientPO = ({ clientPO }) => {
         }
     }, [clientPO, setValue]);
 
+    const [actualPOenter, setPoEnter] = useState(null);
+
+    const getsubstractedValue = (id) => {
+        const singleProject = projectList?.response?.find((item) => item.id === id);
+        setPoEnter(singleProject?.project_amount - singleProject?.client_po_amount);
+    }
+
+    console.log(actualPOenter);
+
     // Mutation for updating the client PO
     const editClientPOMutation = useMutation({
         mutationFn: async (data) => {
@@ -113,6 +122,12 @@ const EditClientPO = ({ clientPO }) => {
         }
     };
 
+
+    useEffect(() => {
+        getsubstractedValue(clientPO.project_id);
+    }, [clientPO.project_id]); // Include clientPO.project_id in dependency array
+
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full overflow-hidden">
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
@@ -124,7 +139,7 @@ const EditClientPO = ({ clientPO }) => {
                         id="project_id"
                         {...register("project_id", { required: "Project is required" })}
                         className="block w-full"
-                        disabled
+                        onChange={(e) => { getsubstractedValue(+e.target.value) }}
                     >
                         <option value="">Select Project</option>
                         {isLoadingProjects ? (
@@ -159,7 +174,13 @@ const EditClientPO = ({ clientPO }) => {
                     <input
                         type="number"
                         id="po_amount"
-                        {...register("po_amount", { required: "PO Amount is required" })}
+                        {...register("po_amount", {
+                            required: "PO Amount is required",
+                            max: {
+                                value: (actualPOenter + Math.floor(clientPO.po_amount)),
+                                message: `Amount cannot exceed ${actualPOenter + Math.floor(clientPO.po_amount)}`,
+                            },
+                        })}
                         className="block"
                         placeholder="Enter Amount"
                     />

@@ -38,9 +38,11 @@ const EditPaymentRequisition = ({ payment }) => {
         }
     });
 
+    console.log(payment);
+
     useEffect(() => {
-        setValue("project_id", payment.project_id);
-        setValue("vendor_id", payment.vendor_id);
+        // setValue("project_id", payment.project_id);
+        // setValue("vendor_id", payment.vendor_id);
         setValue("requisition_amount", payment.requisition_amount);
         setValue("requisition_remarks", payment.requisition_remarks);
         setValue("date_of_payments", payment.date_of_payments.split(" ")[0]);
@@ -75,6 +77,7 @@ const EditPaymentRequisition = ({ payment }) => {
     });
 
     const onSubmit = (data) => {
+       console.log(data);
         editPaymentMutation.mutate(data);
     };
 
@@ -100,7 +103,7 @@ const EditPaymentRequisition = ({ payment }) => {
                     <select {...register("project_id", { required: "Project is required" })} className="block w-full">
                         <option value="">Select Project</option>
                         {projectList?.response?.map(project => (
-                            <option key={project.id} value={project.id}>{project.project_name}</option>
+                            <option key={project.id} value={project.id} selected={project.id === payment.project_id}>{project.project_name}</option>
                         ))}
                     </select>
                     {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
@@ -111,7 +114,7 @@ const EditPaymentRequisition = ({ payment }) => {
                     <select {...register("vendor_id", { required: "Vendor is required" })} className="block w-full">
                         <option value="">Select Vendor</option>
                         {vendorList?.response?.map(vendor => (
-                            <option key={vendor.id} value={vendor.id}>{vendor.vendor_name}</option>
+                            <option key={vendor.id} value={vendor.id} selected={vendor.id === payment.vendor_id}>{vendor.vendor_name}</option>
                         ))}
                     </select>
                     {errors.vendor_id && <span className="text-red-600 text-sm">{errors.vendor_id.message}</span>}

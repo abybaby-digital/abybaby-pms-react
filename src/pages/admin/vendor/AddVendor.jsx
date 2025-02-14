@@ -61,9 +61,14 @@ export default function AddVendor() {
                 data.ifsc_code,
                 "1");
         },
-        onSuccess: () => {
-            toast.success("Vendor added successfully!");
-            // navigate("/vendor-list"); // Redirect to branch list after successful submission
+        onSuccess: (response) => {
+            if (response.status === 200 || response.status === 201) {
+                toast.success("Vendor added successfully!");
+                navigate("/vendor-list"); // Redirect to branch list after successful submission
+            }
+            else{
+                toast.error("Something went wrong !!")
+            }
         },
         onError: (error) => {
             toast.error("Failed to add vendor: " + error.message);
@@ -259,7 +264,7 @@ export default function AddVendor() {
                                     {...register("pan_no", {
                                         required: "PAN Number is required", pattern: {
                                             value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
-                                            message: "Invalid PAN Number"
+                                            message: "Invalid PAN Number, All letter will be capital"
                                         }
                                     })}
                                 />
@@ -278,7 +283,13 @@ export default function AddVendor() {
                                     className="block"
                                     id="gst_no"
                                     placeholder="Enter GST Number"
-                                    {...register("gst_no")}
+                                    {...register("gst_no", {
+                                        required: "GST Number is required",  // Makes it a required field
+                                        pattern: {
+                                            value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[A-Z]{1}[0-9]{1}$/,  // GST number pattern
+                                            message: "Invalid GST Number , All letters will be capital"  // Error message for invalid GST number
+                                        }
+                                    })}
                                 />
                                 {errors.gst_no && (
                                     <span className="text-red-600 text-sm">
@@ -287,17 +298,18 @@ export default function AddVendor() {
                                 )}
                             </div>
 
+
                             {/* Bank Name Field */}
                             <div className="form-group">
                                 <label htmlFor="bank_name">Bank Name
-                                    <span className="text-red-600">*</span>
+
                                 </label>
                                 <input
                                     type="text"
                                     className="block"
                                     id="bank_name"
                                     placeholder="Enter Bank Name"
-                                    {...register("bank_name", { required: "Bank Name is required" })}
+                                    {...register("bank_name")}
                                 />
                                 {errors.bank_name && (
                                     <span className="text-red-600 text-sm">
@@ -338,7 +350,7 @@ export default function AddVendor() {
                                     {...register("ifsc_code", {
                                         required: "IFSC Code is required", pattern: {
                                             value: /^[A-Z]{4}[0-9]{7}$/,
-                                            message: "Invalid IFSC Code"
+                                            message: "Invalid IFSC Code , All letters will be capital"
                                         }
                                     })}
                                 />

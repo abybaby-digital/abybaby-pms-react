@@ -27,6 +27,16 @@ export default function AddClientPO() {
     }
   });
 
+  // console.log(projectList);
+  const [actualPOenter, setPoEnter] = useState(null);
+
+  const getsubstractedValue = (id) => {
+    const singleProject = projectList?.response?.find((item) => item.id === id);
+    setPoEnter(singleProject?.project_amount - singleProject?.client_po_amount);
+  }
+
+  console.log(actualPOenter);
+
   const addPOMutation = useMutation({
     mutationFn: async (data) => {
       return await addClientPO(
@@ -44,9 +54,12 @@ export default function AddClientPO() {
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
         toast.success("Purchase Order added successfully!");
-        navigate("/client-po-list"); // Navigate to PO list after successful creation
+        navigate("/client-po-list");
+      } else {
+        toast.error("Unexpected response status: " + response.status);
       }
     },
+
     onError: (error) => {
       toast.error("Failed to add Purchase Order: " + error.message);
     },
@@ -88,6 +101,7 @@ export default function AddClientPO() {
                   id="project_id"
                   {...register("project_id", { required: "Project ID is required" })}
                   className="block w-full"
+                  onChange={(e) => { getsubstractedValue(+e.target.value) }}
                 >
                   <option value="">Select Project</option>
                   {projectList?.response?.map((project) => (
@@ -118,12 +132,19 @@ export default function AddClientPO() {
                 <input
                   type="number"
                   id="po_amount"
-                  {...register("po_amount", { required: "PO Amount is required" })}
+                  {...register("po_amount", {
+                    required: "PO Amount is required",
+                    max: {
+                      value: actualPOenter,
+                      message: `Amount cannot exceed ${actualPOenter}`,
+                    },
+                  })}
                   className="block"
                   placeholder="Enter Amount"
                 />
                 {errors.po_amount && <span className="text-red-600 text-sm">{errors.po_amount.message}</span>}
               </div>
+
 
               {/* PO Date Input */}
               <div className="form-group">

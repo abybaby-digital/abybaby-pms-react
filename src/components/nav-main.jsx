@@ -29,9 +29,9 @@ export function NavMain({
   const accessEdit = useSelector((state) => state.auth.user?.edit_access_name)?.split(",");
   const accessList = useSelector((state) => state.auth.user?.access_type_list_name)?.split(",");
 
-  console.log("add", accessAdd);
-  console.log("edit", accessEdit);
-  console.log("list", accessList);
+  // console.log("add", accessAdd);
+  // console.log("edit", accessEdit);
+  // console.log("list", accessList);
 
   const setMenuActive = (title) => {
     console.log(title);

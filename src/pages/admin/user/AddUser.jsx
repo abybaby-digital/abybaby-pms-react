@@ -122,7 +122,7 @@ export default function AddUser() {
                 data.password,
                 data.profile_img, // This will be passed as a file (if uploaded)
                 data.user_details,
-                data.view_status ? "1" : "0"
+                 "1" 
             );
         },
         onSuccess: (response) => {
@@ -211,9 +211,11 @@ export default function AddUser() {
                                 {errors.role_id && <span className="text-red-600 text-sm">{errors.role_id.message}</span>}
                             </div>
 
+                            {/* VERTICAL HEAD LIST */}
 
                             {
-                                selectedRole?.label === "BM" ||
+                                selectedRole?.label === "VH" ||
+                                    selectedRole?.label === "BM" ||
                                     selectedRole?.label === "CS" ||
                                     selectedRole?.label === "Others" ?
                                     (
@@ -426,7 +428,7 @@ export default function AddUser() {
                                 />
                             </div>
 
-                            {/* View Status Field */}
+                            {/* View Status Field
                             <div className="form-group flex">
                                 <div className="flex items-center rounded-2xl p-2 gap-2 bg-whitesmoke text-nowrap shadow">
                                     <label htmlFor="view_status" className="m-0">View Status</label>
@@ -437,7 +439,7 @@ export default function AddUser() {
                                         {...register("view_status")}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
 
 
                         </div>
