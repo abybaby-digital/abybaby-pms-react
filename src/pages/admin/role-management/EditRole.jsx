@@ -48,7 +48,8 @@ export default function EditRole({ role }) {
             // Prepare the access data as comma-separated strings for both add and edit
             const access_add = data.access_type_add.join(',');
             const access_edit = data.access_type_edit.join(',');
-            return await editRole(token, role.id, data.role_name, access_add, access_edit, data.status === "active" ? "1" : "0");
+            const access_list = data.access_type_list.join(',');
+            return await editRole(token, role.id, data.role_name, access_add, access_edit, access_list, data.status === "active" ? "1" : "0");
         },
         onSuccess: (value) => {
             if (value.status === 200 || value.status === 201) {
@@ -67,7 +68,7 @@ export default function EditRole({ role }) {
 
     const onSubmit = (data) => {
         console.log(data);
-        
+
         editRoleMutation.mutate(data); // Call the mutation with the form data
     };
 
