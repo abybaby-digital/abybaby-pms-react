@@ -92,7 +92,7 @@ export default function EditUser({ user }) {
   // branch manager preselect
   const userBM = user?.business_manager_id?.split(",")?.map(Number);
   const filterselectedBM = branchManagerList?.response?.filter((item) =>
-    userBM.includes(item.id)
+    userBM?.includes(item.id)
   );
   const preselectedBM = filterselectedBM?.map((item) => ({
     value: item.id,
@@ -103,7 +103,7 @@ export default function EditUser({ user }) {
   // client service preselect
   const userCS = user?.client_service_id?.split(",")?.map(Number);
   const filterselectedCS = clientServiceList?.response?.filter((item) =>
-    userCS.includes(item.id)
+    userCS?.includes(item.id)
   );
   const preselectedCS = filterselectedCS?.map((item) => ({
     value: item.id,

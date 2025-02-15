@@ -139,7 +139,7 @@ export default function Dashboard() {
                                 <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[2]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Unbilled Closed Projects</p>
                             </div>
-                            <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
+                            <button type="button" onClick={()=>{projectListByCategory("Unbilled Closed Projects", "/project-list/unbilled-closed", "2" , "0" , null)}} className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</button>
                         </div>
                         <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5" >
                             <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
@@ -150,7 +150,7 @@ export default function Dashboard() {
                                 <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[3]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Billed Closed Project</p>
                             </div>
-                            <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
+                            <button type="button" onClick={()=>{projectListByCategory("billed Closed Projects", "/project-list/billed-closed", "2" , "1" , null)}} className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</button>
                         </div>
 
                         <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5" >
@@ -162,7 +162,7 @@ export default function Dashboard() {
                                 <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[4]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Payment Outstanding Projects</p>
                             </div>
-                            <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
+                            <button type="button" onClick={()=>{projectListByCategory("Payment Outstanding Projects", "/project-list/billed-closed", "2" , "1" , "0")}}  className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</button>
                         </div>
 
                         <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5" >
@@ -174,7 +174,7 @@ export default function Dashboard() {
                                 <p className="text-lg text-lightdark"><MdOutlineCurrencyRupee className="inline mb-1" />{projectReport?.response[5]?.project_amount}</p>
                                 <p className="text-sm text-lightdark font-merri italic font-bold ">Payment Received Projects</p>
                             </div>
-                            <Link to="#" className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</Link>
+                            <button type="button" onClick={()=>{projectListByCategory("Payment Received Projects", "/project-list/billed-closed", "2" , "1" , "1")}} className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"><PiArrowFatLinesRightFill className="inline me-1" />More Info</button>
                         </div>
                     </div>
                     <div className="grid 2xl:grid-cols-2 grid-cols-1 gap-5">

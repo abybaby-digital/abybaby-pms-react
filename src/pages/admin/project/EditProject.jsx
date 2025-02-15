@@ -107,7 +107,8 @@ const EditProject = ({ project }) => {
     value: item.id,
     label: item.name,
   }));
-  console.log(branchManagerOptions);
+  //   console.log(branchManagerOptions);
+ 
 
   // Fetch Client Service List
   const { data: clientServiceList } = useQuery({
@@ -124,6 +125,28 @@ const EditProject = ({ project }) => {
       return await getOtherList(token, Cs);
     },
   });
+
+   //  branch manager preselect
+   const userBM = project?.business_manager_id?.split(",")?.map(Number);
+   const filterselectedBM = branchManagerList?.response?.filter((item) =>
+     userBM?.includes(item.id)
+   );
+   const preselectedBM = filterselectedBM?.map((item) => ({
+     value: item.id,
+     label: item.name,
+   }));
+   console.log("project bm", preselectedBM);
+ 
+   // client service preselect
+   const userCS = project?.client_service_id?.split(",")?.map(Number);
+   const filterselectedCS = clientServiceList?.response?.filter((item) =>
+     userCS?.includes(item.id)
+   );
+   const preselectedCS = filterselectedCS?.map((item) => ({
+     value: item.id,
+     label: item.name,
+   }));
+   console.log(preselectedCS);
 
   // Initialize form with existing project data
   // Initialize form with useForm hook but no defaultValues initially
@@ -147,16 +170,18 @@ const EditProject = ({ project }) => {
       company_id: project?.company_id,
       vertical_head_id: VH_id?.id,
       project_status: project?.status,
+      branch_manager_id: preselectedBM,
+      client_service_id: preselectedCS,
     },
   });
 
   const [clientSelect, setClientSelect] = useState(project?.client_id);
 
   // Watch selected values
-//   const selectedVerticalHead = watch("vertical_head_id");
+  //   const selectedVerticalHead = watch("vertical_head_id");
   // console.log(selectedVerticalHead);
 
-//   const selectedBranchManager = watch("branch_manager_id");
+  //   const selectedBranchManager = watch("branch_manager_id");
   const selectedClientService = watch("client_service_id")?.map(
     (item) => item.value
   );
@@ -191,8 +216,8 @@ const EditProject = ({ project }) => {
 
       if (value.status === 200 || value.status === 201) {
         toast.success("Project updated successfully!");
-        // setModal(false);
-        // setRefetchList(!refetchList);
+        setModal(false);
+        setRefetchList(!refetchList);
       } else {
         toast.error(value?.message || "Error updating project");
       }
@@ -205,7 +230,7 @@ const EditProject = ({ project }) => {
   const onSubmit = (data) => {
     console.log(data);
     console.log(project_id);
-    // editProjectMutation.mutate(data);
+    editProjectMutation.mutate(data);
   };
 
   useEffect(() => {
@@ -217,12 +242,13 @@ const EditProject = ({ project }) => {
   }, [watch("vertical_head_id")]);
 
   useEffect(() => {
-    const selectedBranchManager = watch("branch_manager_id")?.map((item) => (item.value.toString()));
+    const selectedBranchManager = watch("branch_manager_id")?.map((item) =>
+      item.value.toString()
+    );
     setBm(selectedBranchManager?.join(","));
   }, [watch("branch_manager_id")]);
 
-//   console.log("Bm", Bm);
-  
+  //   console.log("Bm", Bm);
 
   // useEffect(() => {
   //     setValue("project_status", project.status); // Set default selection
@@ -380,6 +406,10 @@ const EditProject = ({ project }) => {
             render={({ field }) => (
               <Select
                 {...field}
+                onChange={(selectedOption) => {
+                  setValue("branch_manager_id", selectedOption); // Update the vertical_head_id
+                  setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                }}
                 options={branchManagerList?.response?.map((item) => ({
                   value: item.id,
                   label: item.name,
