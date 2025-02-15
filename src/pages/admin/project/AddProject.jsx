@@ -26,15 +26,6 @@ export default function AddProject() {
     const selectedBranchManager = watch("branch_manager_id")?.map((item) => (item.value.toString()));
     const selectedClientService = watch("client_service_id")?.map((item) => (item.value.toString()));
 
-
-    // const VH_id = selectedVerticalHead?.map(Number);
-    // console.log("VH", selectedVerticalHead);
-    //  console.log(selectedBranchManager?.join(","));
-    //  console.log(selectedClientService?.join(","));
-    // const VHoptions = verticalHeadList?.response?.map((item) => ({ value: item.id, label: item.name_prefix }));
-    // const VHnames = VHoptions?.filter((item) => selectedVerticalHead?.map(Number).includes(item.value));
-
-
     // Fetch Branch List
     const { data: branchList } = useQuery({
         queryKey: ["branch-list"],
@@ -68,11 +59,7 @@ export default function AddProject() {
     });
 
     const selected_vh_names = verticalHeadList?.response.find((item) => item.id === selectedVerticalHead?.value);
-    // console.log("VH", watch("vertical_head_id"));
-
-    // const verticalHeadId = watch("vertical_head_id")?.value;
-    // const VHname = verticalHeadList?.response?.find((item) => item.id === verticalHeadId)?.name;
-
+    
 
     // Fetch Branch Manager List
     const { data: branchManagerList } = useQuery({

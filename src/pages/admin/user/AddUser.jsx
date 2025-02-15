@@ -49,7 +49,7 @@ export default function AddUser() {
     const selectedBranchManager = watch("branch_manager_id")?.map((item) => (item.value.toString())).join(",");
     const selectedClientService = watch("client_service_id")?.map((item) => (item.value.toString())).join(",");
 
-    console.log("bm", selectedVerticalHead);
+    // console.log("bm", selectedVerticalHead);
 
 
 

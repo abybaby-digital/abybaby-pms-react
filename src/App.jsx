@@ -84,7 +84,7 @@ const App = () => {
           <PrimeReactProvider>
             <Toaster position="bottom-right" reverseOrder={false} />
             {/* <ScrollToTop /> */}
-            <Suspense fallback={<div className="loading-spinner">Loading...</div>}>
+            <Suspense>
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/change-password" element={<ChangePassword />} />
