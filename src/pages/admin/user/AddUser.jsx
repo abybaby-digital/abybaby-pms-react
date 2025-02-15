@@ -111,9 +111,6 @@ export default function AddUser() {
 
     });
 
-
-
-
     // Mutation for adding the user
     const addUserMutation = useMutation({
         mutationFn: async (data) => {
@@ -268,7 +265,7 @@ export default function AddUser() {
                             }
 
                             {
-                                selectedRole?.label === "BM" ||
+                                
                                     selectedRole?.label === "CS" ||
                                     selectedRole?.label === "Others" ?
                                     (

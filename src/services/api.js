@@ -272,7 +272,7 @@ export const editVendor = async (
       },
     }
   );
-  return response.data.result.response;
+  return response.data.result;
 };
 
 // VENDOR LIST
@@ -814,6 +814,7 @@ export const addUser = async (
 export const editUser = async (
   token,
   id,
+  name_prefix,
   name,
   email,
   role_id,
@@ -836,6 +837,7 @@ export const editUser = async (
     // Append all form data fields
     formData.append("id", id);
     formData.append("name", name);
+    formData.append("name_prefix", name_prefix);
     formData.append("email", email);
     formData.append("role_id", role_id);
     formData.append("state_id", state_id);

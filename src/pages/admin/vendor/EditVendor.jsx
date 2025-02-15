@@ -10,7 +10,7 @@ import ButtonLoader from "../../../components/common/ButtonLoader";
 
 const EditVendor = ({ vendor }) => {
     console.log(vendor);
-    
+
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const { refetchList, setRefetchList, setModal } = useContext(dialogOpenCloseContext);
@@ -78,11 +78,18 @@ const EditVendor = ({ vendor }) => {
                 data.vendor_status ? "1" : "0" // Convert boolean status to "1" or "0"
             );
         },
-        onSuccess: () => {
-            toast.success("Vendor updated successfully!");
-            setModal(false);  // Close the modal (if used)
-            setRefetchList(!refetchList);  // Trigger refetch for the vendor list
-            navigate("/vendor-list"); // Optionally, navigate after success
+        onSuccess: (response) => {
+            console.log(response);
+            
+            if (response.status === 200 || response.status === 201) {
+                toast.success("Vendor updated successfully!");
+                setModal(false);  // Close the modal (if used)
+                setRefetchList(!refetchList);  // Trigger refetch for the vendor list
+                navigate("/vendor-list"); // Optionally, navigate after success
+            }
+            else{
+                toast.error("Something went wrong ..")
+            }
         },
         onError: (error) => {
             toast.error(error?.message || "Error updating vendor");

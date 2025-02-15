@@ -5,7 +5,7 @@ import { editProject, getBranchList, getBranchManagerList, getClientList, getCli
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import Select from 'react-select';
@@ -24,7 +24,23 @@ const EditProject = ({ project }) => {
 
     // Initialize form with existing project data
     // Initialize form with useForm hook but no defaultValues initially
-    const { register, handleSubmit, control, formState: { errors }, watch, setValue } = useForm();
+    const { register, handleSubmit, control, formState: { errors }, watch, setValue } = useForm({
+        defaultValues: {
+            project_number: project?.project_number,
+            project_name: project?.project_name,
+            quotation_no: project?.quotation_no,
+            project_amount: Math.floor(project?.project_amount),
+            project_start_date: project?.project_start_date,
+            project_end_date: project?.project_end_date,
+            client_id: project?.client_id,
+            branch_id: project?.branch_id ,
+            company_id: project?.company_id,
+            vertical_head_id: project?.vertical_head_id,
+            project_status: project?.status,
+        }
+    });
+
+    const [clientSelect, setClientSelect] = useState(project?.client_id);
 
     // Watch selected values
     const selectedVerticalHead = watch("vertical_head_id");
@@ -150,31 +166,12 @@ const EditProject = ({ project }) => {
     const onSubmit = (data) => {
         console.log(data);
         console.log(project_id);
-        editProjectMutation.mutate(data);
+        // editProjectMutation.mutate(data);
     };
 
     // useEffect(() => {
     //     setValue("project_status", project.status); // Set default selection
     // }, [setValue]);
-
-
-
-    // Set values in the form when the project data is available
-    useEffect(() => {
-        // Setting values only if project is available
-        setValue("project_number", project.project_number);
-        setValue("project_name", project.project_name);
-        setValue("quotation_no", project.quotation_no);
-        setValue("project_amount", Math.floor(project.project_amount));
-        setValue("project_start_date", project.project_start_date);
-        setValue("project_end_date", project.project_end_date);
-        setValue("project_status", project.status);
-        // setValue("vertical_head_id", project.status);
-        // setValue("client_service_id", filteredCS ? filteredCS : null);
-        // setValue("branch_manager_id", filteredBM ? filteredBM : null);
-    }, []);
-
-
 
 
     return (
@@ -225,10 +222,11 @@ const EditProject = ({ project }) => {
                 {/* Client Select Field */}
                 <div className="form-group">
                     <label htmlFor="client_id">Client <span className="text-red-600">*</span></label>
-                    <select {...register("client_id", { required: "Client is required" })}>
+                    <select {...register("client_id", { required: "Client is required" })}
+                    >
                         <option value="">Select Client</option>
                         {clientListOptions?.map((client) => (
-                            <option key={client.value} value={client.value} selected={project.client_id === client.value}>
+                            <option key={client.value} value={client.value} >
                                 {client.label}
                             </option>
                         ))}
@@ -242,7 +240,7 @@ const EditProject = ({ project }) => {
                     <select {...register("branch_id", { required: "Branch is required" })}>
                         <option value="">Select Branch</option>
                         {branchListOptions?.map((branch) => (
-                            <option key={branch.value} value={branch.value} selected={project.branch_id === branch.value}>
+                            <option key={branch.value} value={branch.value}>
                                 {branch.label}
                             </option>
                         ))}
@@ -253,10 +251,10 @@ const EditProject = ({ project }) => {
                 {/* Company Select Field */}
                 <div className="form-group">
                     <label htmlFor="company_id">Company <span className="text-red-600">*</span></label>
-                    <select {...register("company_id", { required: "Company is required" })}>
+                    <select {...register("company_id", { required: "Company is required" })} >
                         <option value="">Select Company</option>
                         {companyListOptions?.map((company) => (
-                            <option key={company.value} value={company.value} selected={project.company_id === company.value}>
+                            <option key={company.value} value={company.value} >
                                 {company.label}
                             </option>
                         ))}
@@ -270,7 +268,7 @@ const EditProject = ({ project }) => {
                     <select {...register("vertical_head_id", { required: "Vertical Head is required" })}>
                         <option value="">Select Vertical Head</option>
                         {verticalHeadOptions?.map((verticalHead) => (
-                            <option key={verticalHead.value} value={verticalHead.value} selected={+project.vertical_head_id === verticalHead.value} >
+                            <option key={verticalHead.value} value={verticalHead.value}  >
                                 {verticalHead.label}
                             </option>
                         ))}
@@ -346,7 +344,7 @@ const EditProject = ({ project }) => {
                         Quotation No <span className="text-red-600">*</span>
                     </label>
                     <input
-                        type="number"
+                        type="text"
                         className="block"
                         id="quotation_no"
                         placeholder="Quotation Number"
@@ -461,7 +459,7 @@ const EditProject = ({ project }) => {
                         )}
                     /> */}
                     <select {...register("project_status", { required: "Project Status is required" })}>
-                        <option value="" selected>Select Vertical Head</option>
+                        <option value="" selected>Select Status</option>
                         <option value="1">Running</option>
                         <option value="0">Closed</option>
                         <option value="2">Cancelled</option>

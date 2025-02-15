@@ -357,7 +357,7 @@ export default function AddProject() {
                                     Quotation No <span className="text-red-600">*</span>
                                 </label>
                                 <input
-                                    type="number"
+                                    type="text"
                                     className="block"
                                     id="quotation_no"
                                     placeholder="Project Amount"

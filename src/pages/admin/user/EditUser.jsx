@@ -17,9 +17,32 @@ export default function EditUser({ user }) {
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const { refetchList, setRefetchList, setModal } = useContext(dialogOpenCloseContext);
+    console.log(user);
 
     // Profile Image Preview State
     const [profilePreview, setProfilePreview] = useState(user.profile_img || null);
+
+
+    // Fetch Data for Select Fields
+    const { data: roleList } = useQuery({ queryKey: ["role-list"], queryFn: () => getRoleList(token) });
+    const { data: branchList } = useQuery({ queryKey: ["branch-list"], queryFn: () => getBranchList(token) });
+    const { data: companyList } = useQuery({ queryKey: ["company-list"], queryFn: () => getCompanyList(token) });
+    const { data: stateList } = useQuery({ queryKey: ["state-list"], queryFn: () => getStateList(token) });
+
+    const stateOptions = stateList?.response?.map(state => ({ value: state.id, label: state.state_name }));
+
+    // console.log(stateOptions[0]);
+
+
+    // Fetch Data for Conditional Fields
+    const { data: verticalHeadList } = useQuery({ queryKey: ["vertical-head-list"], queryFn: () => getVerticalHeadList(token) });
+    const { data: branchManagerList } = useQuery({ queryKey: ["branch-manager-list"], queryFn: () => getBranchManagerList(token, user.vertical_head_id) });
+    const { data: clientServiceList } = useQuery({ queryKey: ["client-service-list"], queryFn: () => getClientServiceList(token, user.branch_manager_id) });
+    const { data: otherServiceList } = useQuery({ queryKey: ["other-service-list"], queryFn: () => getOtherList(token, user.client_service_id) });
+    const VH_w_vh = verticalHeadList?.response?.find((item) => item.id === user.name_prefix_id);
+    // vertical head when role is not vh
+    const VH_wo_vh = verticalHeadList?.response.find((item) => item?.vertical_head_id === user?.vertical_head_id);
+    console.log(VH_wo_vh);
 
     const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
         defaultValues: {
@@ -29,7 +52,7 @@ export default function EditUser({ user }) {
             // state_id: user.state_name ? user.state_name.split(",").map((name,idx)  => ({ value: user.state_id[idx], label: name })) : [],
             company_id: { value: user.company_id, label: user.company_name },
             branch_id: { value: user.branch_id, label: user.branch_name },
-            vertical_head_id: user.vertical_head_id ? { value: user.vertical_head_id, label: user.vertical_head_name } : null,
+            vertical_head_id: user.name_prefix ? { value: VH_w_vh?.id, label: VH_w_vh?.name } : { value: VH_wo_vh?.id, label: VH_wo_vh?.name },
             branch_manager_id: user.branch_manager_id ? user.branch_manager_id.split(",").map(id => ({ value: id, label: id })) : [],
             client_service_id: user.client_service_id ? user.client_service_id.split(",").map(id => ({ value: id, label: id })) : [],
             other_service_id: user.other_service_id ? user.other_service_id.split(",").map(id => ({ value: id, label: id })) : [],
@@ -40,6 +63,10 @@ export default function EditUser({ user }) {
             view_status: user.view_status === "1"
         }
     });
+
+    // Watch Role Selection
+    const selectedRole = watch("role_id");
+    console.log("selected role", selectedRole);
 
     // Profile Image Watch & Preview
     const profileImgFile = watch("profile_img");
@@ -54,25 +81,7 @@ export default function EditUser({ user }) {
         }
     }, [profileImgFile]);
 
-    // Watch Role Selection
-    const selectedRole = watch("role_id");
 
-    // Fetch Data for Select Fields
-    const { data: roleList } = useQuery({ queryKey: ["role-list"], queryFn: () => getRoleList(token) });
-    const { data: branchList } = useQuery({ queryKey: ["branch-list"], queryFn: () => getBranchList(token) });
-    const { data: companyList } = useQuery({ queryKey: ["company-list"], queryFn: () => getCompanyList(token) });
-    const { data: stateList } = useQuery({ queryKey: ["state-list"], queryFn: () => getStateList(token) });
-
-    const stateOptions = stateList?.response?.map(state => ({ value: state.id, label: state.state_name }));
-
-    // console.log(stateOptions[0]);
-    
-
-    // Fetch Data for Conditional Fields
-    const { data: verticalHeadList } = useQuery({ queryKey: ["vertical-head-list"], queryFn: () => getVerticalHeadList(token) });
-    const { data: branchManagerList } = useQuery({ queryKey: ["branch-manager-list"], queryFn: () => getBranchManagerList(token, user.vertical_head_id) });
-    const { data: clientServiceList } = useQuery({ queryKey: ["client-service-list"], queryFn: () => getClientServiceList(token, user.branch_manager_id) });
-    const { data: otherServiceList } = useQuery({ queryKey: ["other-service-list"], queryFn: () => getOtherList(token, user.client_service_id) });
 
     // Mutation for updating the user
     const editUserMutation = useMutation({
@@ -140,7 +149,7 @@ export default function EditUser({ user }) {
                     </div>
 
                     {/* Vertical Head */}
-                    {selectedRole?.label === "BM" || selectedRole?.label === "CS" || selectedRole?.label === "Others" ? (
+                    {selectedRole?.label === "VH" || selectedRole?.label === "BM" || selectedRole?.label === "CS" || selectedRole?.label === "Others" ? (
                         <div className="form-group">
                             <label>Vertical Head</label>
                             <Controller

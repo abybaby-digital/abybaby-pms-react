@@ -17,7 +17,7 @@ import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 import EditUser from "./EditUser";
 
-const ViewUser = ({ user, add_or_edit }) => {
+const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleList }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
 
     return (
@@ -37,9 +37,9 @@ const ViewUser = ({ user, add_or_edit }) => {
                         add_or_edit === "view" ? (
                             <div className="flex flex-col items-center gap-4">
                                 {/* Profile Image */}
-                                <img 
-                                    src={user?.profile_img} 
-                                    alt="Profile" 
+                                <img
+                                    src={user?.profile_img}
+                                    alt="Profile"
                                     className="w-24 h-24 rounded-full border shadow"
                                 />
 
@@ -114,7 +114,10 @@ const ViewUser = ({ user, add_or_edit }) => {
                                 </Table>
                             </div>
                         ) : (
-                            <EditUser user={user} />
+                            <EditUser user={user} roleList={roleList}
+                            branchList={branchList}
+                            companyList={companyList}
+                            stateList={stateList} />
                         )
                     }
                 </DialogDescription>
