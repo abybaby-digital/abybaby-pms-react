@@ -17,7 +17,7 @@ export default function EditUser({ user }) {
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const { refetchList, setRefetchList, setModal } = useContext(dialogOpenCloseContext);
-    console.log(user);
+    console.log(user.business_manager_id?.split(",").map(Number));
 
     // Profile Image Preview State
     const [profilePreview, setProfilePreview] = useState(user.profile_img || null);
@@ -43,6 +43,15 @@ export default function EditUser({ user }) {
     // vertical head when role is not vh
     const VH_wo_vh = verticalHeadList?.response.find((item) => item?.vertical_head_id === user?.vertical_head_id);
     console.log(VH_wo_vh);
+
+
+    // branch manager preselect
+    const userBM = user?.business_manager_id?.split(",")?.map(Number);
+    const filterselectedBM = branchManagerList?.response?.filter((item) => userBM.includes(item.id));
+    const preselectedBM = filterselectedBM.map((item) => ({value:item.id , label: item.name }));
+    console.log(preselectedBMs);
+    
+
 
     const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
         defaultValues: {

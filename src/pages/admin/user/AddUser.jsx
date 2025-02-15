@@ -265,8 +265,8 @@ export default function AddUser() {
                             }
 
                             {
-                                
-                                    selectedRole?.label === "CS" ||
+
+                                selectedRole?.label === "CS" ||
                                     selectedRole?.label === "Others" ?
                                     (
 
