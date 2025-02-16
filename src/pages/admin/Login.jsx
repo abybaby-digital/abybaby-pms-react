@@ -3,6 +3,7 @@ import pmsLogInBg from "../../assets/images/loginbg.png"
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import SplashScreen from "../../components/common/SplashScreen";
 // import kvadminloginbanner from "../../assets/images/admin-login-banner.jpg"
 
 
@@ -19,10 +20,14 @@ export default function Login() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 " style={{ background: `linear-gradient(#141414e6, #ffffffb7),url(${pmsLogInBg}) no-repeat top/cover` }}>
-      <div className="w-full max-w-sm">
-        <LoginForm />
+    <>
+      <SplashScreen />
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 " style={{ background: `linear-gradient(#141414e6, #ffffffb7),url(${pmsLogInBg}) no-repeat top/cover` }}>
+        <div className="w-full max-w-sm">
+          <LoginForm />
+        </div>
       </div>
-    </div>
+    </>
+
   )
 }

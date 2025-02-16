@@ -45,6 +45,7 @@
     "input-otp": "^1.4.1",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.460.0",
     "motion": "^11.11.17",
     "primereact": "^10.9.2",
