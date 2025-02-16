@@ -54,9 +54,9 @@ export default function PaymentRequisitionList() {
     const filteredPayments = paymentList?.response?.filter(payment => {
         const keyword = debouncedSearchKeyword.toLowerCase();
         return (
-            payment.project_name.toLowerCase().includes(keyword) ||
-            payment.received_no.toLowerCase().includes(keyword) ||
-            payment.received_details.toLowerCase().includes(keyword)
+            payment.project_name?.toLowerCase()?.includes(keyword) ||
+            payment.received_no?.toLowerCase()?.includes(keyword) ||
+            payment.received_details?.toLowerCase()?.includes(keyword)
         );
     });
 

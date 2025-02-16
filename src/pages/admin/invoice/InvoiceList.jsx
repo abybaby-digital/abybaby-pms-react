@@ -55,9 +55,9 @@ export default function InvoiceList() {
     const filteredInvoices = invoiceList?.response?.filter(invoice => {
         const keyword = debouncedSearchKeyword.toLowerCase();
         return (
-            invoice.project_name.toLowerCase().includes(keyword) ||
-            invoice.invoice_no.toLowerCase().includes(keyword) ||
-            invoice.invoice_details.toLowerCase().includes(keyword)
+            invoice.project_name?.toLowerCase()?.includes(keyword) ||
+            invoice.invoice_no?.toLowerCase()?.includes(keyword) ||
+            invoice.invoice_details?.toLowerCase()?.includes(keyword)
         );
     });
 
