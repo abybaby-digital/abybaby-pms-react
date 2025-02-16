@@ -15,9 +15,9 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // Increase to 4 MiB
       },
       manifest: {
-        name: 'Krishi Vikas Udyog',
-        short_name: 'Krishi Vikas Udyog',
-        description: 'A digital marketplace for farmers and buyers',
+        name: 'Abybaby PMS',
+        short_name: 'Abybaby PMS',
+        description: 'Abybaby Ecom. Pvt Ltd',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
