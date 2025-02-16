@@ -29,7 +29,7 @@ export default function EditUser({ user }) {
   const { refetchList, setRefetchList, setModal } = useContext(
     dialogOpenCloseContext
   );
-  console.log(user.business_manager_id?.split(",").map(Number));
+  console.log("selected user",user);
 
   // Profile Image Preview State
   const [profilePreview, setProfilePreview] = useState(
@@ -39,19 +39,19 @@ export default function EditUser({ user }) {
   const [bmId, setBMid] = useState(user?.client_service_id);
 
   // Fetch Data for Select Fields
-  const { data: roleList } = useQuery({
+  const { data: roleList, isLoading: roleLoading } = useQuery({
     queryKey: ["role-list"],
     queryFn: () => getRoleList(token),
   });
-  const { data: branchList } = useQuery({
+  const { data: branchList, isLoading: branchLoading } = useQuery({
     queryKey: ["branch-list"],
     queryFn: () => getBranchList(token),
   });
-  const { data: companyList } = useQuery({
+  const { data: companyList, isLoading: companyLoading } = useQuery({
     queryKey: ["company-list"],
     queryFn: () => getCompanyList(token),
   });
-  const { data: stateList } = useQuery({
+  const { data: stateList , isLoading: stateLoading} = useQuery({
     queryKey: ["state-list"],
     queryFn: () => getStateList(token),
   });
@@ -64,19 +64,19 @@ export default function EditUser({ user }) {
   // console.log(stateOptions[0]);
 
   // Fetch Data for Conditional Fields
-  const { data: verticalHeadList } = useQuery({
+  const { data: verticalHeadList, isLoading: vhLoading } = useQuery({
     queryKey: ["vertical-head-list"],
     queryFn: () => getVerticalHeadList(token),
   });
-  const { data: branchManagerList } = useQuery({
+  const { data: branchManagerList, isLoading: bmLoading } = useQuery({
     queryKey: ["branch-manager-list", vhId],
     queryFn: () => getBranchManagerList(token, vhId),
   });
-  const { data: clientServiceList } = useQuery({
+  const { data: clientServiceList, isLoading: csLoading } = useQuery({
     queryKey: ["client-service-list", bmId],
     queryFn: () => getClientServiceList(token, bmId),
   });
-  const { data: otherServiceList } = useQuery({
+  const { data: otherServiceList, isLoading: otherList } = useQuery({
     queryKey: ["other-service-list"],
     queryFn: () => getOtherList(token, user.client_service_id),
   });
@@ -87,7 +87,7 @@ export default function EditUser({ user }) {
   const VH_wo_vh = verticalHeadList?.response.find(
     (item) => item?.vertical_head_id === user?.vertical_head_id
   );
-  console.log(VH_wo_vh);
+//   console.log(VH_wo_vh);
 
   // branch manager preselect
   const userBM = user?.business_manager_id?.split(",")?.map(Number);
@@ -98,7 +98,7 @@ export default function EditUser({ user }) {
     value: item.id,
     label: item.name,
   }));
-  console.log(preselectedBM);
+//   console.log(preselectedBM);
 
   // client service preselect
   const userCS = user?.client_service_id?.split(",")?.map(Number);
@@ -109,7 +109,7 @@ export default function EditUser({ user }) {
     value: item.id,
     label: item.name,
   }));
-  console.log(preselectedCS);
+//   console.log(preselectedCS);
 
   // state preselect
   const userStates = user?.state_id?.split(",")?.map(Number);
@@ -120,7 +120,7 @@ export default function EditUser({ user }) {
     value: item.id,
     label: item.state_name,
   }));
-  console.log(filterselectedStates);
+//   console.log(filterselectedStates);
 
   const {
     register,
@@ -140,6 +140,7 @@ export default function EditUser({ user }) {
       vertical_head_id: user.name_prefix
         ? { value: VH_w_vh?.id, label: VH_w_vh?.name }
         : { value: VH_wo_vh?.id, label: VH_wo_vh?.name },
+    // vertical_head_id: {value: +user.vertical_head_id, label: user.vertical_head_name},
       branch_manager_id: preselectedBM,
       client_service_id: user.client_service_id
         ? user.client_service_id
@@ -161,13 +162,13 @@ export default function EditUser({ user }) {
 
   // Watch Role Selection
   const selectedRole = watch("role_id");
-  console.log("selected role", selectedRole);
+//   console.log("selected role", selectedRole);
 
   //   Watch VH ID
   const getvhId = verticalHeadList?.response?.find(
     (item) => item.id === watch("vertical_head_id")?.value
   );
-  console.log("vh", vhId);
+//   console.log("vh", vhId);
   useEffect(() => {
     setVHid(getvhId?.vertical_head_id);
   }, [getvhId]);
@@ -223,7 +224,7 @@ export default function EditUser({ user }) {
       );
     },
     onSuccess: (response) => {
-      console.log(response);
+    //   console.log(response);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("User updated successfully!");
@@ -242,7 +243,7 @@ export default function EditUser({ user }) {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    // console.log(data);
     editUserMutation.mutate(data);
   };
 
@@ -300,7 +301,8 @@ export default function EditUser({ user }) {
           </div>
 
           {/* Vertical Head */}
-          {selectedRole?.label === "VH" ||
+          {
+          selectedRole?.label === "VH" ||
           selectedRole?.label === "BM" ||
           selectedRole?.label === "CS" ||
           selectedRole?.label === "Others" ? (
@@ -326,7 +328,8 @@ export default function EditUser({ user }) {
                 )}
               />
             </div>
-          ) : null}
+          ) : null
+          }
 
           {/* Branch Manager */}
           {selectedRole?.label === "CS" || selectedRole?.label === "Others" ? (
