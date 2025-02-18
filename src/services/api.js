@@ -1574,12 +1574,13 @@ export const getReport = async (token, financial_year) => {
 
 // PAYMENT REQUISITION APPROVAL
 
-export const approvePaymentRequisition = async (token, payment_requition_id, status) => {
+export const approvePaymentRequisition = async (token, payment_requition_id,approved_amount, status) => {
   try {
     const response = await api.post(
       "/payment-requisition-approved-status",
       {
         payment_requition_id: payment_requition_id,
+        approved_amount: approved_amount,
         status: status
       },
       {

@@ -234,10 +234,6 @@ export default function AddPaymentRequisition() {
                       id="requisition_amount"
                       {...register("requisition_amount", {
                         required: "Requisition Amount is required",
-                        max: {
-                          value: project_amount - requisition_amount,
-                          message: `Amount should not exceed ${project_amount - requisition_amount}`,
-                        },
                       })}
                       className="block"
                       placeholder="Enter Amount"

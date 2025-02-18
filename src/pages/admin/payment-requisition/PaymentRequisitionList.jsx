@@ -158,6 +158,7 @@ export default function PaymentRequisitionList() {
                                         <Column field="project_name" sortable header="Project Name"></Column>
                                         <Column field="vendor_name" sortable header="Vendor Name"></Column>
                                         <Column field="requisition_amount" sortable header="Requisition Amount" body={(rowData) => `₹${rowData.requisition_amount}`}></Column>
+                                        <Column field="requisition_amount" sortable header="Approved Amount" body={(rowData) => `₹${rowData.approved_amount}`}></Column>
                                         <Column field="date_of_payments" sortable header="Payment Date" body={(rowData) => new Date(rowData.date_of_payments).toLocaleDateString()}></Column>
                                         <Column field="requisition_remarks" sortable header="Remarks"></Column>
                                         <Column field="created_by_name" sortable header="Created By"></Column>

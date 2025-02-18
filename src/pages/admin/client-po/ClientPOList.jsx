@@ -55,9 +55,9 @@ export default function ClientPOList() {
     const filteredClientPOs = clientPOList?.response?.filter(clientPO => {
         const keyword = debouncedSearchKeyword.toLowerCase();
         return (
-            clientPO.project_name.toLowerCase().includes(keyword) ||
+            clientPO.project_name?.toLowerCase().includes(keyword) ||
             clientPO.po_no?.toLowerCase().includes(keyword) ||
-            clientPO.project_order_details.toLowerCase().includes(keyword)
+            clientPO.project_order_details?.toLowerCase().includes(keyword)
         );
     });
 

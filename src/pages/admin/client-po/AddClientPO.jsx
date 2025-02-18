@@ -134,10 +134,6 @@ export default function AddClientPO() {
                   id="po_amount"
                   {...register("po_amount", {
                     required: "PO Amount is required",
-                    max: {
-                      value: actualPOenter,
-                      message: `Amount cannot exceed ${actualPOenter}`,
-                    },
                   })}
                   className="block"
                   placeholder="Enter Amount"
