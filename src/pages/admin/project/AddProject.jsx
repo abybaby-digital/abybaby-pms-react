@@ -345,9 +345,9 @@ export default function AddProject() {
                 <Controller
                   name="branch_manager_id"
                   control={control}
-                  rules={{
-                    required: "At least one Branch Manager is required",
-                  }}
+                //   rules={{
+                //     required: "At least one Branch Manager is required",
+                //   }}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -381,7 +381,7 @@ export default function AddProject() {
                 <Controller
                   name="client_service_id"
                   control={control}
-                  rules={{ required: "Client Service is required" }}
+                //   rules={{ required: "Client Service is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}
