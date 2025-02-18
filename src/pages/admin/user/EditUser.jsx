@@ -29,7 +29,7 @@ export default function EditUser({ user }) {
   const { refetchList, setRefetchList, setModal } = useContext(
     dialogOpenCloseContext
   );
-  console.log("selected user",user);
+  console.log("selected user", user.selected_state);
 
   // Profile Image Preview State
   const [profilePreview, setProfilePreview] = useState(
@@ -51,7 +51,7 @@ export default function EditUser({ user }) {
     queryKey: ["company-list"],
     queryFn: () => getCompanyList(token),
   });
-  const { data: stateList , isLoading: stateLoading} = useQuery({
+  const { data: stateList, isLoading: stateLoading } = useQuery({
     queryKey: ["state-list"],
     queryFn: () => getStateList(token),
   });
@@ -87,7 +87,7 @@ export default function EditUser({ user }) {
   const VH_wo_vh = verticalHeadList?.response.find(
     (item) => item?.vertical_head_id === user?.vertical_head_id
   );
-//   console.log(VH_wo_vh);
+  //   console.log(VH_wo_vh);
 
   // branch manager preselect
   const userBM = user?.business_manager_id?.split(",")?.map(Number);
@@ -98,7 +98,7 @@ export default function EditUser({ user }) {
     value: item.id,
     label: item.name,
   }));
-//   console.log(preselectedBM);
+  //   console.log(preselectedBM);
 
   // client service preselect
   const userCS = user?.client_service_id?.split(",")?.map(Number);
@@ -109,7 +109,7 @@ export default function EditUser({ user }) {
     value: item.id,
     label: item.name,
   }));
-//   console.log(preselectedCS);
+  //   console.log(preselectedCS);
 
   // state preselect
   const userStates = user?.state_id?.split(",")?.map(Number);
@@ -120,7 +120,7 @@ export default function EditUser({ user }) {
     value: item.id,
     label: item.state_name,
   }));
-//   console.log(filterselectedStates);
+  //   console.log(filterselectedStates);
 
   const {
     register,
@@ -134,41 +134,40 @@ export default function EditUser({ user }) {
       name: user.name,
       email: user.email,
       role_id: { value: user.role_id, label: user.role_name },
-      state_id: preselectedStates,
+      state_id: user.selected_state,
       company_id: { value: user.company_id, label: user.company_name },
       branch_id: { value: user.branch_id, label: user.branch_name },
-      vertical_head_id: user.name_prefix
-        ? { value: VH_w_vh?.id, label: VH_w_vh?.name }
-        : { value: VH_wo_vh?.id, label: VH_wo_vh?.name },
-    // vertical_head_id: {value: +user.vertical_head_id, label: user.vertical_head_name},
+      // vertical_head_id: user.name_prefix
+      //   ? { value: VH_w_vh?.id, label: VH_w_vh?.name }
+      //   : { value: VH_wo_vh?.id, label: VH_wo_vh?.name },
+      vertical_head_id: { value: user.name_prefix_id, label: user.name_prefix },
       branch_manager_id: preselectedBM,
       client_service_id: user.client_service_id
         ? user.client_service_id
-            .split(",")
-            .map((id) => ({ value: id, label: id }))
+          .split(",")
+          .map((id) => ({ value: id, label: id }))
         : [],
       other_service_id: user.other_service_id
         ? user.other_service_id
-            .split(",")
-            .map((id) => ({ value: id, label: id }))
+          .split(",")
+          .map((id) => ({ value: id, label: id }))
         : [],
       contact_number: user.contact_number,
       password: "",
       user_details: user.user_details || "",
       status: user.status === "1" ? "active" : "inactive",
-      view_status: user.view_status === "1",
     },
   });
 
   // Watch Role Selection
   const selectedRole = watch("role_id");
-//   console.log("selected role", selectedRole);
+  //   console.log("selected role", selectedRole);
 
   //   Watch VH ID
   const getvhId = verticalHeadList?.response?.find(
     (item) => item.id === watch("vertical_head_id")?.value
   );
-//   console.log("vh", vhId);
+  //   console.log("vh", vhId);
   useEffect(() => {
     setVHid(getvhId?.vertical_head_id);
   }, [getvhId]);
@@ -224,7 +223,7 @@ export default function EditUser({ user }) {
       );
     },
     onSuccess: (response) => {
-    //   console.log(response);
+      //   console.log(response);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("User updated successfully!");
@@ -302,100 +301,31 @@ export default function EditUser({ user }) {
 
           {/* Vertical Head */}
           {
-          selectedRole?.label === "VH" ||
-          selectedRole?.label === "BM" ||
-          selectedRole?.label === "CS" ||
-          selectedRole?.label === "Others" ? (
-            <div className="form-group">
-              <label>Vertical Head</label>
-              <Controller
-                name="vertical_head_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    onChange={(selectedOption) => {
-                      setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
-                      setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
-                      setValue("client_service_id", []); // Reset branch_manager_id when VH changes
-                    }}
-                    options={verticalHeadList?.response?.map((item) => ({
-                      value: item.id,
-                      label: item.name,
-                    }))}
-                    components={animatedComponents}
-                  />
-                )}
-              />
-            </div>
-          ) : null
+            selectedRole?.label === "VH" ? (
+              <div className="form-group">
+                <label>Vertical Head</label>
+                <Controller
+                  name="vertical_head_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      onChange={(selectedOption) => {
+                        setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
+                        setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
+                        setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                      }}
+                      options={verticalHeadList?.response?.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                      components={animatedComponents}
+                    />
+                  )}
+                />
+              </div>
+            ) : null
           }
-
-          {/* Branch Manager */}
-          {selectedRole?.label === "CS" || selectedRole?.label === "Others" ? (
-            <div className="form-group">
-              <label>Branch Manager</label>
-              <Controller
-                name="branch_manager_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    onChange={(selectedOption) => {
-                      setValue("branch_manager_id", selectedOption); // Reset branch_manager_id when VH changes
-                      setValue("client_service_id", []); // Reset branch_manager_id when VH changes
-                    }}
-                    options={branchManagerList?.response?.map((item) => ({
-                      value: item.id,
-                      label: item.name,
-                    }))}
-                    components={animatedComponents}
-                    isMulti
-                  />
-                )}
-              />
-            </div>
-          ) : null}
-
-          {/* Client Service */}
-          {selectedRole?.label === "Others" ? (
-            <div className="form-group">
-              <label>Client Service</label>
-              <Controller
-                name="client_service_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={clientServiceList?.response?.map((item) => ({
-                      value: item.id,
-                      label: item.name,
-                    }))}
-                    components={animatedComponents}
-                    isMulti
-                  />
-                )}
-              />
-            </div>
-          ) : null}
-
-          {/* Other Services */}
-          {/* <div className="form-group">
-                        <label>Other Services</label>
-                        <Controller
-                            name="other_service_id"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    {...field}
-                                    options={otherServiceList?.response?.map(item => ({ value: item.id, label: item.name }))}
-                                    components={animatedComponents}
-                                    isMulti
-                                />
-                            )}
-                        />
-                    </div> */}
-
           {/* State */}
           <div className="form-group">
             <label>State</label>
@@ -495,12 +425,6 @@ export default function EditUser({ user }) {
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
-          </div>
-
-          {/* View Status */}
-          <div className="form-group">
-            <label>View Status</label>
-            <input type="checkbox" {...register("view_status")} />
           </div>
         </div>
         <div className="card-footer text-center">

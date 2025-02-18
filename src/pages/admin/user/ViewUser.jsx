@@ -76,7 +76,7 @@ const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleL
                                         </TableRow>
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Vertical Head :</TableCell>
-                                            <TableCell>{user?.vertical_head_name || "N/A"}</TableCell>
+                                            <TableCell>{user?.name_prefix || "N/A"}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Business Manager :</TableCell>

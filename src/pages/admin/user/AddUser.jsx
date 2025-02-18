@@ -232,10 +232,7 @@ export default function AddUser() {
                             {/* VERTICAL HEAD LIST */}
 
                             {
-                                selectedRole?.label === "VH" ||
-                                    selectedRole?.label === "BM" ||
-                                    selectedRole?.label === "CS" ||
-                                    selectedRole?.label === "Others" ?
+                                selectedRole?.label === "VH" ?
                                     (
 
                                         < div className="form-group">
@@ -263,81 +260,6 @@ export default function AddUser() {
                                     ) : null
 
                             }
-
-                            {
-
-                                selectedRole?.label === "CS" ||
-                                    selectedRole?.label === "Others" ?
-                                    (
-
-                                        <div className="form-group">
-                                            <label htmlFor="branch_manager_id">Branch Manager <span className="text-red-600">*</span></label>
-                                            <Controller
-                                                name="branch_manager_id"
-                                                control={control}
-                                                rules={{ required: "At least one Branch Manager is required" }}
-                                                render={({ field }) => (
-                                                    <Select
-                                                        {...field}
-                                                        options={branchManagerList?.response?.map(item => ({ value: item.id, label: item.name }))}
-                                                        components={animatedComponents}
-                                                        onChange={(selectedOption) => {
-                                                            setValue("branch_manager_id", selectedOption); // Update the vertical_head_id
-                                                            setValue("client_service_id", []); // Reset branch_manager_id when VH changes
-                                                        }}
-                                                        placeholder="Select Branch Manager"
-                                                        isMulti
-                                                    />
-                                                )}
-                                            />
-                                            {errors.branch_manager_id && <span className="text-red-600 text-sm">{errors.branch_manager_id.message}</span>}
-                                        </div>
-                                    ) : null
-                            }
-
-
-                            {
-                                selectedRole?.label === "Others" ?
-                                    (
-                                        <div className="form-group">
-                                            <label htmlFor="client_service_id">Client Service<span className="text-red-600">*</span></label>
-                                            <Controller
-                                                name="client_service_id"
-                                                control={control}
-                                                rules={{ required: "Client Service is required" }}
-                                                render={({ field }) => (
-                                                    <Select
-                                                        {...field}
-                                                        options={clientServiceList?.response?.map(item => ({ value: item.id, label: item.name }))}
-                                                        components={animatedComponents}
-                                                        placeholder="Select Client Service"
-                                                        isMulti
-                                                    />
-                                                )}
-                                            />
-                                            {errors.client_service_id && <span className="text-red-600 text-sm">{errors.client_service_id.message}</span>}
-                                        </div>
-                                    ) : null
-                            }
-
-                            {/* Other Service Multi-Select */}
-                            {/* <div className="form-group">
-                                <label htmlFor="other_service_id">Other Service</label>
-                                <Controller
-                                    name="other_service_id"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={otherServiceList?.response?.map(item => ({ value: item.id, label: item.name }))}
-                                            components={animatedComponents}
-                                            placeholder="Select Other Services"
-                                            isMulti
-                                        />
-                                    )}
-                                />
-                            </div> */}
-
 
                             {/* State Select Field */}
                             <div className="form-group">

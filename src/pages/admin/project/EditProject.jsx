@@ -108,7 +108,7 @@ const EditProject = ({ project }) => {
     label: item.name,
   }));
   //   console.log(branchManagerOptions);
- 
+
 
   // Fetch Client Service List
   const { data: clientServiceList } = useQuery({
@@ -126,27 +126,27 @@ const EditProject = ({ project }) => {
     },
   });
 
-   //  branch manager preselect
-   const userBM = project?.business_manager_id?.split(",")?.map(Number);
-   const filterselectedBM = branchManagerList?.response?.filter((item) =>
-     userBM?.includes(item.id)
-   );
-   const preselectedBM = filterselectedBM?.map((item) => ({
-     value: item.id,
-     label: item.name,
-   }));
-   console.log("project bm", preselectedBM);
- 
-   // client service preselect
-   const userCS = project?.client_service_id?.split(",")?.map(Number);
-   const filterselectedCS = clientServiceList?.response?.filter((item) =>
-     userCS?.includes(item.id)
-   );
-   const preselectedCS = filterselectedCS?.map((item) => ({
-     value: item.id,
-     label: item.name,
-   }));
-   console.log(preselectedCS);
+  //  branch manager preselect
+  const userBM = project?.business_manager_id?.split(",")?.map(Number);
+  const filterselectedBM = branchManagerList?.response?.filter((item) =>
+    userBM?.includes(item.id)
+  );
+  const preselectedBM = filterselectedBM?.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
+  console.log("project bm", preselectedBM);
+
+  // client service preselect
+  const userCS = project?.client_service_id?.split(",")?.map(Number);
+  const filterselectedCS = clientServiceList?.response?.filter((item) =>
+    userCS?.includes(item.id)
+  );
+  const preselectedCS = filterselectedCS?.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }));
+  console.log(preselectedCS);
 
   // Initialize form with existing project data
   // Initialize form with useForm hook but no defaultValues initially
@@ -165,13 +165,13 @@ const EditProject = ({ project }) => {
       project_amount: Math.floor(project?.project_amount),
       project_start_date: project?.project_start_date,
       project_end_date: project?.project_end_date,
-      client_id: project?.client_id,
-      branch_id: project?.branch_id,
-      company_id: project?.company_id,
-      vertical_head_id: VH_id?.id,
+      client_id: {value: project?.client_id , label: project?.client_name},
+      branch_id: {value: project?.branch_id , label: project?.branch_name},
+      company_id: {value: project?.company_id , label: project?.company_name},
+      vertical_head_id: project?.selected_vh,
       project_status: project?.status,
-      branch_manager_id: preselectedBM,
-      client_service_id: preselectedCS,
+      branch_manager_id: project?.selected_bm,
+      client_service_id: project?.selected_cs,
     },
   });
 
@@ -229,8 +229,8 @@ const EditProject = ({ project }) => {
 
   const onSubmit = (data) => {
     console.log(data);
-    console.log(project_id);
-    editProjectMutation.mutate(data);
+    // console.log(project_id);
+    // editProjectMutation.mutate(data);
   };
 
   useEffect(() => {
@@ -301,19 +301,25 @@ const EditProject = ({ project }) => {
 
         {/* Client Select Field */}
         <div className="form-group">
-          <label htmlFor="client_id">
-            Client <span className="text-red-600">*</span>
-          </label>
-          <select
-            {...register("client_id", { required: "Client is required" })}
-          >
-            <option value="">Select Client</option>
-            {clientListOptions?.map((client) => (
-              <option key={client.value} value={client.value}>
-                {client.label}
-              </option>
-            ))}
-          </select>
+          <label>Client</label>
+          <Controller
+            name="client_id"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                onChange={(selectedOption) => {
+                  setValue("client_id", selectedOption); // Update the client_id
+                  // Optionally reset other fields based on this selection
+                }}
+                options={clientListOptions?.map((client) => ({
+                  value: client.value,
+                  label: client.label,
+                }))}
+                components={animatedComponents}
+              />
+            )}
+          />
           {errors.client_id && (
             <span className="text-red-600 text-sm">
               {errors.client_id.message}
@@ -323,19 +329,25 @@ const EditProject = ({ project }) => {
 
         {/* Branch Select Field */}
         <div className="form-group">
-          <label htmlFor="branch_id">
-            Branch <span className="text-red-600">*</span>
-          </label>
-          <select
-            {...register("branch_id", { required: "Branch is required" })}
-          >
-            <option value="">Select Branch</option>
-            {branchListOptions?.map((branch) => (
-              <option key={branch.value} value={branch.value}>
-                {branch.label}
-              </option>
-            ))}
-          </select>
+          <label>Branch</label>
+          <Controller
+            name="branch_id"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                onChange={(selectedOption) => {
+                  setValue("branch_id", selectedOption); // Update the branch_id
+                  // Optionally reset other fields based on this selection
+                }}
+                options={branchListOptions?.map((branch) => ({
+                  value: branch.value,
+                  label: branch.label,
+                }))}
+                components={animatedComponents}
+              />
+            )}
+          />
           {errors.branch_id && (
             <span className="text-red-600 text-sm">
               {errors.branch_id.message}
@@ -345,19 +357,25 @@ const EditProject = ({ project }) => {
 
         {/* Company Select Field */}
         <div className="form-group">
-          <label htmlFor="company_id">
-            Company <span className="text-red-600">*</span>
-          </label>
-          <select
-            {...register("company_id", { required: "Company is required" })}
-          >
-            <option value="">Select Company</option>
-            {companyListOptions?.map((company) => (
-              <option key={company.value} value={company.value}>
-                {company.label}
-              </option>
-            ))}
-          </select>
+          <label>Company</label>
+          <Controller
+            name="company_id"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                onChange={(selectedOption) => {
+                  setValue("company_id", selectedOption); // Update the company_id
+                  // Optionally reset other fields based on this selection
+                }}
+                options={companyListOptions?.map((company) => ({
+                  value: company.value,
+                  label: company.label,
+                }))}
+                components={animatedComponents}
+              />
+            )}
+          />
           {errors.company_id && (
             <span className="text-red-600 text-sm">
               {errors.company_id.message}
@@ -365,8 +383,9 @@ const EditProject = ({ project }) => {
           )}
         </div>
 
+
         {/* Vertical Head Select Field */}
-        <div className="form-group">
+        {/* <div className="form-group">
           <label htmlFor="vertical_head_id">
             Vertical Head <span className="text-red-600">*</span>
           </label>
@@ -392,6 +411,29 @@ const EditProject = ({ project }) => {
               {errors.vertical_head_id.message}
             </span>
           )}
+        </div> */}
+
+        <div className="form-group">
+          <label>Vertical Head</label>
+          <Controller
+            name="vertical_head_id"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                onChange={(selectedOption) => {
+                  setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
+                  setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
+                  setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                }}
+                options={verticalHeadList?.response?.map((item) => ({
+                  value: item.id,
+                  label: item.name,
+                }))}
+                components={animatedComponents}
+              />
+            )}
+          />
         </div>
 
         {/* Branch Manager Multi-Select Field */}
