@@ -229,8 +229,8 @@ const EditProject = ({ project }) => {
 
   const onSubmit = (data) => {
     console.log(data);
-    // console.log(project_id);
-    // editProjectMutation.mutate(data);
+    console.log(project_id);
+    editProjectMutation.mutate(data);
   };
 
   useEffect(() => {
