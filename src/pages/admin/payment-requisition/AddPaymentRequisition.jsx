@@ -7,14 +7,25 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
-import { addPaymentRequisition, getProjectList, getBranchList, getVendorList } from "../../../services/api";
+import {
+  addPaymentRequisition,
+  getProjectList,
+  getBranchList,
+  getVendorList,
+} from "../../../services/api";
 import { useState, useEffect } from "react";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddPaymentRequisition() {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm();
 
   // State to hold vendor details
   const [selectedVendor, setSelectedVendor] = useState(null);
@@ -28,15 +39,16 @@ export default function AddPaymentRequisition() {
   // console.log(entered_requisition_amount);
 
   const getSingleProject = (id) => {
-    const singleProject = projectList?.response?.find(project => project.id === id);
+    const singleProject = projectList?.response?.find(
+      (project) => project.id === id
+    );
     setSingleProj(singleProject);
-  }
+  };
 
   useEffect(() => {
     getSingleProject(+project_id);
     console.log(singlePorj);
-
-  }, [project_id])
+  }, [project_id]);
 
   const project_amount = Math.floor(+singlePorj?.project_amount);
   const requisition_amount = Math.floor(+singlePorj?.requition_amount);
@@ -44,25 +56,38 @@ export default function AddPaymentRequisition() {
   console.log(entered_requisition_amount);
   console.log(project_amount);
 
+  // DATE SELECTION LOGIC
+  // Inside your AddPaymentRequisition component
+  const [minDate, setMinDate] = useState("");
 
+  // Effect hook to calculate the minimum date based on current time
+  useEffect(() => {
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours();
 
+    // If the current hour is greater than or equal to 16 (4 PM), set the minimum date to tomorrow
+    if (currentHour >= 16) {
+      currentDate.setDate(currentDate.getDate() + 1); // Set to the next day
+    }
 
+    // Format the date to YYYY-MM-DD format
+    const formattedDate = currentDate.toISOString().split("T")[0];
+    setMinDate(formattedDate); // Set the minimum date to the next day (or today if before 4 PM)
+  }, []);
 
   // Fetch projects, branches, and vendors from APIs
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
     queryFn: async () => {
       return await getProjectList(token);
-    }
+    },
   });
-
-
 
   const { data: vendorList = [], isLoading: isLoadingVendors } = useQuery({
     queryKey: ["vendor-list"],
     queryFn: async () => {
       return await getVendorList(token);
-    }
+    },
   });
 
   // Add Payment Requisition Mutation
@@ -98,7 +123,9 @@ export default function AddPaymentRequisition() {
   // Handle vendor selection
   const handleVendorChange = (e) => {
     const vendorId = e.target.value;
-    const selectedVendor = vendorList?.response?.find(vendor => vendor.id === parseInt(vendorId));
+    const selectedVendor = vendorList?.response?.find(
+      (vendor) => vendor.id === parseInt(vendorId)
+    );
     setSelectedVendor(selectedVendor);
 
     // If vendor is selected, update the bank details in the form
@@ -142,13 +169,16 @@ export default function AddPaymentRequisition() {
               ADD PAYMENT REQUISITION
             </h2>
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
-
               {/* Project ID Dropdown */}
               <div className="form-group">
-                <label htmlFor="project_id">Project Name <span className="text-red-600">*</span></label>
+                <label htmlFor="project_id">
+                  Project Name <span className="text-red-600">*</span>
+                </label>
                 <select
                   id="project_id"
-                  {...register("project_id", { required: "Project ID is required" })}
+                  {...register("project_id", {
+                    required: "Project ID is required",
+                  })}
                   className="block w-full"
                 >
                   <option value="">Select Project</option>
@@ -158,15 +188,23 @@ export default function AddPaymentRequisition() {
                     </option>
                   ))}
                 </select>
-                {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
+                {errors.project_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.project_id.message}
+                  </span>
+                )}
               </div>
 
               {/* Vendor ID Dropdown */}
               <div className="form-group">
-                <label htmlFor="vendor_id">Vendor Name <span className="text-red-600">*</span></label>
+                <label htmlFor="vendor_id">
+                  Vendor Name <span className="text-red-600">*</span>
+                </label>
                 <select
                   id="vendor_id"
-                  {...register("vendor_id", { required: "Vendor ID is required" })}
+                  {...register("vendor_id", {
+                    required: "Vendor ID is required",
+                  })}
                   className="block w-full"
                   onChange={handleVendorChange} // Handle vendor change
                 >
@@ -177,12 +215,18 @@ export default function AddPaymentRequisition() {
                     </option>
                   ))}
                 </select>
-                {errors.vendor_id && <span className="text-red-600 text-sm">{errors.vendor_id.message}</span>}
+                {errors.vendor_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.vendor_id.message}
+                  </span>
+                )}
               </div>
 
               {/* Bank Name Input */}
               <div className="form-group">
-                <label htmlFor="bank_name">Bank Name <span className="text-red-600">*</span></label>
+                <label htmlFor="bank_name">
+                  Bank Name <span className="text-red-600">*</span>
+                </label>
                 <input
                   readOnly
                   type="text"
@@ -191,65 +235,86 @@ export default function AddPaymentRequisition() {
                   className="block"
                   placeholder="Enter Bank Name"
                 />
-                {errors.bank_name && <span className="text-red-600 text-sm">{errors.bank_name.message}</span>}
+                {errors.bank_name && (
+                  <span className="text-red-600 text-sm">
+                    {errors.bank_name.message}
+                  </span>
+                )}
               </div>
 
               {/* Bank Account Input */}
               <div className="form-group">
-                <label htmlFor="bank_account">Bank Account No <span className="text-red-600">*</span></label>
+                <label htmlFor="bank_account">
+                  Bank Account No <span className="text-red-600">*</span>
+                </label>
                 <input
                   readOnly
                   type="text"
                   id="bank_account"
-                  {...register("bank_account", { required: "Bank Account No is required" })}
+                  {...register("bank_account", {
+                    required: "Bank Account No is required",
+                  })}
                   className="block"
                   placeholder="Enter Bank Account No"
                 />
-                {errors.bank_account && <span className="text-red-600 text-sm">{errors.bank_account.message}</span>}
+                {errors.bank_account && (
+                  <span className="text-red-600 text-sm">
+                    {errors.bank_account.message}
+                  </span>
+                )}
               </div>
 
               {/* IFSC Code Input */}
               <div className="form-group">
-                <label htmlFor="ifsc_code">IFSC Code <span className="text-red-600">*</span></label>
+                <label htmlFor="ifsc_code">
+                  IFSC Code <span className="text-red-600">*</span>
+                </label>
                 <input
                   readOnly
                   type="text"
                   id="ifsc_code"
-                  {...register("ifsc_code", { required: "IFSC Code is required" })}
+                  {...register("ifsc_code", {
+                    required: "IFSC Code is required",
+                  })}
                   className="block"
                   placeholder="Enter IFSC Code"
                 />
-                {errors.ifsc_code && <span className="text-red-600 text-sm">{errors.ifsc_code.message}</span>}
+                {errors.ifsc_code && (
+                  <span className="text-red-600 text-sm">
+                    {errors.ifsc_code.message}
+                  </span>
+                )}
               </div>
 
               {/* Requisition Amount Input */}
-              {
-                watch("project_id") !== "" ? (
-                  <div className="form-group">
-                    <label htmlFor="requisition_amount">
-                      Requisition Amount <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="requisition_amount"
-                      {...register("requisition_amount", {
-                        required: "Requisition Amount is required",
-                      })}
-                      className="block"
-                      placeholder="Enter Amount"
-                    />
-                    {errors.requisition_amount && (
-                      <span className="text-red-600 text-sm">
-                        {errors.requisition_amount.message}
-                      </span>
-                    )}
-                  </div>
-                ) : null
-              }
+              {watch("project_id") !== "" ? (
+                <div className="form-group">
+                  <label htmlFor="requisition_amount">
+                    Requisition Amount <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="requisition_amount"
+                    {...register("requisition_amount", {
+                      required: "Requisition Amount is required",
+                    })}
+                    className="block"
+                    placeholder="Enter Amount"
+                  />
+                  {errors.requisition_amount && (
+                    <span className="text-red-600 text-sm">
+                      {errors.requisition_amount.message}
+                    </span>
+                  )}
+                </div>
+              ) : null}
 
               {/* Requisition Image Input */}
               <div className="form-group">
-                <label htmlFor="requisition_img">Requisition Image (Image/PDF) <span className="text-red-600">*</span></label>
+                <label htmlFor="requisition_img">
+                  Requisition Image (Image/PDF){" "}
+                  <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="file"
                   id="requisition_img"
@@ -258,14 +323,22 @@ export default function AddPaymentRequisition() {
                   className="block"
                   onChange={handleFileChange}
                 />
-                {errors.requisition_img && <span className="text-red-600 text-sm">{errors.requisition_img.message}</span>}
+                {errors.requisition_img && (
+                  <span className="text-red-600 text-sm">
+                    {errors.requisition_img.message}
+                  </span>
+                )}
               </div>
               {/* Display Preview */}
               <div className="form-group mt-3 lg:col-span-2 text-center">
                 {filePreview && (
                   <>
                     {filePreview.includes("data:image") ? (
-                      <img src={filePreview} alt="Image Preview" className="inline max-w-full h-[250px] object-contain" />
+                      <img
+                        src={filePreview}
+                        alt="Image Preview"
+                        className="inline max-w-full h-[250px] object-contain"
+                      />
                     ) : filePreview.includes("pdf") ? (
                       <iframe
                         src={filePreview}
@@ -290,29 +363,53 @@ export default function AddPaymentRequisition() {
               </div>
 
               {/* Date of Payment Input */}
-              <div className="form-group">
-                <label htmlFor="date_of_payments">Date of Payment <span className="text-red-600">*</span></label>
+              {/* <div className="form-group">
+                <label htmlFor="date_of_payments">
+                  Date of Payment <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="date"
                   id="date_of_payments"
-                  {...register("date_of_payments", { required: "Date of Payment is required" })}
+                  {...register("date_of_payments", {
+                    required: "Date of Payment is required",
+                  })}
                   className="block"
                 />
-                {errors.date_of_payments && <span className="text-red-600 text-sm">{errors.date_of_payments.message}</span>}
+                {errors.date_of_payments && (
+                  <span className="text-red-600 text-sm">
+                    {errors.date_of_payments.message}
+                  </span>
+                )}
+              </div> */}
+              {/* Date of Payment Input */}
+              <div className="form-group">
+                <label htmlFor="date_of_payments">
+                  Date of Payment <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="date_of_payments"
+                  {...register("date_of_payments", {
+                    required: "Date of Payment is required",
+                  })}
+                  className="block"
+                  min={minDate} // Set the minimum date based on the calculated minDate
+                />
+                {errors.date_of_payments && (
+                  <span className="text-red-600 text-sm">
+                    {errors.date_of_payments.message}
+                  </span>
+                )}
               </div>
 
-
-
               {/* Submit Button */}
-
             </div>
 
             {/* LOADER */}
 
-            {
-              addPaymentMutation.isPending ?
-                <FormSubmitLoader loading_msg="Creating Payment Requisition..." /> : null
-            }
+            {addPaymentMutation.isPending ? (
+              <FormSubmitLoader loading_msg="Creating Payment Requisition..." />
+            ) : null}
             <div className="card-footer text-center bg-gray-100 py-5">
               <button
                 type="submit"

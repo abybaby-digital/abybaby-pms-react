@@ -10,9 +10,11 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
+import { MdOutlineFileDownloadOff } from "react-icons/md";
 import {
   getPaymentReceivedList,
   getPaymentRequisitionList,
+  getRequisitionDownloadStatus,
 } from "../../../services/api";
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
@@ -27,9 +29,10 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ViewPaymentRequisition from "./ViewPaymentRequisition";
 import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
+import toast from "react-hot-toast";
 
 export default function PaymentRequisitionList() {
-  const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
+  const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
 
   const { data: paymentList = [], isLoading } = useQuery({
@@ -41,14 +44,54 @@ export default function PaymentRequisitionList() {
 
   // State to store selected rows
   const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedPaymentIds, setSelectedPaymentIds] = useState([]); // State to store selected payment requisition IDs
+
+  // const handleCheckboxChange = (e, rowData) => {
+  //   if (e.target.checked) {
+  //     setSelectedRows([...selectedRows, rowData]);
+  //   } else {
+  //     setSelectedRows(selectedRows.filter((item) => item.id !== rowData.id));
+  //   }
+  // };
+
+  const changeDownloadStatus = async(pr_id) => {
+    const response = await getRequisitionDownloadStatus(token, pr_id);
+    console.log(response);
+    
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Data Exported Succesfully !!");
+      setRefetchList(!refetchList);
+    } else {
+      toast.error("Something went wrong");
+    }
+  };
 
   const handleCheckboxChange = (e, rowData) => {
     if (e.target.checked) {
-      setSelectedRows([...selectedRows, rowData]);
+      // Add the selected row data to the selectedRows state
+      setSelectedRows((prevRows) => [...prevRows, rowData]);
+
+      // Add the selected payment ID to the selectedPaymentIds state
+      setSelectedPaymentIds((prevIds) => [...prevIds, rowData.id]);
     } else {
-      setSelectedRows(selectedRows.filter((item) => item.id !== rowData.id));
+      // Remove the deselected row data from the selectedRows state
+      setSelectedRows((prevRows) =>
+        prevRows.filter((item) => item.id !== rowData.id)
+      );
+
+      // Remove the deselected payment ID from the selectedPaymentIds state
+      setSelectedPaymentIds((prevIds) =>
+        prevIds.filter((id) => id !== rowData.id)
+      );
     }
   };
+
+  useEffect(() => {
+    console.log(
+      "Selected Payment Requisition IDs:",
+      selectedPaymentIds.join(",")
+    );
+  }, [selectedPaymentIds]); // Triggered whenever selectedPaymentIds changes
 
   const [singlePaymentData, setSinglePaymentData] = useState({});
   const [addOrEdit, setAddOrEdit] = useState(null);
@@ -79,37 +122,108 @@ export default function PaymentRequisitionList() {
   });
 
   // Export to Excel
+  //   const exportToExcel = () => {
+  //     const ws = XLSX.utils.json_to_sheet(paymentList?.response || []);
+  //     const wb = XLSX.utils.book_new();
+  //     XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
+  //     XLSX.writeFile(wb, "payment_received_list.xlsx");
+  //   };
+
+  // Export to PDF
+  //   const exportToPDF = () => {
+  //     const doc = new jsPDF("l", "mm", "a4");
+  //     doc.autoTable({
+  //       head: [
+  //         [
+  //           "Project Name",
+  //           "Received No",
+  //           "Amount",
+  //           "Received Date",
+  //           "Details",
+  //           "Status",
+  //         ],
+  //       ],
+  //       body: paymentList?.response.map((payment) => [
+  //         payment.project_name,
+  //         payment.received_no,
+  //         `₹${payment.received_amount}`,
+  //         new Date(payment.received_date).toLocaleDateString(),
+  //         payment.received_details,
+  //         payment.status === "1" ? "Active" : "Inactive",
+  //       ]),
+  //     });
+  //     doc.save("payment_received_list.pdf");
+  //   };
+
+  // Export to Excel
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(paymentList?.response || []);
+    if (selectedRows.length === 0) {
+      alert("Please select some rows to export.");
+      return;
+    }
+
+    // Prepare the data for export with the updated fields
+    const formattedRows = selectedRows.map((payment) => ({
+      "Project Name": payment.project_name,
+      "Vendor Name": payment.vendor_name,
+      "Vendor Bank Name": payment.bank_name,
+      "Vendor A/C No": payment.bank_account,
+      "Vendor IFSC code": payment.ifsc_code,
+      "Vendor No": payment.vendor_name,
+      "Vendor PAN no": payment.pancard_no,
+      "Vendor GST no": payment.gst_no,
+      "Requisition Amount": payment.requisition_amount,
+      "Approved Amount": payment.approved_amount,
+      "Received Date": new Date(payment.date_of_payments).toLocaleDateString(),
+      Status: payment.status === "1" ? "Paid" : "Unpaid",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(formattedRows);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
-    XLSX.writeFile(wb, "payment_received_list.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Payment Requisition List");
+    XLSX.writeFile(wb, "payment_requisition_list.xlsx");
   };
 
   // Export to PDF
   const exportToPDF = () => {
+    if (selectedRows.length === 0) {
+      alert("Please select some rows to export.");
+      return;
+    }
+
     const doc = new jsPDF("l", "mm", "a4");
     doc.autoTable({
       head: [
         [
           "Project Name",
-          "Received No",
-          "Amount",
+          "Vendor Name",
+          "Vendor Bank Name",
+          "Vendor A/C No",
+          "Vendor IFSC Code",
+          "Vendor PAN No",
+          "Vendor GST No",
+          "Requisition Amount",
+          "Approved Amount",
           "Received Date",
-          "Details",
           "Status",
         ],
       ],
-      body: paymentList?.response.map((payment) => [
+      body: selectedRows.map((payment) => [
         payment.project_name,
-        payment.received_no,
-        `₹${payment.received_amount}`,
-        new Date(payment.received_date).toLocaleDateString(),
-        payment.received_details,
-        payment.status === "1" ? "Active" : "Inactive",
+        payment.vendor_name,
+        payment.bank_name,
+        payment.bank_account,
+        payment.ifsc_code,
+        payment.pancard_no,
+        payment.gst_no,
+        payment.requisition_amount,
+        payment.approved_amount,
+        new Date(payment.date_of_payments).toLocaleDateString(),
+        payment.status === "1" ? "Paid" : "Unpaid",
       ]),
     });
-    doc.save("payment_received_list.pdf");
+
+    doc.save("payment_requisition_list.pdf");
   };
 
   return (
@@ -142,7 +256,12 @@ export default function PaymentRequisitionList() {
                           <TooltipTrigger asChild>
                             <button
                               className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
-                              onClick={exportToExcel}
+                              onClick={() => {
+                                exportToExcel();
+                                changeDownloadStatus(
+                                  selectedPaymentIds.join(",")
+                                );
+                              }}
                             >
                               <BsFiletypeXlsx />
                             </button>
@@ -152,23 +271,27 @@ export default function PaymentRequisitionList() {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      <CheckAccessEdit edit_access="Payment Requition">
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
-                                onClick={exportToPDF}
-                              >
-                                <FaFilePdf />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Export to PDF</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </CheckAccessEdit>
+
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
+                              onClick={() => {
+                                exportToPDF();
+                                changeDownloadStatus(
+                                  selectedPaymentIds.join(",")
+                                );
+                              }}
+                            >
+                              <FaFilePdf />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Export to PDF</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   </div>
 
@@ -186,6 +309,12 @@ export default function PaymentRequisitionList() {
                   >
                     <Column
                       body={(rowData) => (
+                        rowData.admin_approve_status === "0" ||
+                            rowData.finance_approve_status === "0" ||
+                            rowData.purchase_approve_status === "0" ||
+                            rowData.accountent_approve_status === "0" ||
+                            rowData.download_status === "1" ?
+                        <MdOutlineFileDownloadOff className="text-red-500" />:
                         <input
                           type="checkbox"
                           checked={selectedRows.some(
@@ -225,7 +354,13 @@ export default function PaymentRequisitionList() {
                       field="requisition_amount"
                       sortable
                       header="Approved Amount"
-                      body={(rowData) => `₹${rowData.approved_amount}`}
+                      body={(rowData) =>
+                        `₹${
+                          rowData.approved_amount === null
+                            ? 0
+                            : rowData.approved_amount
+                        }`
+                      }
                     ></Column>
                     <Column
                       field="date_of_payments"

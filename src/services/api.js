@@ -1359,6 +1359,28 @@ export const getPaymentRequisitionList = async (token) => {
   }
 };
 
+// PAYMENT REQUISITION DOWNLOAD STATUS
+export const getRequisitionDownloadStatus = async (token, payment_requition_id) => {
+  try {
+    const response = await api.post(
+      "/update-download-status",
+      {
+        payment_requition_id: payment_requition_id
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching Download Status:", error);
+    throw error;
+  }
+};
+
+
 export const addBillingSupportings = async (
   token,
   project_id,
