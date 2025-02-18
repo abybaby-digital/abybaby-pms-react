@@ -109,7 +109,6 @@ const EditProject = ({ project }) => {
   }));
   //   console.log(branchManagerOptions);
 
-
   // Fetch Client Service List
   const { data: clientServiceList } = useQuery({
     queryKey: ["client-service-list", Bm],
@@ -165,13 +164,14 @@ const EditProject = ({ project }) => {
       project_amount: Math.floor(project?.project_amount),
       project_start_date: project?.project_start_date,
       project_end_date: project?.project_end_date,
-      client_id: {value: project?.client_id , label: project?.client_name},
-      branch_id: {value: project?.branch_id , label: project?.branch_name},
-      company_id: {value: project?.company_id , label: project?.company_name},
+      client_id: { value: project?.client_id, label: project?.client_name },
+      branch_id: { value: project?.branch_id, label: project?.branch_name },
+      company_id: { value: project?.company_id, label: project?.company_name },
       vertical_head_id: project?.selected_vh,
       project_status: project?.status,
       branch_manager_id: project?.selected_bm,
       client_service_id: project?.selected_cs,
+      other_members_id: project?.selected_others,
     },
   });
 
@@ -195,12 +195,12 @@ const EditProject = ({ project }) => {
         token,
         project_id,
         data.project_number,
-        "",
+        data.vertical_head_id.value,
         data.project_name,
-        +data.client_id,
-        +data.branch_id,
-        +data.company_id,
-        data.vertical_head_id,
+        data.client_id.value,
+        data.branch_id.value,
+        data.company_id.value,
+        VH_id?.vertical_head_id,
         data.branch_manager_id?.map((item) => item.value.toString()).join(","),
         data.client_service_id?.map((item) => item.value.toString()).join(","),
         data.other_members_id?.map((item) => item.value.toString()).join(","),
@@ -383,7 +383,6 @@ const EditProject = ({ project }) => {
           )}
         </div>
 
-
         {/* Vertical Head Select Field */}
         {/* <div className="form-group">
           <label htmlFor="vertical_head_id">
@@ -448,10 +447,6 @@ const EditProject = ({ project }) => {
             render={({ field }) => (
               <Select
                 {...field}
-                onChange={(selectedOption) => {
-                  setValue("branch_manager_id", selectedOption); // Update the vertical_head_id
-                  setValue("client_service_id", []); // Reset branch_manager_id when VH changes
-                }}
                 options={branchManagerList?.response?.map((item) => ({
                   value: item.id,
                   label: item.name,
@@ -510,7 +505,7 @@ const EditProject = ({ project }) => {
             render={({ field }) => (
               <Select
                 {...field}
-                options={othersList?.response?.map((item) => ({
+                options={clientServiceList?.response?.map((item) => ({
                   value: item.id,
                   label: item.name,
                 }))}
@@ -609,54 +604,12 @@ const EditProject = ({ project }) => {
           )}
         </div>
 
-        {/* Status Toggle */}
-        {/* <div className="form-group">
-                    <label htmlFor="project_status">Project Status</label>
-                    <Controller
-                        name="project_status"
-                        control={control}
-                        render={({ field }) => (
-                            <Switch
-                                id="project_status"
-                                className="block mx-2"
-                                {...field}
-                                checked={field.value}
-                                onCheckedChange={(checked) => field.onChange(checked)}
-                            />
-                        )}
-                    />
-                </div> */}
-
         {/* Project Status Field */}
         <div className="form-group">
           <label htmlFor="project_status">
             Project Status <span className="text-red-600">*</span>
           </label>
-          {/* <Controller
-                        name="project_status"
-                        control={control}
-                        rules={{ required: "Project Status is required" }}
-                        render={({ field }) => (
-                            <RadioGroup
-                                className="flex items-center"
-                                defaultValue={field.value}
-                                onValueChange={field.onChange} // Updating form value on selection change
-                            >
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="1" id="r1" />
-                                    <label htmlFor="r1" className="text-green-500 text-sm font-bold mb-0">Running</label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="0" id="r2" />
-                                    <label htmlFor="r2" className="text-red-500 text-sm font-bold mb-0">Closed</label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="2" id="r3" />
-                                    <label htmlFor="r3" className="text-gray-500 text-sm font-bold mb-0">Cancelled</label>
-                                </div>
-                            </RadioGroup>
-                        )}
-                    /> */}
+
           <select
             {...register("project_status", {
               required: "Project Status is required",

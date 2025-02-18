@@ -144,20 +144,40 @@ export default function EditUser({ user }) {
       branch_manager_id: preselectedBM,
       client_service_id: user.client_service_id
         ? user.client_service_id
-          .split(",")
-          .map((id) => ({ value: id, label: id }))
+            .split(",")
+            .map((id) => ({ value: id, label: id }))
         : [],
       other_service_id: user.other_service_id
         ? user.other_service_id
-          .split(",")
-          .map((id) => ({ value: id, label: id }))
+            .split(",")
+            .map((id) => ({ value: id, label: id }))
         : [],
       contact_number: user.contact_number,
       password: "",
       user_details: user.user_details || "",
       status: user.status === "1" ? "active" : "inactive",
+      profile_img: user.profile_img || "",
     },
   });
+
+  // Profile Image Watch & Preview
+  const profileImgFile = watch("profile_img");
+
+  useEffect(() => {
+    if (profileImgFile && profileImgFile.length > 0) {
+      const file = profileImgFile[0];
+
+      if (file && file instanceof Blob) {
+        // Check if the file is an instance of Blob (valid File object)
+        const reader = new FileReader();
+        reader.onloadend = () => setProfilePreview(reader.result);
+        reader.readAsDataURL(file);
+      }
+    } else if (user.profile_img) {
+      // If no file is selected, use the existing profile image URL
+      setProfilePreview(user.profile_img || null);
+    }
+  }, [profileImgFile, user.profile_img]);
 
   // Watch Role Selection
   const selectedRole = watch("role_id");
@@ -180,18 +200,18 @@ export default function EditUser({ user }) {
     );
   }, [watch("branch_manager_id")]);
 
-  // Profile Image Watch & Preview
-  const profileImgFile = watch("profile_img");
-  useEffect(() => {
-    if (profileImgFile && profileImgFile.length > 0) {
-      const file = profileImgFile[0];
-      const reader = new FileReader();
-      reader.onloadend = () => setProfilePreview(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      setProfilePreview(user.profile_img || null);
-    }
-  }, [profileImgFile]);
+  // // Profile Image Watch & Preview
+  // const profileImgFile = watch("profile_img");
+  // useEffect(() => {
+  //   if (profileImgFile && profileImgFile.length > 0) {
+  //     const file = profileImgFile[0];
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => setProfilePreview(reader.result);
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     setProfilePreview(user.profile_img || null);
+  //   }
+  // }, [profileImgFile]);
 
   // Mutation for updating the user
   const editUserMutation = useMutation({
@@ -242,8 +262,8 @@ export default function EditUser({ user }) {
   });
 
   const onSubmit = (data) => {
-    // console.log(data);
-    editUserMutation.mutate(data);
+    console.log(data);
+    // editUserMutation.mutate(data);
   };
 
   return (
@@ -300,32 +320,30 @@ export default function EditUser({ user }) {
           </div>
 
           {/* Vertical Head */}
-          {
-            selectedRole?.label === "VH" ? (
-              <div className="form-group">
-                <label>Vertical Head</label>
-                <Controller
-                  name="vertical_head_id"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      onChange={(selectedOption) => {
-                        setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
-                        setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
-                        setValue("client_service_id", []); // Reset branch_manager_id when VH changes
-                      }}
-                      options={verticalHeadList?.response?.map((item) => ({
-                        value: item.id,
-                        label: item.name,
-                      }))}
-                      components={animatedComponents}
-                    />
-                  )}
-                />
-              </div>
-            ) : null
-          }
+          {selectedRole?.label === "VH" ? (
+            <div className="form-group">
+              <label>Vertical Head</label>
+              <Controller
+                name="vertical_head_id"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    onChange={(selectedOption) => {
+                      setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
+                      setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
+                      setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                    }}
+                    options={verticalHeadList?.response?.map((item) => ({
+                      value: item.id,
+                      label: item.name,
+                    }))}
+                    components={animatedComponents}
+                  />
+                )}
+              />
+            </div>
+          ) : null}
           {/* State */}
           <div className="form-group">
             <label>State</label>
@@ -402,7 +420,10 @@ export default function EditUser({ user }) {
           {/* Profile Image */}
           <div className="form-group">
             <label>Profile Image</label>
-            <input type="file" {...register("profile_img")} />
+            <input
+              type="file"
+              {...register("profile_img")} // Only register the file input
+            />
             {profilePreview && (
               <img
                 src={profilePreview}

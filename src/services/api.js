@@ -450,7 +450,7 @@ export const getFYList = async (token) => {
 export const addProject = async (
   token,
   project_number,
-  purchase_order_no,
+name_prefix,
   project_name,
   client_id,
   branch_id,
@@ -470,7 +470,7 @@ export const addProject = async (
       "/add-project",
       {
         project_number: project_number,
-        purchase_order_no: purchase_order_no,
+        name_prefix: name_prefix,
         project_name: project_name,
         client_id: client_id,
         branch_id: branch_id,
@@ -503,7 +503,7 @@ export const editProject = async (
   token,
   id,
   project_number,
-  purchase_order_no,
+  name_prefix,
   project_name,
   client_id,
   branch_id,
@@ -524,7 +524,7 @@ export const editProject = async (
       {
         id: id,
         project_number: project_number,
-        purchase_order_no: purchase_order_no,
+        name_prefix: name_prefix,
         project_name: project_name,
         client_id: client_id,
         branch_id: branch_id,
