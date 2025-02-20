@@ -9,167 +9,193 @@ import ButtonLoader from "../../../components/common/ButtonLoader";
 import { getProjectList, editClientPO } from "../../../services/api"; // Import necessary functions
 
 const EditClientPO = ({ clientPO }) => {
-    const token = useSelector((state) => state.auth.token);
-    const navigate = useNavigate();
-    const { setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  const { setModal, refetchList, setRefetchList } = useContext(
+    dialogOpenCloseContext
+  );
 
-    // Initialize image preview state and PDF preview state
-    const [filePreview, setFilePreview] = useState(null);
-    const [fileType, setFileType] = useState(null); // Store file type (image or pdf)
+  // Initialize image preview state and PDF preview state
+  const [filePreview, setFilePreview] = useState(null);
+  const [fileType, setFileType] = useState(null); // Store file type (image or pdf)
 
-    // Fetch projects for the project dropdown
-    const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
-        queryKey: ["project-list"],
-        queryFn: async () => {
-            return await getProjectList(token); // Assuming this function fetches the list of projects
-        }
-    });
+  // Fetch projects for the project dropdown
+  const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
+    queryKey: ["project-list"],
+    queryFn: async () => {
+      return await getProjectList(token); // Assuming this function fetches the list of projects
+    },
+  });
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
-        defaultValues: {
-            project_id: clientPO.project_id, // Ensure this is set as the default value
-            po_no: clientPO.po_no,
-            po_amount: clientPO.po_amount,
-            po_date: clientPO.po_date.split(" ")[0], // Extract date part
-            payment_schedule_days: clientPO.payment_schedule_days,
-            po_details: clientPO.project_order_details,
-            po_img: null, // Image/PDF update is mandatory now
-            status: clientPO.status,
-        }
-    });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    defaultValues: {
+      project_id: clientPO.project_id, // Ensure this is set as the default value
+      po_no: clientPO.client_po_no,
+      po_amount_pre_gst: clientPO.po_amount_pre_gst,
+      po_amount_with_gst: clientPO.po_amount_with_gst,
+      po_date: clientPO.po_date.split(" ")[0], // Extract date part
+      payment_schedule_days: clientPO.payment_schedule_days,
+      po_details: clientPO.project_order_details,
+      po_img: null, // Image/PDF update is mandatory now
+      status: clientPO.status,
+    },
+  });
 
-    // Pre-fill the form with existing data
-    useEffect(() => {
-        setValue("project_id", clientPO.project_id);  // Ensure selected project is set
-        setValue("po_no", clientPO.project_no);
-        setValue("po_amount", Math.floor(clientPO.po_amount));
-        setValue("po_date", clientPO.po_date.split(" ")[0]);
-        setValue("payment_schedule_days", clientPO.payment_schedule_days);
-        setValue("po_details", clientPO.project_order_details);
-        setValue("status", clientPO.status);
+  // Pre-fill the form with existing data
+  useEffect(() => {
+    setValue("project_id", clientPO.project_id); // Ensure selected project is set
+    setValue("po_no", clientPO.client_po_no);
+    setValue("po_amount_pre_GST", Math.floor(clientPO.po_amount_pre_gst));
+    setValue("po_amount_with_GST", Math.floor(clientPO.po_amount_with_gst));
+    setValue("po_date", clientPO.po_date.split(" ")[0]);
+    setValue("payment_schedule_days", clientPO.payment_schedule_days);
+    setValue("po_details", clientPO.project_order_details);
+    setValue("status", clientPO.status);
 
-        // Set initial file preview if there is an existing file
-        if (clientPO.po_img) {
-            if (clientPO.po_img.endsWith(".pdf")) {
-                setFilePreview(clientPO.po_img); // Display PDF thumbnail (can replace with custom logic)
-                setFileType("pdf");
-            } else {
-                setFilePreview(clientPO.po_img); // Display image preview
-                setFileType("image");
-            }
-        }
-    }, [clientPO, setValue]);
-
-    const [actualPOenter, setPoEnter] = useState(null);
-
-    const getsubstractedValue = (id) => {
-        const singleProject = projectList?.response?.find((item) => item.id === id);
-        setPoEnter(singleProject?.project_amount - singleProject?.client_po_amount);
+    // Set initial file preview if there is an existing file
+    if (clientPO.po_img) {
+      if (clientPO.po_img.endsWith(".pdf")) {
+        setFilePreview(clientPO.po_img); // Display PDF thumbnail (can replace with custom logic)
+        setFileType("pdf");
+      } else {
+        setFilePreview(clientPO.po_img); // Display image preview
+        setFileType("image");
+      }
     }
+  }, [clientPO, setValue]);
 
-    console.log(actualPOenter);
+  const [actualPOenter, setPoEnter] = useState(null);
 
-    // Mutation for updating the client PO
-    const editClientPOMutation = useMutation({
-        mutationFn: async (data) => {
-            return await editClientPO(
-                token,
-                clientPO.id, // PO ID
-                data.project_id,
-                data.po_no,
-                data.po_amount,
-                data.po_date,
-                data.po_img, // File input
-                data.payment_schedule_days,
-                data.po_details,
-                data.status
-            );
-        },
-        onSuccess: (response) => {
-            if (response.status === 200 || response.status === 201) {
-                toast.success("Client PO details updated successfully!");
-                setModal(false);
-                setRefetchList(!refetchList);
-                navigate("/client-po-list");
-            } else {
-                toast.error("Something went wrong");
-            }
-        },
-        onError: (error) => {
-            toast.error("Failed to update Client PO: " + error.message);
-        },
-    });
+  const getsubstractedValue = (id) => {
+    const singleProject = projectList?.response?.find((item) => item.id === id);
+    setPoEnter(singleProject?.project_amount - singleProject?.client_po_amount);
+  };
 
-    // Handle form submission
-    const onSubmit = (data) => {
-        editClientPOMutation.mutate(data);
-    };
+  console.log(actualPOenter);
 
-    // Handle file change for preview (image or PDF)
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const fileUrl = URL.createObjectURL(file);
-            if (file.type.startsWith("image/")) {
-                setFilePreview(fileUrl); // Set image preview URL
-                setFileType("image");
-            } else if (file.type === "application/pdf") {
-                setFilePreview(fileUrl); // Set PDF preview (or a default thumbnail)
-                setFileType("pdf");
-            } else {
-                toast.error("Only image or PDF files are allowed.");
-            }
-        }
-    };
+  // Mutation for updating the client PO
+  const editClientPOMutation = useMutation({
+    mutationFn: async (data) => {
+      return await editClientPO(
+        token,
+        clientPO.id, // PO ID
+        data.project_id,
+        data.po_no,
+        data.po_amount_pre_gst,
+        data.po_amount_with_gst,
+        data.po_date,
+        data.po_img, // File input
+        data.payment_schedule_days,
+        data.po_details,
+        data.status
+      );
+    },
+    onSuccess: (response) => {
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Client PO details updated successfully!");
+        setModal(false);
+        setRefetchList(!refetchList);
+        navigate("/client-po-list");
+      } else {
+        toast.error("Something went wrong");
+      }
+    },
+    onError: (error) => {
+      toast.error("Failed to update Client PO: " + error.message);
+    },
+  });
 
+  // Handle form submission
+  const onSubmit = (data) => {
+    editClientPOMutation.mutate(data);
+  };
 
-    useEffect(() => {
-        getsubstractedValue(clientPO.project_id);
-    }, [clientPO.project_id]); // Include clientPO.project_id in dependency array
+  // Handle file change for preview (image or PDF)
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      if (file.type.startsWith("image/")) {
+        setFilePreview(fileUrl); // Set image preview URL
+        setFileType("image");
+      } else if (file.type === "application/pdf") {
+        setFilePreview(fileUrl); // Set PDF preview (or a default thumbnail)
+        setFileType("pdf");
+      } else {
+        toast.error("Only image or PDF files are allowed.");
+      }
+    }
+  };
 
+  useEffect(() => {
+    getsubstractedValue(clientPO.project_id);
+  }, [clientPO.project_id]); // Include clientPO.project_id in dependency array
 
-    return (
-        <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full overflow-hidden">
-            <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="mx-auto w-full overflow-hidden"
+    >
+      <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
+        {/* Project ID Dropdown */}
+        <div className="form-group">
+          <label htmlFor="project_id">
+            Project <span className="text-red-600">*</span>
+          </label>
+          <select
+            id="project_id"
+            {...register("project_id", { required: "Project is required" })}
+            className="block w-full"
+            onChange={(e) => {
+              getsubstractedValue(+e.target.value);
+            }}
+          >
+            <option value="">Select Project</option>
+            {isLoadingProjects ? (
+              <option>Loading projects...</option>
+            ) : (
+              projectList?.response?.map((project) => (
+                <option
+                  key={project.id}
+                  value={project.id}
+                  selected={project?.id === clientPO?.project_id}
+                >
+                  {project.project_name}
+                </option>
+              ))
+            )}
+          </select>
+          {errors.project_id && (
+            <span className="text-red-600 text-sm">
+              {errors.project_id.message}
+            </span>
+          )}
+        </div>
 
-                {/* Project ID Dropdown */}
-                <div className="form-group">
-                    <label htmlFor="project_id">Project <span className="text-red-600">*</span></label>
-                    <select
-                        id="project_id"
-                        {...register("project_id", { required: "Project is required" })}
-                        className="block w-full"
-                        onChange={(e) => { getsubstractedValue(+e.target.value) }}
-                    >
-                        <option value="">Select Project</option>
-                        {isLoadingProjects ? (
-                            <option>Loading projects...</option>
-                        ) : (
-                            projectList?.response?.map((project) => (
-                                <option key={project.id} value={project.id} selected={project?.id === clientPO?.project_id}>
-                                    {project.project_name}
-                                </option>
-                            ))
-                        )}
-                    </select>
-                    {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
-                </div>
+        {/* PO No Input */}
+        <div className="form-group">
+          <label htmlFor="po_no">
+            PO No <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="text"
+            id="po_no"
+            {...register("po_no", { required: "PO No is required" })}
+            className="block"
+            placeholder="Enter PO No"
+          />
+          {errors.po_no && (
+            <span className="text-red-600 text-sm">{errors.po_no.message}</span>
+          )}
+        </div>
 
-                {/* PO No Input */}
-                <div className="form-group">
-                    <label htmlFor="po_no">PO No <span className="text-red-600">*</span></label>
-                    <input
-                        type="text"
-                        id="po_no"
-                        {...register("po_no", { required: "PO No is required" })}
-                        className="block"
-                        placeholder="Enter PO No"
-                    />
-                    {errors.po_no && <span className="text-red-600 text-sm">{errors.po_no.message}</span>}
-                </div>
-
-                {/* PO Amount Input */}
-                <div className="form-group">
+        {/* PO Amount Input */}
+        {/* <div className="form-group">
                     <label htmlFor="po_amount">PO Amount <span className="text-red-600">*</span></label>
                     <input
                         type="number"
@@ -185,92 +211,162 @@ const EditClientPO = ({ clientPO }) => {
                         placeholder="Enter Amount"
                     />
                     {errors.po_amount && <span className="text-red-600 text-sm">{errors.po_amount.message}</span>}
-                </div>
+                </div> */}
 
-                {/* PO Date Input */}
-                <div className="form-group">
-                    <label htmlFor="po_date">PO Date <span className="text-red-600">*</span></label>
-                    <input
-                        type="date"
-                        id="po_date"
-                        {...register("po_date", { required: "PO Date is required" })}
-                        className="block"
-                    />
-                    {errors.po_date && <span className="text-red-600 text-sm">{errors.po_date.message}</span>}
-                </div>
+        {/* PO Amount Input with gst */}
+        <div className="form-group">
+          <label htmlFor="po_amount_with_gst">
+            PO Amount ( with GST ) <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="number"
+            id="po_amount_with_gst"
+            {...register("po_amount_with_gst", {
+              required: "PO Amount is required",
+            })}
+            className="block"
+            placeholder="Enter Amount"
+          />
+          {errors.po_amount_with_gst && (
+            <span className="text-red-600 text-sm">
+              {errors.po_amount_with_gst.message}
+            </span>
+          )}
+        </div>
 
-                {/* Payment Schedule (Days) */}
-                <div className="form-group">
-                    <label htmlFor="payment_schedule_days">Payment Schedule (Days) <span className="text-red-600">*</span></label>
-                    <input
-                        type="number"
-                        id="payment_schedule_days"
-                        {...register("payment_schedule_days", { required: "Payment Schedule is required" })}
-                        className="block"
-                        placeholder="Enter Payment Schedule in Days"
-                    />
-                    {errors.payment_schedule_days && <span className="text-red-600 text-sm">{errors.payment_schedule_days.message}</span>}
-                </div>
+        {/* PO Amount Input without gst */}
+        <div className="form-group">
+          <label htmlFor="po_amount_pre_gst">
+            PO Amount ( pre GST ) <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="number"
+            id="po_amount_pre_gst"
+            {...register("po_amount_pre_gst", {
+              required: "PO Amount is required",
+            })}
+            className="block"
+            placeholder="Enter Amount"
+          />
+          {errors.po_amount_pre_gst && (
+            <span className="text-red-600 text-sm">
+              {errors.po_amount_pre_gst.message}
+            </span>
+          )}
+        </div>
 
-                {/* File Preview */}
-                {fileType === "image" && filePreview && (
-                    <div className="mt-2">
-                        <img src={filePreview} alt="Preview" className="w-full h-[250px] rounded-lg object-top object-contain" />
-                    </div>
-                )}
-                {fileType === "pdf" && filePreview && (
-                    <div className="mt-2">
-                        <iframe src={filePreview} width="100%" height="400" title="PDF Preview"></iframe>
-                    </div>
-                )}
+        {/* PO Date Input */}
+        <div className="form-group">
+          <label htmlFor="po_date">
+            PO Date <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="date"
+            id="po_date"
+            {...register("po_date", { required: "PO Date is required" })}
+            className="block"
+          />
+          {errors.po_date && (
+            <span className="text-red-600 text-sm">
+              {errors.po_date.message}
+            </span>
+          )}
+        </div>
 
-                {/* Upload New PO Image/PDF (Mandatory) */}
-                <div className="form-group lg:col-span-2">
-                    <label htmlFor="po_img">Upload New PO Image/PDF <span className="text-red-600">*</span></label>
-                    <input
-                        type="file"
-                        id="po_img"
-                        accept="image/*,application/pdf"
-                        {...register("po_img", { required: "PO Image/PDF is required" })}
-                        className="block border w-full rounded-lg p-3"
-                        onChange={handleFileChange} // Add this line
-                    />
-                    {errors.po_img && <span className="text-red-600 text-sm">{errors.po_img.message}</span>}
-                </div>
+        {/* Payment Schedule (Days) */}
+        <div className="form-group">
+          <label htmlFor="payment_schedule_days">
+            Payment Schedule (Days) <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="number"
+            id="payment_schedule_days"
+            {...register("payment_schedule_days", {
+              required: "Payment Schedule is required",
+            })}
+            className="block"
+            placeholder="Enter Payment Schedule in Days"
+          />
+          {errors.payment_schedule_days && (
+            <span className="text-red-600 text-sm">
+              {errors.payment_schedule_days.message}
+            </span>
+          )}
+        </div>
 
-                {/* PO Details */}
-                <div className="form-group lg:col-span-2">
-                    <label htmlFor="po_details">PO Details</label>
-                    <textarea
-                        id="po_details"
-                        {...register("po_details")}
-                        className="block border w-full rounded-lg p-3"
-                        placeholder="Enter PO Details"
-                    />
-                </div>
+        {/* File Preview */}
+        {fileType === "image" && filePreview && (
+          <div className="mt-2">
+            <img
+              src={filePreview}
+              alt="Preview"
+              className="w-full h-[250px] rounded-lg object-top object-contain"
+            />
+          </div>
+        )}
+        {fileType === "pdf" && filePreview && (
+          <div className="mt-2">
+            <iframe
+              src={filePreview}
+              width="100%"
+              height="400"
+              title="PDF Preview"
+            ></iframe>
+          </div>
+        )}
 
-                {/* Status */}
-                <div className="form-group">
-                    <label htmlFor="status">Status</label>
-                    <select {...register("status")} id="status">
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
-                    </select>
-                </div>
+        {/* Upload New PO Image/PDF (Mandatory) */}
+        <div className="form-group lg:col-span-2">
+          <label htmlFor="po_img">
+            Upload New PO Image/PDF <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="file"
+            id="po_img"
+            accept="image/*,application/pdf"
+            {...register("po_img", { required: "PO Image/PDF is required" })}
+            className="block border w-full rounded-lg p-3"
+            onChange={handleFileChange} // Add this line
+          />
+          {errors.po_img && (
+            <span className="text-red-600 text-sm">
+              {errors.po_img.message}
+            </span>
+          )}
+        </div>
 
-            </div>
+        {/* PO Details */}
+        <div className="form-group lg:col-span-2">
+          <label htmlFor="po_details">PO Details</label>
+          <textarea
+            id="po_details"
+            {...register("po_details")}
+            className="block border w-full rounded-lg p-3"
+            placeholder="Enter PO Details"
+          />
+        </div>
 
-            <div className="card-footer text-center bg-gray-100 py-5">
-                <button
-                    type="submit"
-                    className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                    disabled={editClientPOMutation.isPending}
-                >
-                    {editClientPOMutation.isPending ? <ButtonLoader /> : "Submit"}
-                </button>
-            </div>
-        </form>
-    );
+        {/* Status */}
+        <div className="form-group">
+          <label htmlFor="status">Status</label>
+          <select {...register("status")} id="status">
+            <option value="1">Active</option>
+            <option value="0">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="card-footer text-center bg-gray-100 py-5">
+        <button
+          type="submit"
+          className="px-10 py-2 text-white bg-lightdark rounded-2xl"
+          disabled={editClientPOMutation.isPending}
+        >
+          {editClientPOMutation.isPending ? <ButtonLoader /> : "Submit"}
+        </button>
+      </div>
+    </form>
+  );
 };
 
 export default EditClientPO;

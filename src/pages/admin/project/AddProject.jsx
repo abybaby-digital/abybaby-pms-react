@@ -2,7 +2,18 @@ import { useForm, Controller } from "react-hook-form";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
+import ImportProjectCSV from "./ImportProjectCSV";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { FaFileImport } from "react-icons/fa6";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   addProject,
   getBranchList,
@@ -110,8 +121,8 @@ export default function AddProject() {
     },
   });
 
-  const cs_left = clientServiceList?.response?.filter((item) =>
-    !selectedClientService?.includes(item.id)
+  const cs_left = clientServiceList?.response?.filter(
+    (item) => !selectedClientService?.includes(item.id)
   );
   console.log(cs_left);
 
@@ -120,7 +131,7 @@ export default function AddProject() {
     mutationFn: async (data) => {
       return await addProject(
         token,
-        data.project_number,
+        data.client_po_number,
         data.vertical_head_id.value,
         data.project_name,
         data.client_id.value,
@@ -191,23 +202,23 @@ export default function AddProject() {
                 )}
               </div>
 
-              {/* Project Number Field */}
+              {/* PO Number Field */}
               <div className="form-group">
                 <label htmlFor="project_number">
-                  Project Number <span className="text-red-600">*</span>
+                  Client PO Number <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="number"
                   className="block"
-                  id="project_number"
-                  placeholder="Project Number"
-                  {...register("project_number", {
-                    required: "Project Number is required",
+                  id="client_po_number"
+                  placeholder="Client PO  Number"
+                  {...register("client_po_number", {
+                    required: "Client PO Number is required",
                   })}
                 />
-                {errors.project_number && (
+                {errors.client_po_number && (
                   <span className="text-red-600 text-sm">
-                    {errors.project_number.message}
+                    {errors.client_po_number.message}
                   </span>
                 )}
               </div>
@@ -345,9 +356,9 @@ export default function AddProject() {
                 <Controller
                   name="branch_manager_id"
                   control={control}
-                //   rules={{
-                //     required: "At least one Branch Manager is required",
-                //   }}
+                  //   rules={{
+                  //     required: "At least one Branch Manager is required",
+                  //   }}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -381,7 +392,7 @@ export default function AddProject() {
                 <Controller
                   name="client_service_id"
                   control={control}
-                //   rules={{ required: "Client Service is required" }}
+                  //   rules={{ required: "Client Service is required" }}
                   render={({ field }) => (
                     <Select
                       {...field}
@@ -540,6 +551,25 @@ export default function AddProject() {
               </button>
             </div>
           </form>
+
+          {/* <div className="import-project">
+            <p className="text-center text-2xl">OR</p>
+            <Dialog>
+              <DialogTrigger asChild>
+                <div className="text-center">
+                  <button className="bg-green-500 px-5 py-2 rounded-xl text-white">
+                    <FaFileImport className="inline-block me-2" />
+                    Import Projects
+                  </button>
+                </div>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+
+                <ImportProjectCSV />
+
+              </DialogContent>
+            </Dialog>
+          </div> */}
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -58,8 +58,12 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                         <TableCell>{clientPO?.project_no || "Not Available"}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Amount:</TableCell>
-                                        <TableCell>₹{clientPO?.po_amount}</TableCell>
+                                        <TableCell className="font-bold text-lg">Amount (pre GST):</TableCell>
+                                        <TableCell>₹{clientPO?.po_amount_pre_gst}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Amount (with GST):</TableCell>
+                                        <TableCell>₹{clientPO?.po_amount_with_gst}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">PO Date:</TableCell>

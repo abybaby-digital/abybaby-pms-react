@@ -58,8 +58,12 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
                                         <TableCell>{invoice?.invoice_no}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Amount:</TableCell>
-                                        <TableCell>₹{invoice?.invoice_amount}</TableCell>
+                                        <TableCell className="font-bold text-lg">Amount (pre GST):</TableCell>
+                                        <TableCell>₹{invoice?.invoice_amount_pre_gst}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Amount (with GST):</TableCell>
+                                        <TableCell>₹{invoice?.invoice_amount_with_gst}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Invoice Date:</TableCell>

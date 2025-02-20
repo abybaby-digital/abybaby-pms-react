@@ -28,7 +28,8 @@ const EditInvoice = ({ invoice }) => {
         defaultValues: {
             project_id: invoice.project_id, // Ensure this is set as the default value
             invoice_no: invoice.invoice_no,
-            invoice_amount: invoice.invoice_amount,
+            invoice_amount_pre_gst: invoice.invoice_amount_pre_gst,
+            invoice_amount_with_gst: invoice.invoice_amount_with_gst,
             invoice_date: invoice.invoice_date.split(" ")[0], // Extract date part
             invoice_details: invoice.invoice_details,
             invoice_img: null, // Image update is mandatory now
@@ -40,7 +41,8 @@ const EditInvoice = ({ invoice }) => {
     useEffect(() => {
         setValue("project_id", invoice.project_id);  // Ensure selected project is set
         setValue("invoice_no", invoice.invoice_no);
-        setValue("invoice_amount", invoice.invoice_amount);
+        setValue("invoice_amountpre_gst", invoice.invoice_amount_pre_gst);
+        setValue("invoice_amount_with_gst", invoice.invoice_amount_with_gst);
         setValue("invoice_date", invoice.invoice_date.split(" ")[0]);
         setValue("invoice_details", invoice.invoice_details);
         setValue("status", invoice.status);
@@ -59,7 +61,8 @@ const EditInvoice = ({ invoice }) => {
                 invoice.id, // Invoice ID
                 data.project_id,
                 data.invoice_no,
-                data.invoice_amount,
+                data.invoice_amount_pre_gst,
+                data.invoice_amount_with_gst,
                 data.invoice_date,
                 data.invoice_img, // File input
                 data.invoice_details,
@@ -134,17 +137,29 @@ const EditInvoice = ({ invoice }) => {
                     {errors.invoice_no && <span className="text-red-600 text-sm">{errors.invoice_no.message}</span>}
                 </div>
 
-                {/* Invoice Amount Input */}
+                {/* Invoice Amount pre gst Input */}
                 <div className="form-group">
-                    <label htmlFor="invoice_amount">Invoice Amount <span className="text-red-600">*</span></label>
+                    <label htmlFor="invoice_amount_pre_gst">Invoice Amount <span className="text-red-600">*</span></label>
                     <input
                         type="number"
-                        id="invoice_amount"
-                        {...register("invoice_amount", { required: "Invoice Amount is required" })}
+                        id="invoice_amount_pre_gst"
+                        {...register("invoice_amount_pre_gst", { required: "Invoice Amount is required" })}
                         className="block"
                         placeholder="Enter Amount"
                     />
-                    {errors.invoice_amount && <span className="text-red-600 text-sm">{errors.invoice_amount.message}</span>}
+                    {errors.invoice_amount_pre_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_pre_gst.message}</span>}
+                </div>
+                {/* Invoice Amount with gst Input */}
+                <div className="form-group">
+                    <label htmlFor="invoice_amount_with_gst">Invoice Amount <span className="text-red-600">*</span></label>
+                    <input
+                        type="number"
+                        id="invoice_amount_with_gst"
+                        {...register("invoice_amount_with_gst", { required: "Invoice Amount is required" })}
+                        className="block"
+                        placeholder="Enter Amount"
+                    />
+                    {errors.invoice_amount_with_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_with_gst.message}</span>}
                 </div>
 
                 {/* Invoice Date Input */}

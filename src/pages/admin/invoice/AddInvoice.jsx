@@ -14,7 +14,11 @@ import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 export default function AddInvoice() {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   // State to hold image preview URL
   const [imagePreview, setImagePreview] = useState(null);
@@ -24,7 +28,7 @@ export default function AddInvoice() {
     queryKey: ["project-list"],
     queryFn: async () => {
       return await getProjectList(token); // Assume this function fetches the list of projects
-    }
+    },
   });
 
   const addInvoiceMutation = useMutation({
@@ -33,7 +37,8 @@ export default function AddInvoice() {
         token,
         data.project_id,
         data.invoice_no,
-        data.invoice_amount,
+        data.invoice_amount_pre_gst,
+        data.invoice_amount_with_gst,
         data.invoice_date,
         data.invoice_img, // File input
         data.invoice_details,
@@ -79,13 +84,16 @@ export default function AddInvoice() {
               ADD INVOICE
             </h2>
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
-
               {/* Project ID Dropdown */}
               <div className="form-group">
-                <label htmlFor="project_id">Project ID <span className="text-red-600">*</span></label>
+                <label htmlFor="project_id">
+                  Project ID <span className="text-red-600">*</span>
+                </label>
                 <select
                   id="project_id"
-                  {...register("project_id", { required: "Project ID is required" })}
+                  {...register("project_id", {
+                    required: "Project ID is required",
+                  })}
                   className="block w-full"
                 >
                   <option value="">Select Project</option>
@@ -95,50 +103,102 @@ export default function AddInvoice() {
                     </option>
                   ))}
                 </select>
-                {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
+                {errors.project_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.project_id.message}
+                  </span>
+                )}
               </div>
 
               {/* Invoice No Input */}
               <div className="form-group">
-                <label htmlFor="invoice_no">Invoice No <span className="text-red-600">*</span></label>
+                <label htmlFor="invoice_no">
+                  Invoice No <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="text"
                   id="invoice_no"
-                  {...register("invoice_no", { required: "Invoice No is required" })}
+                  {...register("invoice_no", {
+                    required: "Invoice No is required",
+                  })}
                   className="block"
                   placeholder="Enter Invoice No"
                 />
-                {errors.invoice_no && <span className="text-red-600 text-sm">{errors.invoice_no.message}</span>}
+                {errors.invoice_no && (
+                  <span className="text-red-600 text-sm">
+                    {errors.invoice_no.message}
+                  </span>
+                )}
               </div>
 
-              {/* Invoice Amount Input */}
+              {/* Invoice Amount pre gst Input */}
               <div className="form-group">
-                <label htmlFor="invoice_amount">Invoice Amount <span className="text-red-600">*</span></label>
+                <label htmlFor="invoice_amount_pre_gst">
+                  Invoice Amount ( pre GST ){" "}
+                  <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="number"
-                  id="invoice_amount"
-                  {...register("invoice_amount", { required: "Invoice Amount is required" })}
+                  id="invoice_amount_pre_gst"
+                  {...register("invoice_amount_pre_gst", {
+                    required: "Invoice Amount is required",
+                  })}
                   className="block"
                   placeholder="Enter Amount"
                 />
-                {errors.invoice_amount && <span className="text-red-600 text-sm">{errors.invoice_amount.message}</span>}
+                {errors.invoice_amount_pre_gst && (
+                  <span className="text-red-600 text-sm">
+                    {errors.invoice_amount_pre_gst.message}
+                  </span>
+                )}
+              </div>
+              {/* Invoice Amount Input with gst */}
+              <div className="form-group">
+                <label htmlFor="invoice_amount_with_gst">
+                  Invoice Amount ( with GST )
+                  <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="invoice_amount_with_gst"
+                  {...register("invoice_amount_with_gst", {
+                    required: "Invoice Amount is required",
+                  })}
+                  className="block"
+                  placeholder="Enter Amount"
+                />
+                {errors.invoice_amount_with_gst && (
+                  <span className="text-red-600 text-sm">
+                    {errors.invoice_amount_with_gst.message}
+                  </span>
+                )}
               </div>
 
               {/* Invoice Date Input */}
               <div className="form-group">
-                <label htmlFor="invoice_date">Invoice Date <span className="text-red-600">*</span></label>
+                <label htmlFor="invoice_date">
+                  Invoice Date <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="date"
                   id="invoice_date"
-                  {...register("invoice_date", { required: "Invoice Date is required" })}
+                  {...register("invoice_date", {
+                    required: "Invoice Date is required",
+                  })}
                   className="block"
                 />
-                {errors.invoice_date && <span className="text-red-600 text-sm">{errors.invoice_date.message}</span>}
+                {errors.invoice_date && (
+                  <span className="text-red-600 text-sm">
+                    {errors.invoice_date.message}
+                  </span>
+                )}
               </div>
 
               {/* Upload Invoice Image */}
               <div className="form-group lg:col-span-2">
-                <label htmlFor="invoice_img">Upload Invoice Image (Optional)</label>
+                <label htmlFor="invoice_img">
+                  Upload Invoice Image (Optional)
+                </label>
                 <input
                   type="file"
                   id="invoice_img"
@@ -152,7 +212,11 @@ export default function AddInvoice() {
               {/* Image Preview */}
               {imagePreview && (
                 <div className="mt-2 text-center lg:col-span-2">
-                  <img src={imagePreview} alt="Preview" className="w-[350px] h-[350px] rounded-lg inline-block" />
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-[350px] h-[350px] rounded-lg inline-block"
+                  />
                 </div>
               )}
 
@@ -166,15 +230,13 @@ export default function AddInvoice() {
                   placeholder="Enter Invoice Details"
                 />
               </div>
-
             </div>
 
             {/* LOADER */}
 
-            {
-              addInvoiceMutation.isPending ?
-                <FormSubmitLoader loading_msg="Creating Invoice..." /> : null
-            }
+            {addInvoiceMutation.isPending ? (
+              <FormSubmitLoader loading_msg="Creating Invoice..." />
+            ) : null}
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button

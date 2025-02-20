@@ -449,7 +449,7 @@ export const getFYList = async (token) => {
 // ADD PROJECT
 export const addProject = async (
   token,
-  project_number,
+  client_po_no,
 name_prefix,
   project_name,
   client_id,
@@ -469,7 +469,7 @@ name_prefix,
     const response = await api.post(
       "/add-project",
       {
-        project_number: project_number,
+        client_po_no: client_po_no,
         name_prefix: name_prefix,
         project_name: project_name,
         client_id: client_id,
@@ -502,7 +502,7 @@ name_prefix,
 export const editProject = async (
   token,
   id,
-  project_number,
+  client_po_number,
   name_prefix,
   project_name,
   client_id,
@@ -523,7 +523,7 @@ export const editProject = async (
       "/edit-project",
       {
         id: id,
-        project_number: project_number,
+        client_po_number: client_po_number,
         name_prefix: name_prefix,
         project_name: project_name,
         client_id: client_id,
@@ -591,6 +591,53 @@ export const getProjectList = async (
     throw error;
   }
 };
+
+// PROJECT VIEW BY ID
+
+export const getProjectById = async (
+  token,
+  project_id
+) => {
+  try {
+    const response = await api.post(
+      "/project-details-by-id",
+      {
+        project_id: project_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching project by id:", error);
+    throw error;
+  }
+};
+
+// IMPORT PROJECT
+
+export const importProject = async (token, file) => {
+  try {
+    const formData = new FormData();
+    formData.append('import_project', file); // Append the file to FormData
+
+    const response = await api.post('/import-project', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data', // Specify multipart/form-data for file upload
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error('Error importing project:', error);
+    throw error;
+  }
+};
+
 
 // VERTICAL HEAD LIST
 export const getVerticalHeadList = async (token) => {
@@ -1000,7 +1047,8 @@ export const addInvoice = async (
   token,
   project_id,
   invoice_no,
-  invoice_amount,
+  invoice_amount_pre_gst,
+  invoice_amount_with_gst,
   invoice_date,
   invoice_img,
   invoice_details,
@@ -1012,7 +1060,8 @@ export const addInvoice = async (
     // Append all form data fields
     formData.append("project_id", project_id);
     formData.append("invoice_no", invoice_no);
-    formData.append("invoice_amount", invoice_amount);
+    formData.append("invoice_amount_pre_gst", invoice_amount_pre_gst);
+    formData.append("invoice_amount_with_gst", invoice_amount_with_gst);
     formData.append("invoice_date", invoice_date);
     formData.append("invoice_details", invoice_details);
     formData.append("status", status);
@@ -1044,7 +1093,8 @@ export const editInvoice = async (
   id,
   project_id,
   invoice_no,
-  invoice_amount,
+  invoice_amount_pre_gst,
+  invoice_amount_with_gst,
   invoice_date,
   invoice_img, // This will be a file object (image)
   invoice_details,
@@ -1057,7 +1107,8 @@ export const editInvoice = async (
     formData.append("id", id);
     formData.append("project_id", project_id);
     formData.append("invoice_no", invoice_no);
-    formData.append("invoice_amount", invoice_amount);
+    formData.append("invoice_amount_pre_gst", invoice_amount_pre_gst);
+    formData.append("invoice_amount_with_gst", invoice_amount_with_gst);
     formData.append("invoice_date", invoice_date);
     formData.append("invoice_details", invoice_details);
     formData.append("status", status);
@@ -1105,7 +1156,8 @@ export const addPO = async (
   token,
   project_id,
   po_no,
-  po_amount,
+  po_amount_pre_gst,
+  po_amount_with_gst,
   po_date,
   po_img, // Image or PDF file
   payment_schedule_days,
@@ -1118,7 +1170,8 @@ export const addPO = async (
     // Append all form data fields
     formData.append("project_id", project_id);
     formData.append("po_no", po_no);
-    formData.append("po_amount", po_amount);
+    formData.append("po_amount_pre_gst", po_amount_pre_gst);
+    formData.append("po_amount_with_gst", po_amount_with_gst);
     formData.append("po_date", po_date);
     formData.append("payment_schedule_days", payment_schedule_days);
     formData.append("project_order_details", project_order_details);
@@ -1150,7 +1203,8 @@ export const addClientPO = async (
   token,
   project_id,
   po_no,
-  po_amount,
+  po_amount_pre_gst,
+  po_amount_with_gst,
   po_date,
   po_img, // Image or PDF file
   payment_schedule_days,
@@ -1163,7 +1217,8 @@ export const addClientPO = async (
     // Append all form data fields
     formData.append("project_id", project_id);
     formData.append("po_no", po_no);
-    formData.append("po_amount", po_amount);
+    formData.append("po_amount_pre_gst", po_amount_pre_gst);
+    formData.append("po_amount_with_gst", po_amount_with_gst);
     formData.append("po_date", po_date);
     formData.append("payment_schedule_days", payment_schedule_days);
     formData.append("project_order_details", project_order_details);
@@ -1196,7 +1251,8 @@ export const editClientPO = async (
   id, // PO ID (to edit an existing PO)
   project_id,
   po_no,
-  po_amount,
+  po_amount_pre_gst,
+  po_amount_with_gst,
   po_date,
   po_img, // This will be a file object (image or pdf)
   payment_schedule_days,
@@ -1210,7 +1266,8 @@ export const editClientPO = async (
     formData.append("id", id); // Existing PO ID
     formData.append("project_id", project_id);
     formData.append("po_no", po_no);
-    formData.append("po_amount", po_amount);
+    formData.append("po_amount_pre_gst", po_amount_pre_gst);
+    formData.append("po_amount_with_gst", po_amount_with_gst);
     formData.append("po_date", po_date);
     formData.append("payment_schedule_days", payment_schedule_days);
     formData.append("project_order_details", project_order_details);

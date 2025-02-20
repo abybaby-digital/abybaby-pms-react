@@ -158,7 +158,7 @@ const EditProject = ({ project }) => {
     setValue,
   } = useForm({
     defaultValues: {
-      project_number: project?.project_number,
+      client_po_no: project?.client_po_no,
       project_name: project?.project_name,
       quotation_no: project?.quotation_no,
       project_amount: Math.floor(project?.project_amount),
@@ -194,7 +194,7 @@ const EditProject = ({ project }) => {
       return await editProject(
         token,
         project_id,
-        data.project_number,
+        data.client_po_no,
         data.vertical_head_id.value,
         data.project_name,
         data.client_id.value,
@@ -280,21 +280,21 @@ const EditProject = ({ project }) => {
 
         {/* Project Number Field */}
         <div className="form-group">
-          <label htmlFor="project_number">
-            Project Number <span className="text-red-600">*</span>
+          <label htmlFor="client_po_no">
+            Client PO Number <span className="text-red-600">*</span>
           </label>
           <input
             type="number"
             className="block"
-            id="project_number"
-            placeholder="Project Number"
-            {...register("project_number", {
+            id="client_po_no"
+            placeholder="Client PO Number"
+            {...register("client_po_no", {
               required: "Project Number is required",
             })}
           />
-          {errors.project_number && (
+          {errors.client_po_no && (
             <span className="text-red-600 text-sm">
-              {errors.project_number.message}
+              {errors.client_po_no.message}
             </span>
           )}
         </div>

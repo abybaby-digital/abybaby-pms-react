@@ -14,7 +14,15 @@ import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 export default function AddClientPO() {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue
+  } = useForm();
+
+ const[selectedProject, setProject] = useState(null);
 
   // State to hold image preview URL
   const [imagePreview, setImagePreview] = useState(null);
@@ -24,18 +32,24 @@ export default function AddClientPO() {
     queryKey: ["project-list"],
     queryFn: async () => {
       return await getProjectList(token); // Assume this function fetches the list of projects
-    }
+    },
   });
 
   // console.log(projectList);
   const [actualPOenter, setPoEnter] = useState(null);
 
-  const getsubstractedValue = (id) => {
+  const getProjectbyId = (id) => {
     const singleProject = projectList?.response?.find((item) => item.id === id);
-    setPoEnter(singleProject?.project_amount - singleProject?.client_po_amount);
-  }
+    // setPoEnter(singleProject?.project_amount - singleProject?.client_po_amount);
+    if(singleProject){
+      setProject(singleProject);
+      setValue("po_no",singleProject?.client_po_no);
 
-  console.log(actualPOenter);
+    }
+    // console.log(singleProject);
+  };
+
+  // console.log(actualPOenter);
 
   const addPOMutation = useMutation({
     mutationFn: async (data) => {
@@ -43,7 +57,8 @@ export default function AddClientPO() {
         token,
         data.project_id,
         data.po_no,
-        data.po_amount,
+        data.po_amount_pre_GST,
+        data.po_amount_with_GST,
         data.po_date,
         data.po_img, // File input
         data.payment_schedule_days,
@@ -93,15 +108,20 @@ export default function AddClientPO() {
               ADD CLIENT PURCHASE ORDER
             </h2>
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
-
               {/* Project ID Dropdown */}
               <div className="form-group">
-                <label htmlFor="project_id">Project ID <span className="text-red-600">*</span></label>
+                <label htmlFor="project_id">
+                  Project ID <span className="text-red-600">*</span>
+                </label>
                 <select
                   id="project_id"
-                  {...register("project_id", { required: "Project ID is required" })}
+                  {...register("project_id", {
+                    required: "Project ID is required",
+                  })}
                   className="block w-full"
-                  onChange={(e) => { getsubstractedValue(+e.target.value) }}
+                  onChange={(e) => {
+                    getProjectbyId(+e.target.value);
+                  }}
                 >
                   <option value="">Select Project</option>
                   {projectList?.response?.map((project) => (
@@ -110,53 +130,98 @@ export default function AddClientPO() {
                     </option>
                   ))}
                 </select>
-                {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
+                {errors.project_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.project_id.message}
+                  </span>
+                )}
               </div>
 
               {/* PO No Input */}
               <div className="form-group">
-                <label htmlFor="po_no">PO No <span className="text-red-600">*</span></label>
+                <label htmlFor="po_no">
+                  PO No <span className="text-red-600">*</span>
+                </label>
                 <input
+                readOnly
                   type="text"
                   id="po_no"
                   {...register("po_no", { required: "PO No is required" })}
                   className="block"
                   placeholder="Enter PO No"
                 />
-                {errors.po_no && <span className="text-red-600 text-sm">{errors.po_no.message}</span>}
+                {errors.po_no && (
+                  <span className="text-red-600 text-sm">
+                    {errors.po_no.message}
+                  </span>
+                )}
               </div>
 
-              {/* PO Amount Input */}
+              {/* PO Amount Input with gst */}
               <div className="form-group">
-                <label htmlFor="po_amount">PO Amount <span className="text-red-600">*</span></label>
+                <label htmlFor="po_amount_with_gst">
+                  PO Amount ( with GST ) <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="number"
-                  id="po_amount"
-                  {...register("po_amount", {
+                  id="po_amount_with_gst"
+                  {...register("po_amount_with_gst", {
                     required: "PO Amount is required",
                   })}
                   className="block"
                   placeholder="Enter Amount"
                 />
-                {errors.po_amount && <span className="text-red-600 text-sm">{errors.po_amount.message}</span>}
+                {errors.po_amount_with_gst && (
+                  <span className="text-red-600 text-sm">
+                    {errors.po_amount_with_gst.message}
+                  </span>
+                )}
               </div>
 
+              {/* PO Amount Input without gst */}
+              <div className="form-group">
+                <label htmlFor="po_amount_pre_gst">
+                  PO Amount ( pre GST ) <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="po_amount_pre_gst"
+                  {...register("po_amount_pre_gst", {
+                    required: "PO Amount is required",
+                  })}
+                  className="block"
+                  placeholder="Enter Amount"
+                />
+                {errors.po_amount_pre_gst && (
+                  <span className="text-red-600 text-sm">
+                    {errors.po_amount_pre_gst.message}
+                  </span>
+                )}
+              </div>
 
               {/* PO Date Input */}
               <div className="form-group">
-                <label htmlFor="po_date">PO Date <span className="text-red-600">*</span></label>
+                <label htmlFor="po_date">
+                  PO Date <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="date"
                   id="po_date"
                   {...register("po_date", { required: "PO Date is required" })}
                   className="block"
                 />
-                {errors.po_date && <span className="text-red-600 text-sm">{errors.po_date.message}</span>}
+                {errors.po_date && (
+                  <span className="text-red-600 text-sm">
+                    {errors.po_date.message}
+                  </span>
+                )}
               </div>
 
               {/* Upload PO Image/PDF */}
               <div className="form-group lg:col-span-2">
-                <label htmlFor="po_img">Upload PO Image or PDF (Optional)</label>
+                <label htmlFor="po_img">
+                  Upload PO Image or PDF (Optional)
+                </label>
                 <input
                   type="file"
                   id="po_img"
@@ -171,24 +236,41 @@ export default function AddClientPO() {
               {imagePreview && (
                 <div className="mt-2 text-center lg:col-span-2">
                   {imagePreview.includes("pdf") ? (
-                    <iframe src={imagePreview} width="350px" height="350px" className="rounded-lg"></iframe>
+                    <iframe
+                      src={imagePreview}
+                      width="350px"
+                      height="350px"
+                      className="rounded-lg"
+                    ></iframe>
                   ) : (
-                    <img src={imagePreview} alt="Preview" className="w-[350px] h-[350px] rounded-lg inline-block" />
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-[350px] h-[350px] rounded-lg inline-block"
+                    />
                   )}
                 </div>
               )}
 
               {/* Payment Schedule Days Input */}
               <div className="form-group">
-                <label htmlFor="payment_schedule_days">Payment Schedule Days <span className="text-red-600">*</span></label>
+                <label htmlFor="payment_schedule_days">
+                  Payment Schedule Days <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="number"
                   id="payment_schedule_days"
-                  {...register("payment_schedule_days", { required: "Payment Schedule Days is required" })}
+                  {...register("payment_schedule_days", {
+                    required: "Payment Schedule Days is required",
+                  })}
                   className="block"
                   placeholder="Enter Payment Schedule Days"
                 />
-                {errors.payment_schedule_days && <span className="text-red-600 text-sm">{errors.payment_schedule_days.message}</span>}
+                {errors.payment_schedule_days && (
+                  <span className="text-red-600 text-sm">
+                    {errors.payment_schedule_days.message}
+                  </span>
+                )}
               </div>
 
               {/* PO Details */}
@@ -201,15 +283,13 @@ export default function AddClientPO() {
                   placeholder="Enter PO Details"
                 />
               </div>
-
             </div>
 
             {/* LOADER */}
 
-            {
-              addPOMutation.isPending ?
-                <FormSubmitLoader loading_msg="Creating Client PO..." /> : null
-            }
+            {addPOMutation.isPending ? (
+              <FormSubmitLoader loading_msg="Creating Client PO..." />
+            ) : null}
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button
