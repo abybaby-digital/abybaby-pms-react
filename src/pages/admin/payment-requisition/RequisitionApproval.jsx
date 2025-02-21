@@ -37,7 +37,7 @@ const RequisitionApproval = ({
       setModal(false);
       setLoading(false);
     } else {
-      toast.error("Unable to change status");
+      toast.error(response.message);
     }
   };
 
@@ -59,7 +59,7 @@ const RequisitionApproval = ({
       setModal(false);
       setLoading(false);
     } else {
-      toast.error("Unable to change status");
+      toast.error(response.message);
     }
   };
   return (

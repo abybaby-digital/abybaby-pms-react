@@ -489,7 +489,7 @@ export default function PaymentRequisitionList() {
                           </TooltipProvider>
 
                           <CheckAccessEdit edit_access="Payment Requition">
-                            <TooltipProvider>
+                            {/* <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger>
                                   <button
@@ -506,7 +506,7 @@ export default function PaymentRequisitionList() {
                                   <p>Edit Payment</p>
                                 </TooltipContent>
                               </Tooltip>
-                            </TooltipProvider>
+                            </TooltipProvider> */}
                           </CheckAccessEdit>
                         </>
                       )}

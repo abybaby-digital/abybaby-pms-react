@@ -161,17 +161,16 @@ const ViewProject = ({ project, add_or_edit }) => {
                         {project_by_id?.project?.other_members_id
                           ?.split(",")
                           ?.map(Number)
-                          ?.includes(userId) ?  null:
-                          (
-                            <TableRow>
-                              <TableCell className="font-bold text-lg">
-                                Project Amount :
-                              </TableCell>
-                              <TableCell>
-                                {project_by_id?.project?.project_amount}
-                              </TableCell>
-                            </TableRow>
-                          ) }
+                          ?.includes(userId) ? null : (
+                          <TableRow>
+                            <TableCell className="font-bold text-lg">
+                              Project Amount :
+                            </TableCell>
+                            <TableCell>
+                              {project_by_id?.project?.project_amount}
+                            </TableCell>
+                          </TableRow>
+                        )}
                         <TableRow>
                           <TableCell className="font-bold text-lg">
                             Start Date :
@@ -257,9 +256,31 @@ const ViewProject = ({ project, add_or_edit }) => {
                           <TableHeader>
                             <TableRow>
                               <TableHead className="w-[100px]">Sl No</TableHead>
-                              <TableHead>Client PO amount</TableHead>
+
+                              {project_by_id?.project?.other_members_id
+                                ?.split(",")
+                                ?.map(Number)
+                                ?.includes(userId) ? null : (
+                                <TableHead>
+                                  Client PO amount ( pre GST )
+                                </TableHead>
+                              )}
+                              {project_by_id?.project?.other_members_id
+                                ?.split(",")
+                                ?.map(Number)
+                                ?.includes(userId) ? null : (
+                                <TableHead>
+                                  Client PO amount ( with GST )
+                                </TableHead>
+                              )}
                               <TableHead>Client PO date</TableHead>
-                              <TableHead>PO attachment</TableHead>
+                              {project_by_id?.project?.other_members_id
+                                ?.split(",")
+                                ?.map(Number)
+                                ?.includes(userId) ? null : (
+                                <TableHead>PO attachment</TableHead>
+                              )}
+
                               <TableHead>Pament schedule days</TableHead>
                               <TableHead>PO details</TableHead>
                             </TableRow>
@@ -268,19 +289,42 @@ const ViewProject = ({ project, add_or_edit }) => {
                             {project_by_id?.client_po?.map((item, idx) => (
                               <TableRow>
                                 <TableCell>{idx + 1}</TableCell>
-                                <TableCell>{item?.po_amount}</TableCell>
+                                {project_by_id?.project?.other_members_id
+                                  ?.split(",")
+                                  ?.map(Number)
+                                  ?.includes(userId) ? null : (
+                                  <TableCell>
+                                    {item?.po_amount_pre_gst}
+                                  </TableCell>
+                                )}
+                                {project_by_id?.project?.other_members_id
+                                  ?.split(",")
+                                  ?.map(Number)
+                                  ?.includes(userId) ? null : (
+                                  <TableCell>
+                                    {item?.po_amount_with_gst}
+                                  </TableCell>
+                                )}
+
                                 <TableCell>
                                   {item?.po_date?.slice(0, 10)}
                                 </TableCell>
-                                <TableCell>
-                                  <a
-                                    href={item?.po_img}
-                                    target="_blank"
-                                    className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
-                                  >
-                                    View
-                                  </a>
-                                </TableCell>
+
+                                {project_by_id?.project?.other_members_id
+                                  ?.split(",")
+                                  ?.map(Number)
+                                  ?.includes(userId) ? null : (
+                                  <TableCell>
+                                    <a
+                                      href={item?.po_img}
+                                      target="_blank"
+                                      className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
+                                    >
+                                      View
+                                    </a>
+                                  </TableCell>
+                                )}
+
                                 <TableCell>
                                   {item?.payment_schedule_days}
                                 </TableCell>
@@ -306,7 +350,23 @@ const ViewProject = ({ project, add_or_edit }) => {
                             <TableRow>
                               <TableHead className="w-[100px]">Sl No</TableHead>
                               <TableHead>Invoice No :</TableHead>
-                              <TableHead>Invoice Amount :</TableHead>
+                              {project_by_id?.project?.other_members_id
+                                ?.split(",")
+                                ?.map(Number)
+                                ?.includes(userId) ? null : (
+                                <TableHead>
+                                  Invoice Amount (pre gst) :
+                                </TableHead>
+                              )}
+                              {project_by_id?.project?.other_members_id
+                                ?.split(",")
+                                ?.map(Number)
+                                ?.includes(userId) ? null : (
+                                <TableHead>
+                                  Invoice Amount (with gst) :
+                                </TableHead>
+                              )}
+
                               <TableHead>Invoice Date :</TableHead>
                               <TableHead>Invoice attachment :</TableHead>
                               <TableHead>Invoice details :</TableHead>
@@ -317,7 +377,19 @@ const ViewProject = ({ project, add_or_edit }) => {
                               <TableRow>
                                 <TableCell>{idx + 1}</TableCell>
                                 <TableCell>{item?.invoice_no}</TableCell>
-                                <TableCell>{item?.invoice_amount}</TableCell>
+                                {project_by_id?.project?.other_members_id
+                                  ?.split(",")
+                                  ?.map(Number)
+                                  ?.includes(userId) ? null : (
+                                  <TableCell>{item?.invoice_amount_pre_gst}</TableCell>
+                                )}
+                                {project_by_id?.project?.other_members_id
+                                  ?.split(",")
+                                  ?.map(Number)
+                                  ?.includes(userId) ? null : (
+                                  <TableCell>{item?.invoice_amount_with_gst}</TableCell>
+                                )}
+
                                 <TableCell>
                                   {item?.invoice_date?.slice(0, 10)}
                                 </TableCell>

@@ -59,7 +59,7 @@ const EditInvoice = ({ invoice }) => {
             return await editInvoice(
                 token,
                 invoice.id, // Invoice ID
-                data.project_id,
+                invoice.project_id,
                 data.invoice_no,
                 data.invoice_amount_pre_gst,
                 data.invoice_amount_with_gst,
@@ -177,18 +177,18 @@ const EditInvoice = ({ invoice }) => {
                 {/* Image Preview */}
                 {imagePreview && (
                     <div className="mt-2">
-                        <img src={imagePreview} alt="Preview" className="w-full h-auto rounded-lg" />
+                        <img src={imagePreview} alt="Preview" className="w-full h-[150px] object-contain rounded-lg" />
                     </div>
                 )}
 
                 {/* Upload New Invoice Image (Mandatory) */}
                 <div className="form-group lg:col-span-2">
-                    <label htmlFor="invoice_img">Upload New Invoice Image <span className="text-red-600">*</span></label>
+                    <label htmlFor="invoice_img">Upload Invoice Image</label>
                     <input
                         type="file"
                         id="invoice_img"
                         accept="image/*"
-                        {...register("invoice_img", { required: "Invoice Image is required" })}
+                        {...register("invoice_img")}
                         className="block border w-full rounded-lg p-3"
                         onChange={handleImageChange} // Add this line
                     />

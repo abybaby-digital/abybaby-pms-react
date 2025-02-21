@@ -57,8 +57,8 @@ export default function AddClientPO() {
         token,
         data.project_id,
         data.po_no,
-        data.po_amount_pre_GST,
-        data.po_amount_with_GST,
+        data.po_amount_pre_gst,
+        data.po_amount_with_gst,
         data.po_date,
         data.po_img, // File input
         data.payment_schedule_days,
@@ -81,7 +81,7 @@ export default function AddClientPO() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log(data.po_amount_pre_gst);
     addPOMutation.mutate(data);
   };
 
@@ -220,12 +220,12 @@ export default function AddClientPO() {
               {/* Upload PO Image/PDF */}
               <div className="form-group lg:col-span-2">
                 <label htmlFor="po_img">
-                  Upload PO Image or PDF (Optional)
+                  Upload PO Image
                 </label>
                 <input
                   type="file"
                   id="po_img"
-                  accept="image/*, application/pdf"
+                  accept="image/*"
                   {...register("po_img")}
                   className="block border w-full rounded-lg p-3"
                   onChange={handleFileChange} // Add this line for preview or file handling

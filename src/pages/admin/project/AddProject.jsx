@@ -37,6 +37,7 @@ const animatedComponents = makeAnimated();
 
 export default function AddProject() {
   const token = useSelector((state) => state.auth.token);
+  const userId = useSelector((state) => state.auth.user?.role_id);
   const navigate = useNavigate();
   const {
     register,
@@ -551,25 +552,24 @@ export default function AddProject() {
               </button>
             </div>
           </form>
-
-          {/* <div className="import-project">
-            <p className="text-center text-2xl">OR</p>
-            <Dialog>
-              <DialogTrigger asChild>
-                <div className="text-center">
-                  <button className="bg-green-500 px-5 py-2 rounded-xl text-white">
-                    <FaFileImport className="inline-block me-2" />
-                    Import Projects
-                  </button>
-                </div>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-
-                <ImportProjectCSV />
-
-              </DialogContent>
-            </Dialog>
-          </div> */}
+          {userId ? (
+            <div className="import-project">
+              <p className="text-center text-2xl">OR</p>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div className="text-center">
+                    <button className="bg-green-500 px-5 py-2 rounded-xl text-white">
+                      <FaFileImport className="inline-block me-2" />
+                      Import Projects
+                    </button>
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <ImportProjectCSV />
+                </DialogContent>
+              </Dialog>
+            </div>
+          ) : null}
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -19,6 +19,9 @@ const EditClientPO = ({ clientPO }) => {
   const [filePreview, setFilePreview] = useState(null);
   const [fileType, setFileType] = useState(null); // Store file type (image or pdf)
 
+  // Initialize image preview state
+  const [imagePreview, setImagePreview] = useState(null);
+
   // Fetch projects for the project dropdown
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
@@ -48,10 +51,10 @@ const EditClientPO = ({ clientPO }) => {
 
   // Pre-fill the form with existing data
   useEffect(() => {
-    setValue("project_id", clientPO.project_id); // Ensure selected project is set
+    // setValue("project_id", clientPO.project_id); // Ensure selected project is set
     setValue("po_no", clientPO.client_po_no);
-    setValue("po_amount_pre_GST", Math.floor(clientPO.po_amount_pre_gst));
-    setValue("po_amount_with_GST", Math.floor(clientPO.po_amount_with_gst));
+    // setValue("po_amount_pre_GST", Math.floor(clientPO.po_amount_pre_gst));
+    // setValue("po_amount_with_GST", Math.floor(clientPO.po_amount_with_gst));
     setValue("po_date", clientPO.po_date.split(" ")[0]);
     setValue("payment_schedule_days", clientPO.payment_schedule_days);
     setValue("po_details", clientPO.project_order_details);
@@ -59,13 +62,7 @@ const EditClientPO = ({ clientPO }) => {
 
     // Set initial file preview if there is an existing file
     if (clientPO.po_img) {
-      if (clientPO.po_img.endsWith(".pdf")) {
-        setFilePreview(clientPO.po_img); // Display PDF thumbnail (can replace with custom logic)
-        setFileType("pdf");
-      } else {
-        setFilePreview(clientPO.po_img); // Display image preview
-        setFileType("image");
-      }
+      setImagePreview(clientPO.po_img); // Assuming invoice has invoice_img URL for preview
     }
   }, [clientPO, setValue]);
 
@@ -84,8 +81,8 @@ const EditClientPO = ({ clientPO }) => {
       return await editClientPO(
         token,
         clientPO.id, // PO ID
-        data.project_id,
-        data.po_no,
+        clientPO.project_id,
+        clientPO.project_no,
         data.po_amount_pre_gst,
         data.po_amount_with_gst,
         data.po_date,
@@ -112,6 +109,7 @@ const EditClientPO = ({ clientPO }) => {
 
   // Handle form submission
   const onSubmit = (data) => {
+    // Call the mutation with updated data
     editClientPOMutation.mutate(data);
   };
 
@@ -119,16 +117,8 @@ const EditClientPO = ({ clientPO }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      if (file.type.startsWith("image/")) {
-        setFilePreview(fileUrl); // Set image preview URL
-        setFileType("image");
-      } else if (file.type === "application/pdf") {
-        setFilePreview(fileUrl); // Set PDF preview (or a default thumbnail)
-        setFileType("pdf");
-      } else {
-        toast.error("Only image or PDF files are allowed.");
-      }
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl); // Set the preview image URL
     }
   };
 
@@ -183,6 +173,7 @@ const EditClientPO = ({ clientPO }) => {
             PO No <span className="text-red-600">*</span>
           </label>
           <input
+            disabled
             type="text"
             id="po_no"
             {...register("po_no", { required: "PO No is required" })}
@@ -295,36 +286,24 @@ const EditClientPO = ({ clientPO }) => {
         </div>
 
         {/* File Preview */}
-        {fileType === "image" && filePreview && (
+        {imagePreview && (
           <div className="mt-2">
             <img
-              src={filePreview}
+              src={imagePreview}
               alt="Preview"
-              className="w-full h-[250px] rounded-lg object-top object-contain"
+              className="w-full h-[150px] object-contain rounded-lg"
             />
-          </div>
-        )}
-        {fileType === "pdf" && filePreview && (
-          <div className="mt-2">
-            <iframe
-              src={filePreview}
-              width="100%"
-              height="400"
-              title="PDF Preview"
-            ></iframe>
           </div>
         )}
 
         {/* Upload New PO Image/PDF (Mandatory) */}
         <div className="form-group lg:col-span-2">
-          <label htmlFor="po_img">
-            Upload New PO Image/PDF <span className="text-red-600">*</span>
-          </label>
+          <label htmlFor="po_img">Upload New PO <span className="text-red-600">*</span></label>
           <input
             type="file"
             id="po_img"
-            accept="image/*,application/pdf"
-            {...register("po_img", { required: "PO Image/PDF is required" })}
+            accept="image/*"
+            {...register("po_img")}
             className="block border w-full rounded-lg p-3"
             onChange={handleFileChange} // Add this line
           />

@@ -197,7 +197,7 @@ export default function AddInvoice() {
               {/* Upload Invoice Image */}
               <div className="form-group lg:col-span-2">
                 <label htmlFor="invoice_img">
-                  Upload Invoice Image (Optional)
+                  Upload Invoice Image
                 </label>
                 <input
                   type="file"

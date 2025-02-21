@@ -450,7 +450,7 @@ export const getFYList = async (token) => {
 export const addProject = async (
   token,
   client_po_no,
-name_prefix,
+  name_prefix,
   project_name,
   client_id,
   branch_id,
@@ -594,10 +594,7 @@ export const getProjectList = async (
 
 // PROJECT VIEW BY ID
 
-export const getProjectById = async (
-  token,
-  project_id
-) => {
+export const getProjectById = async (token, project_id) => {
   try {
     const response = await api.post(
       "/project-details-by-id",
@@ -621,23 +618,32 @@ export const getProjectById = async (
 
 export const importProject = async (token, file) => {
   try {
-    const formData = new FormData();
-    formData.append('import_project', file); // Append the file to FormData
+    // Ensure the file is of the correct type (CSV)
+    if (!file || file.type !== "text/csv") {
+      throw new Error("Please upload a valid CSV file.");
+    }
 
-    const response = await api.post('/import-project', formData, {
+    const formData = new FormData();
+    formData.append("import_project", file); // Append the file to FormData
+
+    const response = await api.post("/import-project", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data', // Specify multipart/form-data for file upload
+        "Content-Type": "multipart/form-data", // Specify multipart/form-data for file upload
       },
     });
 
+    // Assuming the server returns the result in response.data.result
     return response.data.result;
   } catch (error) {
-    console.error('Error importing project:', error);
-    throw error;
+    console.error("Error importing project:", error);
+
+    // Optionally, show user-friendly error message
+    throw new Error(
+      error.response ? error.response.data.message : error.message
+    );
   }
 };
-
 
 // VERTICAL HEAD LIST
 export const getVerticalHeadList = async (token) => {
@@ -981,6 +987,48 @@ export const addPaymentReceived = async (
 };
 
 // EDIT PAYMENT RECEIVED
+// export const editPaymentReceived = async (
+//   token,
+//   id,
+//   project_id,
+//   received_no,
+//   received_amount,
+//   received_date,
+//   received_img, // This will be a file object (image)
+//   received_details,
+//   status
+// ) => {
+//   try {
+//     const formData = new FormData();
+
+//     // Append all form data fields
+//     formData.append("id", id);
+//     formData.append("project_id", project_id);
+//     formData.append("received_no", received_no);
+//     formData.append("received_amount", received_amount);
+//     formData.append("received_date", received_date);
+//     formData.append("received_details", received_details);
+//     formData.append("status", status);
+
+//     // Append the received image if it exists
+//     if (received_img) {
+//       formData.append("received_img", received_img[0]); // received_img should be a File object
+//     }
+
+//     const response = await api.post("/edit-payment-received", formData, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+//       },
+//     });
+
+//     return response.data.result;
+//   } catch (error) {
+//     console.error("Error editing payment received:", error);
+//     throw error;
+//   }
+// };
+
 export const editPaymentReceived = async (
   token,
   id,
@@ -988,7 +1036,7 @@ export const editPaymentReceived = async (
   received_no,
   received_amount,
   received_date,
-  received_img, // This will be a file object (image)
+  received_img, // This can now be either a file object or an existing image URL (string)
   received_details,
   status
 ) => {
@@ -1004,9 +1052,12 @@ export const editPaymentReceived = async (
     formData.append("received_details", received_details);
     formData.append("status", status);
 
-    // Append the received image if it exists
-    if (received_img) {
-      formData.append("received_img", received_img[0]); // received_img should be a File object
+    // Append the received image if it exists or if it's a new file upload
+    if (received_img && typeof received_img !== "string") {
+      formData.append("received_img", received_img[0]); // received_img is a File object
+    } else if (typeof received_img === "string") {
+      // If it's an existing image URL, just append it as a string
+      formData.append("received_img", received_img);
     }
 
     const response = await api.post("/edit-payment-received", formData, {
@@ -1088,6 +1139,50 @@ export const addInvoice = async (
 };
 
 // EDIT INVOICE
+// export const editInvoice = async (
+//   token,
+//   id,
+//   project_id,
+//   invoice_no,
+//   invoice_amount_pre_gst,
+//   invoice_amount_with_gst,
+//   invoice_date,
+//   invoice_img, // This will be a file object (image)
+//   invoice_details,
+//   status
+// ) => {
+//   try {
+//     const formData = new FormData();
+
+//     // Append all form data fields
+//     formData.append("id", id);
+//     formData.append("project_id", project_id);
+//     formData.append("invoice_no", invoice_no);
+//     formData.append("invoice_amount_pre_gst", invoice_amount_pre_gst);
+//     formData.append("invoice_amount_with_gst", invoice_amount_with_gst);
+//     formData.append("invoice_date", invoice_date);
+//     formData.append("invoice_details", invoice_details);
+//     formData.append("status", status);
+
+//     // Append the invoice image if it exists
+//     if (invoice_img) {
+//       formData.append("invoice_img", invoice_img[0]); // invoice_img should be a File object
+//     }
+
+//     const response = await api.post("/edit-invoice", formData, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+//       },
+//     });
+
+//     return response.data.result;
+//   } catch (error) {
+//     console.error("Error editing invoice:", error);
+//     throw error;
+//   }
+// };
+
 export const editInvoice = async (
   token,
   id,
@@ -1096,7 +1191,7 @@ export const editInvoice = async (
   invoice_amount_pre_gst,
   invoice_amount_with_gst,
   invoice_date,
-  invoice_img, // This will be a file object (image)
+  invoice_img, // This can now be either a file object or an existing image URL (string)
   invoice_details,
   status
 ) => {
@@ -1113,9 +1208,12 @@ export const editInvoice = async (
     formData.append("invoice_details", invoice_details);
     formData.append("status", status);
 
-    // Append the invoice image if it exists
-    if (invoice_img) {
-      formData.append("invoice_img", invoice_img[0]); // invoice_img should be a File object
+    // Append the invoice image if it exists or if it's a new file upload
+    if (invoice_img && typeof invoice_img !== "string") {
+      formData.append("invoice_img", invoice_img[0]); // invoice_img is a File object
+    } else if (typeof invoice_img === "string") {
+      // If it's an existing image URL, just append it as a string
+      formData.append("invoice_img", invoice_img);
     }
 
     const response = await api.post("/edit-invoice", formData, {
@@ -1250,7 +1348,7 @@ export const editClientPO = async (
   token,
   id, // PO ID (to edit an existing PO)
   project_id,
-  po_no,
+  project_no,
   po_amount_pre_gst,
   po_amount_with_gst,
   po_date,
@@ -1265,7 +1363,7 @@ export const editClientPO = async (
     // Append all form data fields
     formData.append("id", id); // Existing PO ID
     formData.append("project_id", project_id);
-    formData.append("po_no", po_no);
+    formData.append("project_no", project_no);
     formData.append("po_amount_pre_gst", po_amount_pre_gst);
     formData.append("po_amount_with_gst", po_amount_with_gst);
     formData.append("po_date", po_date);
@@ -1273,15 +1371,19 @@ export const editClientPO = async (
     formData.append("project_order_details", project_order_details);
     formData.append("status", status);
 
-    // Append the PO image (either image or PDF) if it exists
-    if (po_img) {
+    // Only append the PO image if it's a new file (image or PDF)
+    if (po_img && typeof po_img !== "string") {
       formData.append("po_img", po_img[0]); // po_img should be a File object
+    } else if (typeof po_img === "string") {
+      // If po_img is a URL (i.e., no change to the image), append the URL as part of the payload
+      formData.append("po_img", po_img);
     }
 
+    // Send the request with form data
     const response = await api.post("/edit-client-po", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+        "Content-Type": "multipart/form-data", // Ensure correct content-type for file uploads
       },
     });
 
@@ -1417,12 +1519,15 @@ export const getPaymentRequisitionList = async (token) => {
 };
 
 // PAYMENT REQUISITION DOWNLOAD STATUS
-export const getRequisitionDownloadStatus = async (token, payment_requition_id) => {
+export const getRequisitionDownloadStatus = async (
+  token,
+  payment_requition_id
+) => {
   try {
     const response = await api.post(
       "/update-download-status",
       {
-        payment_requition_id: payment_requition_id
+        payment_requition_id: payment_requition_id,
       },
       {
         headers: {
@@ -1436,7 +1541,6 @@ export const getRequisitionDownloadStatus = async (token, payment_requition_id) 
     throw error;
   }
 };
-
 
 export const addBillingSupportings = async (
   token,
@@ -1653,14 +1757,19 @@ export const getReport = async (token, financial_year) => {
 
 // PAYMENT REQUISITION APPROVAL
 
-export const approvePaymentRequisition = async (token, payment_requition_id,approved_amount, status) => {
+export const approvePaymentRequisition = async (
+  token,
+  payment_requition_id,
+  approved_amount,
+  status
+) => {
   try {
     const response = await api.post(
       "/payment-requisition-approved-status",
       {
         payment_requition_id: payment_requition_id,
         approved_amount: approved_amount,
-        status: status
+        status: status,
       },
       {
         headers: {
@@ -1677,7 +1786,13 @@ export const approvePaymentRequisition = async (token, payment_requition_id,appr
 
 // CHANGE PASSWORD
 
-export const changePassword = async (token, email_id, old_password, new_password , confirm_password) => {
+export const changePassword = async (
+  token,
+  email_id,
+  old_password,
+  new_password,
+  confirm_password
+) => {
   try {
     const response = await api.post(
       "/change-password",

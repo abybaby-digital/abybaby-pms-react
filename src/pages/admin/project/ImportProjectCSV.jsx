@@ -2,16 +2,14 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import AdminHead from "../../../components/common/AdminHead";
-import ButtonLoader from "../../../components/common/ButtonLoader";
 import { importProject } from "../../../services/api"; // Import the importProject API
 import { useState } from "react";
-import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
+import ButtonLoader from "../../../components/common/ButtonLoader";
+import { useNavigate } from "react-router-dom";
 
 export default function ImportCSV() {
   const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -22,13 +20,20 @@ export default function ImportCSV() {
   // Mutation for file upload
   const importCSVMutation = useMutation({
     mutationFn: async (data) => {
-      const formData = new FormData();
-      formData.append("import_project", data.import_project[0]); // Assuming only one file
-      return await importProject(token, formData);
+      const file = data.import_project[0]; // Assuming only one file
+      // File validation check
+      if (file && !file.name.endsWith(".csv")) {
+        throw new Error("The file must be a CSV file.");
+      }
+      return await importProject(token, file); // Send the file directly
     },
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
         toast.success("CSV Imported successfully!");
+        navigate("/project-list");
+      }
+      else{
+        toast.error(response.message);
       }
     },
     onError: (error) => {
@@ -44,8 +49,6 @@ export default function ImportCSV() {
   };
 
   const onSubmit = (data) => {
-    console.log(data.import_project[0]);
-
     importCSVMutation.mutate(data); // Trigger the mutation
   };
 
@@ -97,9 +100,9 @@ export default function ImportCSV() {
         <button
           type="submit"
           className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-          disabled={importCSVMutation.isPending}
+          disabled={importCSVMutation.isLoading}
         >
-          {importCSVMutation.isPending ? <ButtonLoader /> : "Import CSV"}
+          {importCSVMutation.isLoading ? <ButtonLoader /> : "Import CSV"}
         </button>
       </div>
     </form>
