@@ -131,10 +131,10 @@ export default function ProjectList() {
   const filteredProjects = projectList?.response?.filter((project) => {
     const keyword = searchKeyword.toLowerCase();
     return (
-      project.project_number.toLowerCase().includes(keyword) ||
-      project.project_name.toLowerCase().includes(keyword) ||
-      project.client_name.toLowerCase().includes(keyword) ||
-      project.branch_name.toLowerCase().includes(keyword)
+      project.project_number?.toLowerCase().includes(keyword) ||
+      project.project_name?.toLowerCase().includes(keyword) ||
+      project.client_name?.toLowerCase().includes(keyword) ||
+      project.branch_name?.toLowerCase().includes(keyword)
     );
   });
 

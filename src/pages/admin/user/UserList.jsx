@@ -45,9 +45,9 @@ export default function UserList() {
     const filteredUsers = userList?.response?.filter(user => {
         const keyword = searchKeyword.toLowerCase();
         return (
-            user.name.toLowerCase().includes(keyword) ||
-            user.email.toLowerCase().includes(keyword) ||
-            user.role_name.toLowerCase().includes(keyword)
+            user.name?.toLowerCase().includes(keyword) ||
+            user.email?.toLowerCase().includes(keyword) ||
+            user.role_name?.toLowerCase().includes(keyword)
         );
     });
 

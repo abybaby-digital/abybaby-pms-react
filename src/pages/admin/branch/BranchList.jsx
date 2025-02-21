@@ -63,9 +63,9 @@ export default function BranchList() {
     const filteredBranches = branchlist?.response?.filter(branch => {
         const keyword = searchKeyword.toLowerCase();
         return (
-            branch.branch_code.toLowerCase().includes(keyword) ||
-            branch.branch_name.toLowerCase().includes(keyword) ||
-            branch.branch_address.toLowerCase().includes(keyword)
+            branch.branch_code?.toLowerCase()?.includes(keyword) ||
+            branch.branch_name?.toLowerCase()?.includes(keyword) ||
+            branch.branch_address?.toLowerCase()?.includes(keyword)
         );
     });
 

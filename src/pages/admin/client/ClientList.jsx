@@ -72,10 +72,10 @@ export default function ClientList() {
     const filteredClients = clientList?.response?.filter(client => {
         const keyword = debouncedSearchKeyword.toLowerCase();
         return (
-            client.company_name.toLowerCase().includes(keyword) ||
-            client.contact_person.toLowerCase().includes(keyword) ||
-            client.client_gst.toLowerCase().includes(keyword) ||
-            client.client_email.toLowerCase().includes(keyword)
+            client.company_name?.toLowerCase().includes(keyword) ||
+            client.contact_person?.toLowerCase().includes(keyword) ||
+            client.client_gst?.toLowerCase().includes(keyword) ||
+            client.client_email?.toLowerCase().includes(keyword)
         );
     });
 
