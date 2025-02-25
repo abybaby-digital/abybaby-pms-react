@@ -199,7 +199,7 @@ export default function Dashboard() {
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[0]?.project_amount}
+                  {projectReport?.response[0]?.project_amount_pre_gst}
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Running Projects
@@ -232,7 +232,7 @@ export default function Dashboard() {
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[1]?.project_amount}
+                  {projectReport?.response[1]?.project_amount_pre_gst}
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Closed Projects
@@ -265,7 +265,7 @@ export default function Dashboard() {
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[6]?.project_amount}
+                  {projectReport?.response[6]?.project_amount_pre_gst}
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Total Projects
@@ -291,7 +291,7 @@ export default function Dashboard() {
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[2]?.project_amount}
+                  {projectReport?.response[2]?.project_amount_pre_gst}
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Unbilled Closed Projects
@@ -324,7 +324,7 @@ export default function Dashboard() {
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[3]?.project_amount}
+                  {projectReport?.response[3]?.project_amount_pre_gst}
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Billed Closed Project
@@ -358,7 +358,7 @@ export default function Dashboard() {
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[4]?.project_amount}
+                  {projectReport?.response[4]?.project_amount_pre_gst}
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Payment Outstanding Projects
@@ -392,7 +392,7 @@ export default function Dashboard() {
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[5]?.project_amount}
+                  {projectReport?.response[5]?.project_amount_pre_gst}
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Payment Received Projects
