@@ -303,6 +303,7 @@ export default function EditUser({ user }) {
               render={({ field }) => (
                 <Select
                   {...field}
+                  isDisabled={true}
                   onChange={(selectedOption) => {
                     setValue("role_id", selectedOption);
                     setValue("vertical_head_id", ""); // Update the vertical_head_id
