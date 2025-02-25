@@ -1257,7 +1257,7 @@ export const getInvoiceList = async (token) => {
 export const addPO = async (
   token,
   project_id,
-  po_no,
+  client_po_no,
   po_amount_pre_gst,
   po_amount_with_gst,
   po_date,
@@ -1271,7 +1271,7 @@ export const addPO = async (
 
     // Append all form data fields
     formData.append("project_id", project_id);
-    formData.append("po_no", po_no);
+    formData.append("client_po_no", client_po_no);
     formData.append("po_amount_pre_gst", po_amount_pre_gst);
     formData.append("po_amount_with_gst", po_amount_with_gst);
     formData.append("po_date", po_date);
@@ -1304,7 +1304,7 @@ export const addPO = async (
 export const addClientPO = async (
   token,
   project_id,
-  po_no,
+  client_po_no,
   po_amount_pre_gst,
   po_amount_with_gst,
   po_date,
@@ -1318,7 +1318,7 @@ export const addClientPO = async (
 
     // Append all form data fields
     formData.append("project_id", project_id);
-    formData.append("po_no", po_no);
+    formData.append("client_po_no", client_po_no);
     formData.append("po_amount_pre_gst", po_amount_pre_gst);
     formData.append("po_amount_with_gst", po_amount_with_gst);
     formData.append("po_date", po_date);

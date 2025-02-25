@@ -81,7 +81,7 @@ export default function AddClientPO() {
   });
 
   const onSubmit = (data) => {
-    console.log(data.po_amount_pre_gst);
+    // console.log(data.po_amount_pre_gst);
     addPOMutation.mutate(data);
   };
 
@@ -143,7 +143,7 @@ export default function AddClientPO() {
                   PO No <span className="text-red-600">*</span>
                 </label>
                 <input
-                readOnly
+                
                   type="text"
                   id="po_no"
                   {...register("po_no", { required: "PO No is required" })}
