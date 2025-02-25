@@ -157,6 +157,24 @@ export default function PaymentReceivedList() {
                                         <Column field="received_no" sortable header="Received No"></Column>
                                         <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>
                                         <Column field="received_date" sortable header="Received Date" body={(rowData) => new Date(rowData.received_date).toLocaleDateString()}></Column>
+                                        <Column
+                                            className="text-center"
+                                            field="created_by_name"
+                                            sortable
+                                            header="Created By"
+                                            body={(rowData) =>
+                                            rowData.created_by_name ? rowData.created_by_name : "....."
+                                            }
+                                            ></Column>
+                                            <Column
+                                            className="text-center"
+                                            field="updated_by_name"
+                                            sortable
+                                            header="Updated By"
+                                            body={(rowData) =>
+                                                rowData.updated_by_name ? rowData.updated_by_name : "....."
+                                            }
+                                            ></Column>
                                         <Column field="received_details" sortable header="Details"></Column>
                                         <Column header="Status" body={(rowData) => (
                                             <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>

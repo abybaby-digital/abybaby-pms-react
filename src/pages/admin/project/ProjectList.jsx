@@ -481,7 +481,7 @@ export default function ProjectList() {
                       style={{ textTransform: "capitalize" }}
                     ></Column> */}
                     <Column
-                      header="Project Amount"
+                      header="Project Amount (pre GST)"
                       sortable
                       body={(rowData) =>
                         rowData.other_members_id
@@ -491,7 +491,24 @@ export default function ProjectList() {
                           <span className="block text-center">-</span>
                         ) : (
                           <span className="block text-center">
-                            {rowData.project_amount}
+                            {rowData.project_amount_pre_gst}
+                          </span>
+                        )
+                      }
+                      style={{ textTransform: "capitalize" }}
+                    />
+                    <Column
+                      header="Project Amount (with GST)"
+                      sortable
+                      body={(rowData) =>
+                        rowData.other_members_id
+                          ?.split(",")
+                          ?.map(Number)
+                          ?.includes(userId) ? (
+                          <span className="block text-center">-</span>
+                        ) : (
+                          <span className="block text-center">
+                            {rowData.project_amount_with_gst}
                           </span>
                         )
                       }

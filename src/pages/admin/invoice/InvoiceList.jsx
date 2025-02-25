@@ -240,6 +240,24 @@ export default function InvoiceList() {
                       }
                     ></Column>
                     <Column
+                    className="text-center"
+                      field="created_by_name"
+                      sortable
+                      header="Created By"
+                      body={(rowData) =>
+                       rowData.created_by_name ? rowData.created_by_name : "....."
+                      }
+                    ></Column>
+                    <Column
+                    className="text-center"
+                      field="updated_by_name"
+                      sortable
+                      header="Updated By"
+                      body={(rowData) =>
+                        rowData.updated_by_name ? rowData.updated_by_name : "....."
+                      }
+                    ></Column>
+                    <Column
                       field="invoice_details"
                       sortable
                       header="Details"

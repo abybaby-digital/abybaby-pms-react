@@ -144,7 +144,8 @@ export default function AddProject() {
         data.client_service_id?.map((item) => item.value.toString()).join(","),
         data.other_members_id?.map((item) => item.value.toString()).join(","),
         data.quotation_no,
-        data.project_amount,
+        data.project_amount_pre_gst,
+        data.project_amount_with_gst,
         data.project_start_date,
         data.project_end_date,
         "1"
@@ -205,7 +206,7 @@ export default function AddProject() {
 
               {/* PO Number Field */}
               <div className="form-group">
-                <label htmlFor="project_number">
+                <label htmlFor="client_po_number">
                   Client PO Number <span className="text-red-600">*</span>
                 </label>
                 <input
@@ -213,9 +214,7 @@ export default function AddProject() {
                   className="block"
                   id="client_po_number"
                   placeholder="Client PO  Number"
-                  {...register("client_po_number", {
-                    required: "Client PO Number is required",
-                  })}
+                  {...register("client_po_number")}
                 />
                 {errors.client_po_number && (
                   <span className="text-red-600 text-sm">
@@ -454,7 +453,7 @@ export default function AddProject() {
 
               {/* Quotation No Field */}
               <div className="form-group">
-                <label htmlFor="project_amount">
+                <label htmlFor="quotation_no">
                   Quotation No <span className="text-red-600">*</span>
                 </label>
                 <input
@@ -466,30 +465,51 @@ export default function AddProject() {
                     required: "Quotation Number is required",
                   })}
                 />
-                {errors.project_amount && (
+                {errors.quotation_no && (
                   <span className="text-red-600 text-sm">
                     {errors.quotation_no.message}
                   </span>
                 )}
               </div>
 
-              {/* Project Amount Field */}
+              {/* Project Amount Field pre gst */}
               <div className="form-group">
-                <label htmlFor="project_amount">
-                  Project Amount <span className="text-red-600">*</span>
+                <label htmlFor="project_amount_pre_gst">
+                  Project Amount (pre GST) <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="number"
                   className="block"
-                  id="project_amount"
-                  placeholder="Project Amount"
-                  {...register("project_amount", {
-                    required: "Project Amount is required",
+                  id="project_amount_pre_gst"
+                  placeholder="Project Amount (pre GST)"
+                  {...register("project_amount_pre_gst", {
+                    required: "Project Amount(pre gst) is required",
                   })}
                 />
-                {errors.project_amount && (
+                {errors.project_amount_pre_gst && (
                   <span className="text-red-600 text-sm">
-                    {errors.project_amount.message}
+                    {errors.project_amount_pre_gst.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Project Amount Field with gst */}
+              <div className="form-group">
+                <label htmlFor="project_amount_with_gst">
+                  Project Amount (with GST) <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  className="block"
+                  id="project_amount_with_gst"
+                  placeholder="Project Amount (with GST)"
+                  {...register("project_amount_with_gst", {
+                    required: "Project Amount (with gst) is required",
+                  })}
+                />
+                {errors.project_amount_with_gst && (
+                  <span className="text-red-600 text-sm">
+                    {errors.project_amount_with_gst.message}
                   </span>
                 )}
               </div>

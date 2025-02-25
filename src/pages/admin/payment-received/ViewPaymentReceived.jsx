@@ -66,6 +66,14 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                         <TableCell>{new Date(payment?.received_date).toLocaleDateString()}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Created By :</TableCell>
+                                        <TableCell>{payment?.created_by_name ? payment?.created_by_name : "...."}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Updated By:</TableCell>
+                                        <TableCell>{payment?.updated_by_name ? payment?.updated_by_name : "...."}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Details:</TableCell>
                                         <TableCell>{payment?.received_details}</TableCell>
                                     </TableRow>

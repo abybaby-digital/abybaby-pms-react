@@ -164,10 +164,23 @@ const ViewProject = ({ project, add_or_edit }) => {
                           ?.includes(userId) ? null : (
                           <TableRow>
                             <TableCell className="font-bold text-lg">
-                              Project Amount :
+                              Project Amount (pre GST) :
                             </TableCell>
                             <TableCell>
-                              {project_by_id?.project?.project_amount}
+                              {project_by_id?.project?.project_amount_pre_gst}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                        {project_by_id?.project?.other_members_id
+                          ?.split(",")
+                          ?.map(Number)
+                          ?.includes(userId) ? null : (
+                          <TableRow>
+                            <TableCell className="font-bold text-lg">
+                              Project Amount (with GST) :
+                            </TableCell>
+                            <TableCell>
+                              {project_by_id?.project?.project_amount_with_gst}
                             </TableCell>
                           </TableRow>
                         )}

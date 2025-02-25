@@ -161,7 +161,8 @@ const EditProject = ({ project }) => {
       client_po_no: project?.client_po_no,
       project_name: project?.project_name,
       quotation_no: project?.quotation_no,
-      project_amount: Math.floor(project?.project_amount),
+      project_amount_pre_gst: Math.floor(project?.project_amount_pre_gst),
+      project_amount_with_gst: Math.floor(project?.project_amount_with_gst),
       project_start_date: project?.project_start_date,
       project_end_date: project?.project_end_date,
       client_id: { value: project?.client_id, label: project?.client_name },
@@ -205,7 +206,8 @@ const EditProject = ({ project }) => {
         data.client_service_id?.map((item) => item.value.toString()).join(","),
         data.other_members_id?.map((item) => item.value.toString()).join(","),
         data.quotation_no,
-        data.project_amount,
+        data.project_amount_pre_gst,
+        data.project_amount_with_gst,
         data.project_start_date,
         data.project_end_date,
         data.project_status
@@ -543,23 +545,43 @@ const EditProject = ({ project }) => {
           )}
         </div>
 
-        {/* Project Amount Field */}
+        {/* Project Amount Field pre gst */}
         <div className="form-group">
-          <label htmlFor="project_amount">
-            Project Amount <span className="text-red-600">*</span>
+          <label htmlFor="project_amount_pre_gst">
+            Project Amount (pre gst) <span className="text-red-600">*</span>
           </label>
           <input
             type="number"
             className="block"
-            id="project_amount"
+            id="project_amount_pre_gst"
             placeholder="Project Amount"
-            {...register("project_amount", {
+            {...register("project_amount_pre_gst", {
               required: "Project Amount is required",
             })}
           />
-          {errors.project_amount && (
+          {errors.project_amount_pre_gst && (
             <span className="text-red-600 text-sm">
-              {errors.project_amount.message}
+              {errors.project_amount_pre_gst.message}
+            </span>
+          )}
+        </div>
+        {/* Project Amount Field with gst */}
+        <div className="form-group">
+          <label htmlFor="project_amount_with_gst">
+            Project Amount (with gst) <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="number"
+            className="block"
+            id="project_amount_with_gst"
+            placeholder="Project Amount"
+            {...register("project_amount_with_gst", {
+              required: "Project Amount is required",
+            })}
+          />
+          {errors.project_amount_with_gst && (
+            <span className="text-red-600 text-sm">
+              {errors.project_amount_with_gst.message}
             </span>
           )}
         </div>

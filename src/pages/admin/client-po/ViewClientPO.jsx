@@ -59,11 +59,11 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Amount (pre GST):</TableCell>
-                                        <TableCell>₹{clientPO?.po_amount_pre_gst}</TableCell>
+                                        <TableCell>₹{clientPO?.po_amount_pre_gst ? clientPO?.po_amount_pre_gst : "...."}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Amount (with GST):</TableCell>
-                                        <TableCell>₹{clientPO?.po_amount_with_gst}</TableCell>
+                                        <TableCell>₹{clientPO?.po_amount_with_gst ? clientPO?.po_amount_with_gst : "...."}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">PO Date:</TableCell>
@@ -72,6 +72,14 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Payment Schedule (Days):</TableCell>
                                         <TableCell>{clientPO?.payment_schedule_days} days</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Created By :</TableCell>
+                                        <TableCell>{clientPO?.created_by_name ? clientPO?.created_by_name : "...."}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Updated By:</TableCell>
+                                        <TableCell>{clientPO?.updated_by_name ? clientPO?.updated_by_name : "...."}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Details:</TableCell>

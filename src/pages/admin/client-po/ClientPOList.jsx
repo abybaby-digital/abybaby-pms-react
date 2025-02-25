@@ -191,7 +191,7 @@ export default function ClientPOList() {
                           <span className="block text-center">-</span>
                         ) : (
                           <span className="block text-center">
-                            {rowData.po_amount_pre_gst}
+                            {rowData.po_amount_pre_gst ? rowData.po_amount_pre_gst : "....."}
                           </span>
                         )
                       }
@@ -214,7 +214,7 @@ export default function ClientPOList() {
                           <span className="block text-center">-</span>
                         ) : (
                           <span className="block text-center">
-                            {rowData.po_amount_with_gst}
+                            {rowData.po_amount_with_gst ? rowData.po_amount_with_gst : "....."}
                           </span>
                         )
                       }
@@ -229,9 +229,30 @@ export default function ClientPOList() {
                       }
                     ></Column>
                     <Column
+                    className="text-center"
+                      field="created_by_name"
+                      sortable
+                      header="Created By"
+                      body={(rowData) =>
+                       rowData.created_by_name ? rowData.created_by_name : "....."
+                      }
+                    ></Column>
+                    <Column
+                    className="text-center"
+                      field="updated_by_name"
+                      sortable
+                      header="Updated By"
+                      body={(rowData) =>
+                        rowData.updated_by_name ? rowData.updated_by_name : "....."
+                      }
+                    ></Column>  
+                    <Column
                       field="project_order_details"
                       sortable
                       header="Details"
+                      body={(rowData) =>
+                        rowData.project_order_details ? rowData.project_order_details : "....."
+                      }
                     ></Column>
                     <Column
                       header="Status"

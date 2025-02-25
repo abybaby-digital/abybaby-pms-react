@@ -70,6 +70,14 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
                                         <TableCell>{new Date(invoice?.invoice_date).toLocaleDateString()}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Created By :</TableCell>
+                                        <TableCell>{invoice?.created_by_name ? invoice?.created_by_name : "...."}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Updated By:</TableCell>
+                                        <TableCell>{invoice?.updated_by_name ? invoice?.updated_by_name : "...."}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Details:</TableCell>
                                         <TableCell>{invoice?.invoice_details}</TableCell>
                                     </TableRow>
