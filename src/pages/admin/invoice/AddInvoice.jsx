@@ -97,11 +97,19 @@ export default function AddInvoice() {
                   className="block w-full"
                 >
                   <option value="">Select Project</option>
-                  {projectList?.response?.map((project) => (
-                    <option key={project.id} value={project.id}>
-                      {project.project_name}
-                    </option>
-                  ))}
+                  {
+                    isLoadingProjects ? 
+                    (
+                      <option value="#">Loading...</option>
+                    ):
+                    (
+                      projectList?.response?.map((project) => (
+                        <option key={project.id} value={project.id}>
+                          {project.project_name}
+                        </option>
+                      ))
+                    )
+                  }
                 </select>
                 {errors.project_id && (
                   <span className="text-red-600 text-sm">
