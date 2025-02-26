@@ -385,7 +385,7 @@ export default function Dashboard() {
                   {projectReport?.response[4]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
-                  Payment Outstanding Projects
+                  Payment Outstanding Projects ( Billed )
                 </p>
               </div>
               <button
