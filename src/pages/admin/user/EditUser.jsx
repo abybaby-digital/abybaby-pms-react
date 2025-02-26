@@ -140,18 +140,18 @@ export default function EditUser({ user }) {
       // vertical_head_id: user.name_prefix
       //   ? { value: VH_w_vh?.id, label: VH_w_vh?.name }
       //   : { value: VH_wo_vh?.id, label: VH_wo_vh?.name },
-      vertical_head_id: { value: user.name_prefix_id, label: user.name_prefix },
-      branch_manager_id: preselectedBM,
-      client_service_id: user.client_service_id
-        ? user.client_service_id
-            .split(",")
-            .map((id) => ({ value: id, label: id }))
-        : [],
-      other_service_id: user.other_service_id
-        ? user.other_service_id
-            .split(",")
-            .map((id) => ({ value: id, label: id }))
-        : [],
+      // vertical_head_id: { value: user.name_prefix_id, label: user.name_prefix },
+      // branch_manager_id: preselectedBM,
+      // client_service_id: user.client_service_id
+      //   ? user.client_service_id
+      //       .split(",")
+      //       .map((id) => ({ value: id, label: id }))
+      //   : [],
+      // other_service_id: user.other_service_id
+      //   ? user.other_service_id
+      //       .split(",")
+      //       .map((id) => ({ value: id, label: id }))
+      //   : [],
       contact_number: user.contact_number,
       password: "",
       user_details: user.user_details || "",
@@ -222,18 +222,18 @@ export default function EditUser({ user }) {
       return await editUser(
         token,
         user.id,
-        data.role_id.value === 5 ? data.vertical_head_id.value : "",
+        // data.role_id.value === 5 ? data.vertical_head_id.value : "",
         data.name,
         data.email,
         data.role_id.value,
         data.state_id?.map((item) => item.value).join(","),
         data.company_id.value,
         data.branch_id.value,
-        vertical_head_id.vertical_head_id,
+        // vertical_head_id.vertical_head_id,
         // data?.vertical_head_id?.value || null,
-        data?.branch_manager_id?.map((item) => item.value).join(",") || null,
-        data?.client_service_id?.map((item) => item.value).join(",") || null,
-        data?.other_service_id?.map((item) => item.value).join(",") || null,
+        // data?.branch_manager_id?.map((item) => item.value).join(",") || null,
+        // data?.client_service_id?.map((item) => item.value).join(",") || null,
+        // data?.other_service_id?.map((item) => item.value).join(",") || null,
         data.contact_number,
         data.password || null,
         data.profile_img,
@@ -263,7 +263,7 @@ export default function EditUser({ user }) {
 
   const onSubmit = (data) => {
     console.log(data);
-    // editUserMutation.mutate(data);
+    editUserMutation.mutate(data);
   };
 
   return (

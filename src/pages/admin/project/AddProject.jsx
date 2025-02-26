@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   addProject,
+  getActiveCoOrdinatorList,
   getBranchList,
   getBranchManagerList,
   getClientList,
@@ -54,6 +55,9 @@ export default function AddProject() {
     item.value.toString()
   );
   const selectedClientService = watch("client_service_id")?.map(
+    (item) => item.value
+  );
+  const selectedMis = watch("activity_coordinator_id")?.map(
     (item) => item.value
   );
 
@@ -122,10 +126,22 @@ export default function AddProject() {
     },
   });
 
+
+  // Fetch Mis List
+  const { data: misList } = useQuery({
+    queryKey: ["mis-list"],
+    queryFn: async () => {
+      return await getActiveCoOrdinatorList(token);
+    },
+  });
+
   const cs_left = clientServiceList?.response?.filter(
     (item) => !selectedClientService?.includes(item.id)
   );
-  console.log(cs_left);
+  const mis_left = misList?.response?.filter(
+    (item) => !selectedMis?.includes(item.id)
+  );
+  console.log("mis", misList);
 
   // Mutation for adding the project
   const addProjectMutation = useMutation({
@@ -143,6 +159,9 @@ export default function AddProject() {
         data?.branch_manager_id?.map((item) => item.value.toString()).join(","),
         data.client_service_id?.map((item) => item.value.toString()).join(","),
         data.other_members_id?.map((item) => item.value.toString()).join(","),
+        data.activity_coordinator_id?.map((item) => item.value.toString()).join(","),
+        data.activity_coordinator_other_id?.map((item) => item.value.toString()).join(","),
+
         data.quotation_no,
         data.project_amount_pre_gst,
         data.project_amount_with_gst,
@@ -165,8 +184,8 @@ export default function AddProject() {
   });
 
   const onSubmit = (data) => {
-    // console.log("Submitting data:", data);
-    addProjectMutation.mutate(data); // Call mutation with form data
+    console.log("Submitting data:", data);
+    addProjectMutation.mutate(data);
   };
 
   return (
@@ -451,6 +470,73 @@ export default function AddProject() {
                 )}
               </div>
 
+              {/* Activity Co-ordinator Field */}
+
+              <div className="form-group">
+                <label htmlFor="activity_coordinator_id">
+                  Activity Co-ordinator <span className="text-red-600">*</span>
+                </label>
+                <Controller
+                  name="activity_coordinator_id"
+                  control={control}
+                  // rules={{ required: "At least one other member is required" }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={misList?.response?.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                      components={animatedComponents}
+                      placeholder="Select Active Co-ordinator"
+                      isDisabled={
+                        watch("client_service_id") === undefined ||
+                        watch("client_service_id")?.length === 0
+                      }
+                      isMulti
+                    />
+                  )}
+                />
+                {errors.activity_coordinator_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.activity_coordinator_id.message}
+                  </span>
+                )}
+              </div>
+              {/*Other  Activity Co-ordinator Field */}
+
+              <div className="form-group">
+                <label htmlFor="activity_coordinator_other_id">
+                  Others Activity Co-ordinator <span className="text-red-600">*</span>
+                </label>
+                <Controller
+                  name="activity_coordinator_other_id"
+                  control={control}
+                  // rules={{ required: "At least one other member is required" }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={mis_left?.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                      components={animatedComponents}
+                      placeholder="Select Other Active Co-ordinator"
+                      isDisabled={
+                        watch("client_service_id") === undefined ||
+                        watch("client_service_id")?.length === 0
+                      }
+                      isMulti
+                    />
+                  )}
+                />
+                {errors.activity_coordinator_other_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.activity_coordinator_other_id.message}
+                  </span>
+                )}
+              </div>
+
               {/* Quotation No Field */}
               <div className="form-group">
                 <label htmlFor="quotation_no">
@@ -475,7 +561,8 @@ export default function AddProject() {
               {/* Project Amount Field pre gst */}
               <div className="form-group">
                 <label htmlFor="project_amount_pre_gst">
-                  Project Amount (pre GST) <span className="text-red-600">*</span>
+                  Project Amount (pre GST){" "}
+                  <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="number"
@@ -496,7 +583,8 @@ export default function AddProject() {
               {/* Project Amount Field with gst */}
               <div className="form-group">
                 <label htmlFor="project_amount_with_gst">
-                  Project Amount (with GST) <span className="text-red-600">*</span>
+                  Project Amount (with GST){" "}
+                  <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="number"

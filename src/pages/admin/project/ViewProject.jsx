@@ -152,6 +152,22 @@ const ViewProject = ({ project, add_or_edit }) => {
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-bold text-lg">
+                            Activity Co-ordinator :
+                          </TableCell>
+                          <TableCell>
+                            {project_by_id?.project?.activity_coordinator_name}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-bold text-lg">
+                            Others Activity Co-ordinator :
+                          </TableCell>
+                          <TableCell>
+                            {project_by_id?.project?.activity_coordinator_name_other}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-bold text-lg">
                             Quotation No :
                           </TableCell>
                           <TableCell>

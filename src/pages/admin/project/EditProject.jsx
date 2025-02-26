@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch"; // Assuming Switch is imported 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   editProject,
+  getActiveCoOrdinatorList,
   getBranchList,
   getBranchManagerList,
   getClientList,
@@ -34,6 +35,8 @@ const EditProject = ({ project }) => {
   const [Bm, setBm] = useState(project.business_manager_id);
   const [Cs, setCs] = useState(project.client_service_id);
 
+
+
   const project_id = project.id;
   console.log(project);
 
@@ -49,7 +52,7 @@ const EditProject = ({ project }) => {
     value: item.id,
     label: item.branch_name,
   }));
-  // console.log(branchListOptions);
+
 
   // Fetch Client List
   const { data: clientList } = useQuery({
@@ -91,11 +94,6 @@ const EditProject = ({ project }) => {
   );
   console.log("project", VH_id);
 
-  const verticalHeadOptions = verticalHeadList?.response?.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
-
   // Fetch Branch Manager List
   const { data: branchManagerList } = useQuery({
     queryKey: ["branch-manager-list", Vh],
@@ -125,6 +123,16 @@ const EditProject = ({ project }) => {
     },
   });
 
+
+  // Fetch Mis List
+  const { data: misList } = useQuery({
+    queryKey: ["mis-list"],
+    queryFn: async () => {
+      return await getActiveCoOrdinatorList(token);
+    },
+  });
+
+
   //  branch manager preselect
   const userBM = project?.business_manager_id?.split(",")?.map(Number);
   const filterselectedBM = branchManagerList?.response?.filter((item) =>
@@ -135,17 +143,6 @@ const EditProject = ({ project }) => {
     label: item.name,
   }));
   console.log("project bm", preselectedBM);
-
-  // client service preselect
-  const userCS = project?.client_service_id?.split(",")?.map(Number);
-  const filterselectedCS = clientServiceList?.response?.filter((item) =>
-    userCS?.includes(item.id)
-  );
-  const preselectedCS = filterselectedCS?.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
-  console.log(preselectedCS);
 
   // Initialize form with existing project data
   // Initialize form with useForm hook but no defaultValues initially
@@ -173,19 +170,30 @@ const EditProject = ({ project }) => {
       branch_manager_id: project?.selected_bm,
       client_service_id: project?.selected_cs,
       other_members_id: project?.selected_others,
+      activity_coordinator_id: project?.selected_activity_coordinator,
+      activity_coordinator_other_id: project?.selected_activity_coordinator_other,
     },
   });
 
-  const [clientSelect, setClientSelect] = useState(project?.client_id);
+     // Watch selected values
+     const selectedVerticalHead = watch("vertical_head_id");
+     const selectedBranchManager = watch("branch_manager_id")?.map((item) =>
+       item.value.toString()
+     );
+     const selectedClientService = watch("client_service_id")?.map(
+       (item) => item.value
+     );
+     const selectedMis = watch("activity_coordinator_id")?.map(
+       (item) => item.value
+     );
 
-  // Watch selected values
-  //   const selectedVerticalHead = watch("vertical_head_id");
-  // console.log(selectedVerticalHead);
-
-  //   const selectedBranchManager = watch("branch_manager_id");
-  const selectedClientService = watch("client_service_id")?.map(
-    (item) => item.value
-  );
+     const cs_left = clientServiceList?.response?.filter(
+      (item) => !selectedClientService?.includes(item.id)
+    );
+    const mis_left = misList?.response?.filter(
+      (item) => !selectedMis?.includes(item.id)
+    );
+    console.log("cs left", cs_left);
 
   // console.log(selectedBranchManager);
 
@@ -205,6 +213,8 @@ const EditProject = ({ project }) => {
         data.branch_manager_id?.map((item) => item.value.toString()).join(","),
         data.client_service_id?.map((item) => item.value.toString()).join(","),
         data.other_members_id?.map((item) => item.value.toString()).join(","),
+        data.activity_coordinator_id?.map((item) => item.value.toString()).join(","),
+        data.activity_coordinator_other_id?.map((item) => item.value.toString()).join(","),
         data.quotation_no,
         data.project_amount_pre_gst,
         data.project_amount_with_gst,
@@ -230,8 +240,7 @@ const EditProject = ({ project }) => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
-    console.log(project_id);
+    console.log("submitted data",data);
     editProjectMutation.mutate(data);
   };
 
@@ -385,34 +394,7 @@ const EditProject = ({ project }) => {
           )}
         </div>
 
-        {/* Vertical Head Select Field */}
-        {/* <div className="form-group">
-          <label htmlFor="vertical_head_id">
-            Vertical Head <span className="text-red-600">*</span>
-          </label>
-          <select
-            {...register("vertical_head_id", {
-              required: "Vertical Head is required",
-            })}
-            onChange={(selectedOption) => {
-              setValue("vertical_head_id", selectedOption.target.value); // Update the vertical_head_id
-              setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
-              setValue("client_service_id", []); // Reset branch_manager_id when VH changes
-            }}
-          >
-            <option value="">Select Vertical Head</option>
-            {verticalHeadOptions?.map((verticalHead) => (
-              <option key={verticalHead.value} value={verticalHead.value}>
-                {verticalHead.label}
-              </option>
-            ))}
-          </select>
-          {errors.vertical_head_id && (
-            <span className="text-red-600 text-sm">
-              {errors.vertical_head_id.message}
-            </span>
-          )}
-        </div> */}
+        {/* Vertical Head Multi-Select Field */}
 
         <div className="form-group">
           <label>Vertical Head</label>
@@ -503,11 +485,12 @@ const EditProject = ({ project }) => {
           <Controller
             name="other_members_id"
             control={control}
+            
             // rules={{ required: "At least one other member is required" }}
             render={({ field }) => (
               <Select
                 {...field}
-                options={clientServiceList?.response?.map((item) => ({
+                options={cs_left?.map((item) => ({
                   value: item.id,
                   label: item.name,
                 }))}
@@ -523,6 +506,75 @@ const EditProject = ({ project }) => {
             </span>
           )}
         </div>
+
+         {/* Activity Co-ordinator Field */}
+
+         <div className="form-group">
+                <label htmlFor="activity_coordinator_id">
+                  Activity Co-ordinator <span className="text-red-600">*</span>
+                </label>
+                <Controller
+                  name="activity_coordinator_id"
+                  control={control}
+                  // rules={{ required: "At least one other member is required" }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={misList?.response?.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                      components={animatedComponents}
+                      placeholder="Select Active Co-ordinator"
+                      isDisabled={
+                        watch("client_service_id") === undefined ||
+                        watch("client_service_id")?.length === 0
+                      }
+                      isMulti
+                    />
+                  )}
+                />
+                {errors.activity_coordinator_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.activity_coordinator_id.message}
+                  </span>
+                )}
+              </div>
+              {/*Other  Activity Co-ordinator Field */}
+
+              <div className="form-group">
+                <label htmlFor="activity_coordinator_other_id">
+                  Others Activity Co-ordinator <span className="text-red-600">*</span>
+                </label>
+                <Controller
+                  name="activity_coordinator_other_id"
+                  control={control}
+                  // rules={{ required: "At least one other member is required" }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={mis_left?.map((item) => ({
+                        value: item.id,
+                        label: item.name,
+                      }))}
+                      components={animatedComponents}
+                      placeholder="Select Other Active Co-ordinator"
+                      isDisabled={
+                        watch("client_service_id") === undefined ||
+                        watch("client_service_id")?.length === 0
+                      }
+                      isMulti
+                    />
+                  )}
+                />
+                {errors.activity_coordinator_other_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.activity_coordinator_other_id.message}
+                  </span>
+                )}
+              </div>
+
+        
 
         {/* Quotation No Field */}
         <div className="form-group">

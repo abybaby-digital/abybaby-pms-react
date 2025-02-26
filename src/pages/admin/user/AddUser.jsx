@@ -119,7 +119,7 @@ export default function AddUser() {
 
             return await addUser(
                 token,
-                data.role_id.value === 5 ? data.vertical_head_id.value : "",
+                // data.role_id.value === 5 ? data.vertical_head_id.value : "",
                 data.name,
                 data.email,
                 data.role_id.value,
@@ -127,11 +127,11 @@ export default function AddUser() {
                     data.state_id?.map((item) => (item.value.toString())).join(",") : null,
                 data.company_id.value,
                 data.branch_id.value,
-                vertical_head_id.vertical_head_id,
+                // vertical_head_id.vertical_head_id,
                 // data?.vertical_head_id !== undefined ? data.vertical_head_id.value?.toString() : null,
-                data?.branch_manager_id !== undefined ? data?.branch_manager_id?.map((item) => (item.value.toString())).join(",") : "",
-                data?.client_service_id !== undefined ? data.client_service_id?.map((item) => (item.value.toString())).join(",") : "",
-                data?.other_service_id !== undefined ? data.other_service_id?.map((item) => (item.value.toString())).join(",") : "",
+                // data?.branch_manager_id !== undefined ? data?.branch_manager_id?.map((item) => (item.value.toString())).join(",") : "",
+                // data?.client_service_id !== undefined ? data.client_service_id?.map((item) => (item.value.toString())).join(",") : "",
+                // data?.other_service_id !== undefined ? data.other_service_id?.map((item) => (item.value.toString())).join(",") : "",
                 data.contact_number,
                 data.password,
                 data.profile_img, // This will be passed as a file (if uploaded)
@@ -157,10 +157,6 @@ export default function AddUser() {
 
     const onSubmit = (data) => {
         console.log(data);
-        // const vertical_head_id = verticalHeadList?.response?.find((item)=> item.id === data.vertical_head_id.value);
-        // console.log("selected vh", vertical_head_id);
-
-        // console.log(data.state_id?.map((item)=>(item.value.toString())).join(","));
         addUserMutation.mutate(data);
     };
 

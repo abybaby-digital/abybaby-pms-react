@@ -214,11 +214,6 @@ export default function ProjectList() {
     doc.save("project_list.pdf");
   };
 
-  console.log(
-    filteredProjects?.map((item) =>
-      console.log(item.client_service_id?.split(",")?.map(Number))
-    )
-  );
 
   return (
     <SidebarProvider>

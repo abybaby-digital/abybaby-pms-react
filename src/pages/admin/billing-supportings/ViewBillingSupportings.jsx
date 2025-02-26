@@ -16,6 +16,7 @@ import {
 import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
+import EditBillingSupportings from "./EditBillingSupportings";
 
 const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
@@ -536,7 +537,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                                 </TableBody>
                             </Table>
                         ) : (
-                            <div>Edit Billing Supportings</div> // You can add your edit component here
+                            <EditBillingSupportings billingSupportings={billingSupportings} /> // You can add your edit component here
                         )}
                     </DialogDescription>
                 </DialogContent>

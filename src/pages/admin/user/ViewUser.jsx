@@ -74,7 +74,7 @@ const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleL
                                             <TableCell className="font-bold text-lg">Contact Number :</TableCell>
                                             <TableCell>{user?.contact_number}</TableCell>
                                         </TableRow>
-                                        <TableRow>
+                                        {/* <TableRow>
                                             <TableCell className="font-bold text-lg">Vertical Head :</TableCell>
                                             <TableCell>{user?.name_prefix || "N/A"}</TableCell>
                                         </TableRow>
@@ -89,7 +89,7 @@ const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleL
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Other Services :</TableCell>
                                             <TableCell>{user?.other_service_name || "N/A"}</TableCell>
-                                        </TableRow>
+                                        </TableRow> */}
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">User Details :</TableCell>
                                             <TableCell>{user?.user_details || "N/A"}</TableCell>
@@ -98,10 +98,10 @@ const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleL
                                             <TableCell className="font-bold text-lg">View Status :</TableCell>
                                             <TableCell>{user?.view_status === "1" ? "Enabled" : "Disabled"}</TableCell>
                                         </TableRow>
-                                        <TableRow>
+                                        {/* <TableRow>
                                             <TableCell className="font-bold text-lg">Veto Power :</TableCell>
                                             <TableCell>{user?.veto_power === "1" ? "Yes" : "No"}</TableCell>
-                                        </TableRow>
+                                        </TableRow> */}
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Account Status :</TableCell>
                                             <TableCell>

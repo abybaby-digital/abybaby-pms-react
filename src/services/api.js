@@ -459,6 +459,8 @@ export const addProject = async (
   business_manager_id,
   client_service_id,
   other_members_id,
+  activity_coordinator_id,
+  activity_coordinator_other_id,
   quotation_no,
   project_amount_pre_gst,
   project_amount_with_gst,
@@ -480,6 +482,8 @@ export const addProject = async (
         business_manager_id: business_manager_id,
         client_service_id: client_service_id,
         other_members_id: other_members_id,
+        activity_coordinator_id: activity_coordinator_id,
+        activity_coordinator_other_id:activity_coordinator_other_id,
         quotation_no: quotation_no,
         project_amount_pre_gst: project_amount_pre_gst,
         project_amount_with_gst: project_amount_with_gst,
@@ -514,6 +518,8 @@ export const editProject = async (
   business_manager_id,
   client_service_id,
   other_members_id,
+  activity_coordinator_id,
+  activity_coordinator_other_id,
   quotation_no,
   project_amount_pre_gst,
   project_amount_with_gst,
@@ -536,6 +542,8 @@ export const editProject = async (
         business_manager_id: business_manager_id,
         client_service_id: client_service_id,
         other_members_id: other_members_id,
+        activity_coordinator_id: activity_coordinator_id,
+        activity_coordinator_other_id:activity_coordinator_other_id,
         quotation_no: quotation_no,
         project_amount_pre_gst: project_amount_pre_gst,
         project_amount_with_gst: project_amount_with_gst,
@@ -710,6 +718,27 @@ export const getClientServiceList = async (token, business_manager_id) => {
   }
 };
 
+
+// ACTIVITY CO ORDINATOR LIST
+export const getActiveCoOrdinatorList = async (token) => {
+  try {
+    const response = await api.post(
+      "/activity-coordinator-list",
+      {
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching mis list:", error);
+    throw error;
+  }
+};
+
 // OTHER SERVICE LIST
 export const getOtherList = async (token, client_service_id) => {
   try {
@@ -811,17 +840,12 @@ export const getRoleList = async (token) => {
 // ADD USER
 export const addUser = async (
   token,
-  name_prefix,
   name,
   email,
   role_id,
   state_id,
   company_id,
   branch_id,
-  vertical_head_id,
-  business_manager_id,
-  client_service_id,
-  other_service_id,
   contact_number,
   password,
   profile_img, // This will be a file object (image)
@@ -833,16 +857,12 @@ export const addUser = async (
 
     // Append all form data fields
     formData.append("name", name);
-    formData.append("name_prefix", name_prefix);
+    // formData.append("name_prefix", name_prefix);
     formData.append("email", email);
     formData.append("role_id", role_id);
     formData.append("state_id", state_id);
     formData.append("company_id", company_id);
     formData.append("branch_id", branch_id);
-    formData.append("vertical_head_id", vertical_head_id);
-    formData.append("business_manager_id", business_manager_id);
-    formData.append("client_service_id", client_service_id);
-    formData.append("other_service_id", other_service_id);
     formData.append("contact_number", contact_number);
     formData.append("password", password);
     formData.append("user_details", user_details);
@@ -871,17 +891,12 @@ export const addUser = async (
 export const editUser = async (
   token,
   id,
-  name_prefix,
   name,
   email,
   role_id,
   state_id,
   company_id,
   branch_id,
-  vertical_head_id,
-  business_manager_id,
-  client_service_id,
-  other_service_id,
   contact_number,
   password,
   profile_img, // This will be a file object (image)
@@ -894,24 +909,26 @@ export const editUser = async (
     // Append all form data fields
     formData.append("id", id);
     formData.append("name", name);
-    formData.append("name_prefix", name_prefix);
     formData.append("email", email);
     formData.append("role_id", role_id);
     formData.append("state_id", state_id);
     formData.append("company_id", company_id);
     formData.append("branch_id", branch_id);
-    formData.append("vertical_head_id", vertical_head_id);
-    formData.append("business_manager_id", business_manager_id);
-    formData.append("client_service_id", client_service_id);
-    formData.append("other_service_id", other_service_id);
     formData.append("contact_number", contact_number);
     formData.append("password", password);
     formData.append("user_details", user_details);
     formData.append("view_status", view_status);
 
     // Append the profile image if it exists
-    if (profile_img) {
-      formData.append("profile_img", profile_img[0]); // profile_img should be a File object
+    // if (profile_img) {
+    //   formData.append("profile_img", profile_img[0]); // profile_img should be a File object
+    // }
+
+    if (profile_img && typeof profile_img !== "string") {
+      formData.append("profile_img", profile_img[0]); // invoice_img is a File object
+    } else if (typeof profile_img === "string") {
+      // If it's an existing image URL, just append it as a string
+      formData.append("profile_img", profile_img);
     }
 
     const response = await api.post("/edit-user", formData, {
@@ -1716,6 +1733,182 @@ export const addBillingSupportings = async (
     throw error;
   }
 };
+
+export const editBillingSupportings = async (
+  token,
+  id, // The id of the existing billing support to be edited
+  project_id,
+  center_vehicle_hire_bill,
+  center_vehicle_hire_img,
+  center_vehicle_hire_comment,
+  manpower_bill,
+  manpower_bill_img,
+  manpower_bill_comment,
+  gift_bill,
+  gift_bill_img,
+  gift_bill_comment,
+  billing_ppt,
+  billing_ppt_img,
+  billing_ppt_comment,
+  report,
+  report_img,
+  report_comment,
+  day_wise_log_book,
+  day_wise_log_book_img,
+  day_wise_log_book_comment,
+  day_wise_meter_console,
+  day_wise_meter_console_img,
+  day_wise_meter_console_comment,
+  no_objection_certificate,
+  no_objection_certificate_img,
+  no_objection_certificate_comment,
+  snacks_bill,
+  snacks_bill_img,
+  snacks_bill_comment,
+  element_wise_photo,
+  element_wise_photo_img,
+  element_wise_photo_comment,
+  nagar_nigan,
+  nagar_nigan_img,
+  nagar_nigan_comment,
+  fuel_bill,
+  fuel_bill_img,
+  fuel_bill_comment,
+  customer_gift,
+  customer_gift_img,
+  customer_gift_comment,
+  customer_acknowledge,
+  customer_acknowledge_img,
+  customer_acknowledge_comment,
+  route_plan,
+  route_plan_img,
+  route_plan_comment,
+  approvel_copy,
+  approvel_copy_img,
+  approvel_copy_comment,
+  po,
+  po_img,
+  po_comment,
+  wayforward_learning,
+  wayforward_learning_img,
+  wayforward_learning_comment,
+  courier_delivery_challan,
+  courier_delivery_challan_img,
+  courier_delivery_challan_comment,
+  transport_bill,
+  transport_bill_img,
+  transport_bill_comment,
+  anocher_bill,
+  anocher_bill_img,
+  anocher_bill_comment,
+  any_other_supporting,
+  any_other_supporting_img,
+  any_other_supporting_comment,
+  status
+) => {
+  try {
+    const formData = new FormData();
+
+    // Prepare data for updating
+    const data = {
+      id,
+      project_id,
+      center_vehicle_hire_bill,
+      center_vehicle_hire_img,
+      center_vehicle_hire_comment,
+      manpower_bill,
+      manpower_bill_img,
+      manpower_bill_comment,
+      gift_bill,
+      gift_bill_img,
+      gift_bill_comment,
+      billing_ppt,
+      billing_ppt_img,
+      billing_ppt_comment,
+      report,
+      report_img,
+      report_comment,
+      day_wise_log_book,
+      day_wise_log_book_img,
+      day_wise_log_book_comment,
+      day_wise_meter_console,
+      day_wise_meter_console_img,
+      day_wise_meter_console_comment,
+      no_objection_certificate,
+      no_objection_certificate_img,
+      no_objection_certificate_comment,
+      snacks_bill,
+      snacks_bill_img,
+      snacks_bill_comment,
+      element_wise_photo,
+      element_wise_photo_img,
+      element_wise_photo_comment,
+      nagar_nigan,
+      nagar_nigan_img,
+      nagar_nigan_comment,
+      fuel_bill,
+      fuel_bill_img,
+      fuel_bill_comment,
+      customer_gift,
+      customer_gift_img,
+      customer_gift_comment,
+      customer_acknowledge,
+      customer_acknowledge_img,
+      customer_acknowledge_comment,
+      route_plan,
+      route_plan_img,
+      route_plan_comment,
+      approvel_copy,
+      approvel_copy_img,
+      approvel_copy_comment,
+      po,
+      po_img,
+      po_comment,
+      wayforward_learning,
+      wayforward_learning_img,
+      wayforward_learning_comment,
+      courier_delivery_challan,
+      courier_delivery_challan_img,
+      courier_delivery_challan_comment,
+      transport_bill,
+      transport_bill_img,
+      transport_bill_comment,
+      anocher_bill,
+      anocher_bill_img,
+      anocher_bill_comment,
+      any_other_supporting,
+      any_other_supporting_img,
+      any_other_supporting_comment,
+      status,
+    };
+
+    // Iterate over data and append each field to FormData
+    Object.keys(data).forEach((key) => {
+      // If data is not null/undefined and the image exists, append the image
+      if (data[key] !== null && data[key] !== undefined) {
+        if (key.endsWith("_img") && data[key][0]) {
+          formData.append(key, data[key][0]); // Handling file uploads
+        } else {
+          formData.append(key, data[key]);
+        }
+      }
+    });
+
+    // Make the PUT request to update the billing supporting
+    const response = await api.post(`/edit-billing-support`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing billing supportings:", error);
+    throw error;
+  }
+};
+
 
 // PAYMENT REQUISITION LIST
 export const getBillingSupportList = async (token) => {

@@ -99,7 +99,7 @@ export default function AddBillingSupportings() {
         navigate("/billing-supportings-info");
       }
       else {
-        toast.error("Something Went Wrong !!!")
+        toast.error(response.message);
       }
     },
     onError: (error) => toast.error("Failed to add billing support: " + error.message),
@@ -134,9 +134,13 @@ export default function AddBillingSupportings() {
                 <label htmlFor="project_id">Project ID <span className="text-red-600">*</span></label>
                 <select id="project_id" {...register("project_id", { required: "Project is required" })} className="block w-full">
                   <option value="">Select Project</option>
-                  {projectList?.response?.map((project) => (
+
+                  { !isLoadingProjects ? 
+                  (projectList?.response?.map((project) => (
                     <option key={project.id} value={project.id}>{project.project_name}</option>
-                  ))}
+                  ))): 
+                  (<option value="#" disabled>Loading...</option>)
+                  }
                 </select>
                 {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
               </div>

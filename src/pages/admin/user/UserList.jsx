@@ -62,10 +62,10 @@ export default function UserList() {
             company_name: user.company_name,
             branch_name: user.branch_name,
             role_name: user.role_name,
-            vertical_head_name: user.vertical_head_name,
-            business_manager_name: user.business_manager_name,
-            client_service_name: user.client_service_name,
-            other_service_name: user.other_service_name
+            // vertical_head_name: user.vertical_head_name,
+            // business_manager_name: user.business_manager_name,
+            // client_service_name: user.client_service_name,
+            // other_service_name: user.other_service_name
         })) || [];
 
         // Create a worksheet from the filtered data

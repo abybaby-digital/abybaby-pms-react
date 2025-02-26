@@ -201,6 +201,10 @@ export default function Dashboard() {
                   <MdOutlineCurrencyRupee className="inline mb-1" />
                   {projectReport?.response[0]?.project_amount_pre_gst} (pre GST)
                 </p>
+                <p className="text-lg text-lightdark">
+                  <MdOutlineCurrencyRupee className="inline mb-1" />
+                  {projectReport?.response[0]?.project_amount_with_gst} (with GST)
+                </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Running Projects
                 </p>
