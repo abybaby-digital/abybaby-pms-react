@@ -154,9 +154,9 @@ export default function PaymentReceivedList() {
                                             style={{ width: '5rem', textAlign: 'center' }}
                                         />
                                         <Column field="project_name" sortable header="Project Name"></Column>
-                                        <Column field="invoice_no" sortable header="Invoice No"></Column>
+                                        <Column field="received_no" sortable header="Invoice No"></Column>
                                         <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>
-                                        <Column field="invoice_date" sortable header="Received Date" body={(rowData) => new Date(rowData.invoice_date).toLocaleDateString()}></Column>
+                                        <Column field="received_date" sortable header="Received Date" body={(rowData) => new Date(rowData.received_date).toLocaleDateString()}></Column>
                                         <Column
                                             className="text-center"
                                             field="created_by_name"

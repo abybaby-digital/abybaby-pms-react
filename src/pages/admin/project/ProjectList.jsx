@@ -431,14 +431,15 @@ export default function ProjectList() {
                           {rowIndex + 1}
                         </span>
                       )}
-                      style={{ width: "5rem", textAlign: "center" }}
+                      style={{ width: "1rem", textAlign: "center" }}
                     />
                     {/* <Column field="project_number" sortable header="Project Number" style={{ textTransform: "capitalize" }}></Column> */}
                     <Column
                       field="project_name"
                       sortable
                       header="Project Name"
-                      style={{ whiteSpace: "nowrap" }}
+                      style={{ whiteSpace: "nowrap", width: "50px" }}
+                      
                     ></Column>
                     <Column
                       field="project_number"
@@ -518,7 +519,7 @@ export default function ProjectList() {
                     />
 
                     <Column
-                      header="Status"
+                      header="Project Status"
                       body={(rowData) => (
                         <span
                           className={`bg-dark text-sm ${

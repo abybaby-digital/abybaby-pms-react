@@ -461,7 +461,7 @@ export default function ProjectListByCategory() {
                     />
 
                     <Column
-                      header="Status"
+                      header="Project Status"
                       body={(rowData) => (
                         <span
                           className={`bg-dark text-sm ${
