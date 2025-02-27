@@ -188,22 +188,22 @@ export default function Dashboard() {
             </form>
           </div>
 
-          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 lg:grid-cols-3 grid-cols-1">
+          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 lg:grid-cols-4 grid-cols-1">
           <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <MdBallot className="text-3xl text-white inline" />
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[6]?.project_count}
+                  {projectReport?.response[7]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[6]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[7]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[6]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[7]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-sm text-lightdark font-merri italic font-bold ">
                   Total Projects
@@ -291,9 +291,6 @@ export default function Dashboard() {
                 More Info
               </button>
             </div>
-            
-          </div>
-          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-4 lg:grid-cols-2">
             <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-[#17a2b7] shadow-lg shadow-[#17a2b7]  -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <FaMoneyBillTransfer className="text-3xl text-white inline" />
@@ -331,6 +328,10 @@ export default function Dashboard() {
                 More Info
               </button>
             </div>
+            
+          </div>
+          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-4 lg:grid-cols-2">
+            
             <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <FaMoneyBillTrendUp className="text-3xl text-white inline" />
@@ -433,6 +434,43 @@ export default function Dashboard() {
                   projectListByCategory(
                     "Payment Received Projects",
                     "/project-list/billed-closed",
+                    "2",
+                    "1",
+                    "1"
+                  );
+                }}
+                className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"
+              >
+                <PiArrowFatLinesRightFill className="inline me-1" />
+                More Info
+              </button>
+            </div>
+            <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
+              <div className="bg-[#27a844] shadow-lg shadow-[#27a844] p-3 w-[60px] -mt-[40px] text-center rounded-2xl">
+                <FaMoneyBills className="text-3xl text-white inline" />
+              </div>
+              <div className="dash-card-content text-end mb-8">
+                <p className="text-2xl font-bold">
+                  {projectReport?.response[6]?.project_count}
+                </p>
+                <p className="text-lg text-lightdark">
+                  <MdOutlineCurrencyRupee className="inline mb-1" />
+                  {projectReport?.response[6]?.project_amount_pre_gst} (pre GST)
+                </p>
+                <p className="text-lg text-lightdark">
+                  <MdOutlineCurrencyRupee className="inline mb-1" />
+                  {projectReport?.response[6]?.project_amount_with_gst} (with GST)
+                </p>
+                <p className="text-sm text-lightdark font-merri italic font-bold ">
+                Partial Payment Received
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  projectListByCategory(
+                    "Partial Payment Received",
+                    "/project-list/partial-payment",
                     "2",
                     "1",
                     "1"

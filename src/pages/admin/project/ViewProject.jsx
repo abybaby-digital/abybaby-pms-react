@@ -221,7 +221,7 @@ const ViewProject = ({ project, add_or_edit }) => {
                             Financial Year :
                           </TableCell>
                           <TableCell>
-                            {project_by_id?.project?.financial_year}
+                            {project_by_id?.project?.financial_years}
                           </TableCell>
                         </TableRow>
                         <TableRow>

@@ -39,6 +39,8 @@ export default function InvoiceList() {
     },
   });
 
+  console.log(invoicelist);
+
   const [singleInvoiceData, setSingleInvoiceData] = useState({});
   const [addOrEdit, setAddOrEdit] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState("");
