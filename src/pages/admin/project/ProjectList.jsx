@@ -441,6 +441,12 @@ export default function ProjectList() {
                       style={{ whiteSpace: "nowrap" }}
                     ></Column>
                     <Column
+                      field="project_number"
+                      sortable
+                      header="Project Number"
+                      style={{ whiteSpace: "nowrap" }}
+                    ></Column>
+                    <Column
                       field="client_name"
                       sortable
                       header="Client"

@@ -36,7 +36,7 @@ import "jspdf-autotable";
 export default function ProjectListByCategory() {
   const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
-
+  const userId = useSelector((state) => state.auth.user?.id);
   const titleTable = sessionStorage.getItem("project_list_title");
 
   // FILTERING STATE VARIABLES FOR PROJECT FILTER
@@ -380,15 +380,25 @@ export default function ProjectListByCategory() {
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
                     <Column
-                      field="project_number"
-                      sortable
-                      header="Project Number"
-                      style={{ textTransform: "capitalize" }}
-                    ></Column>
+                      header="S.No"
+                      body={(rowData, { rowIndex }) => (
+                        <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                          {rowIndex + 1}
+                        </span>
+                      )}
+                      style={{ width: "5rem", textAlign: "center" }}
+                    />
+                    
                     <Column
                       field="project_name"
                       sortable
                       header="Project Name"
+                      style={{ textTransform: "capitalize" }}
+                    ></Column>
+                    <Column
+                      field="project_number"
+                      sortable
+                      header="Project Number"
                       style={{ textTransform: "capitalize" }}
                     ></Column>
                     <Column

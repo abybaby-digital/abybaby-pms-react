@@ -191,7 +191,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.center_vehicle_hire_bill === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.center_vehicle_hire_bill === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.center_vehicle_hire_comment === null && billingSupportings?.center_vehicle_hire_img === null}>Not Applicable</option>
+           
           </select>
 
           {/* Upload Section */}
@@ -239,7 +239,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.manpower_bill === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.manpower_bill === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.manpower_bill_comment === null && billingSupportings?.manpower_bill_img === null}>Not Applicable</option>
+            
           </select>
 
           {/* Upload Section */}
@@ -284,7 +284,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.gift_bill === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.gift_bill === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.gift_bill_comment === null && billingSupportings?.gift_bill_img === null}>Not Applicable</option>
+            
           </select>
           {watch("gift_bill") === "0" || watch("gift_bill") === "NA" ? (
             <div className="mt-2">
@@ -328,7 +328,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="" >--Select--</option>
             <option value="1"  selected = {billingSupportings?.billing_ppt === "1"}>Yes</option>
             <option value="0"  selected = {billingSupportings?.billing_ppt === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.billing_ppt_comment === null && billingSupportings?.billing_ppt_img === null}>Not Applicable</option>
+            
           </select>
           {watch("billing_ppt") === "0" || watch("billing_ppt") === "NA" ? (
             <div className="mt-2">
@@ -368,7 +368,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.report === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.report === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.report_comment === null && billingSupportings?.report_img === null}>Not Applicable</option>
+           
           </select>
           {watch("report") === "0" ? (
             <div className="mt-2">
@@ -412,7 +412,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.day_wise_log_book === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.day_wise_log_book === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.day_wise_log_book_comment === null && billingSupportings?.day_wise_log_book_img === null}>Not Applicable</option>
+            
           </select>
           {watch("day_wise_log_book") === "0" ? (
             <div className="mt-2">
@@ -458,7 +458,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.day_wise_meter_console === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.day_wise_meter_console === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.day_wise_meter_console_comment === null && billingSupportings?.day_wise_meter_console_img === null}>Not Applicable</option>
+            
           </select>
           {watch("day_wise_meter_console") === "0" ? (
             <div className="mt-2">
@@ -507,7 +507,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.no_objection_certificate === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.no_objection_certificate === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.no_objection_certificate_comment === null && billingSupportings?.no_objection_certificate_img === null}>Not Applicable</option>
+            
           </select>
           {watch("no_objection_certificate") === "0" ||
           watch("no_objection_certificate") === "NA" ? (
@@ -555,7 +555,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.snacks_bill === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.snacks_bill === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.snacks_bill_comment === null && billingSupportings?.snacks_bill_img === null}>Not Applicable</option>
+            
           </select>
           {watch("snacks_bill") === "0"  ? (
             <div className="mt-2">
@@ -599,7 +599,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.element_wise_photo === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.element_wise_photo === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.element_wise_photo_comment === null && billingSupportings?.element_wise_photo_img === null}>Not Applicable</option>
+            
           </select>
           {watch("element_wise_photo") === "0" ? (
             <div className="mt-2">
@@ -645,7 +645,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.nagar_nigan === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.nagar_nigan === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.nagar_nigan_comment === null && billingSupportings?.nagar_nigan_img === null}>Not Applicable</option>
+            
           </select>
           {watch("nagar_nigan") === "0" ? (
             <div className="mt-2">
@@ -689,7 +689,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.fuel_bill === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.fuel_bill === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.fuel_bill_comment === null && billingSupportings?.fuel_bill_img === null}>Not Applicable</option>
+            
           </select>
           {watch("fuel_bill") === "0" || watch("fuel_bill") === "NA" ? (
             <div className="mt-2">
@@ -735,7 +735,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.customer_gift === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.customer_gift === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.customer_gift_comment === null && billingSupportings?.customer_gift_img === null}>Not Applicable</option>
+            
           </select>
           {watch("customer_gift") === "0" ? (
             <div className="mt-2">
@@ -781,7 +781,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1"  selected = {billingSupportings?.customer_acknowledge === "1"}>Yes</option>
             <option value="0"  selected = {billingSupportings?.customer_acknowledge === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.customer_acknowledge_comment === null && billingSupportings?.customer_acknowledge_img === null}>Not Applicable</option>
+           
           </select>
           {watch("customer_acknowledge") === "0"  ? (
             <div className="mt-2">
@@ -825,7 +825,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1"  selected = {billingSupportings?.route_plan === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.route_plan === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.route_plan_comment === null && billingSupportings?.route_plan_img === null}>Not Applicable</option>
+            
           </select>
           {watch("route_plan") === "0" ? (
             <div className="mt-2">
@@ -869,7 +869,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.approvel_copy === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.approvel_copy === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.approvel_copy_comment === null && billingSupportings?.approvel_copy_img === null}>Not Applicable</option>
+            
           </select>
           {watch("approvel_copy") === "0" ? (
             <div className="mt-2">
@@ -909,7 +909,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.po === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.po === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.po_comment === null && billingSupportings?.po_img === null}>Not Applicable</option>
+            
           </select>
           {watch("po") === "0"  ? (
             <div className="mt-2">
@@ -953,7 +953,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.wayforward_learning === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.wayforward_learning === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.wayforward_learning_comment === null && billingSupportings?.wayforward_learning_img === null}>Not Applicable</option>
+           
           </select>
           {watch("wayforward_learning") === "0"  ? (
             <div className="mt-2">
@@ -999,7 +999,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.courier_delivery_challan === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.courier_delivery_challan === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.courier_delivery_challan_comment === null && billingSupportings?.courier_delivery_challan_img === null}>Not Applicable</option>
+            
           </select>
           {watch("courier_delivery_challan") === "0"  ? (
             <div className="mt-2">
@@ -1046,7 +1046,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.transport_bill === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.transport_bill === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.transport_bill_comment === null && billingSupportings?.transport_bill_img === null}>Not Applicable</option>
+            
           </select>
           {watch("transport_bill") === "0" ? (
             <div className="mt-2">
@@ -1090,7 +1090,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.anocher_bill === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.anocher_bill === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.anocher_bill_comment === null && billingSupportings?.anocher_bill_img === null}>Not Applicable</option>
+            
           </select>
           {watch("anocher_bill") === "0" ? (
             <div className="mt-2">
@@ -1136,7 +1136,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             <option value="">--Select--</option>
             <option value="1" selected = {billingSupportings?.any_other_supporting === "1"}>Yes</option>
             <option value="0" selected = {billingSupportings?.any_other_supporting === "0"}>No</option>
-            <option value="NA" selected = {billingSupportings?.any_other_supporting_comment === null && billingSupportings?.any_other_supporting_img === null}>Not Applicable</option>
+            
           </select>
           {watch("any_other_supporting") === "0"  ? (
             <div className="mt-2">

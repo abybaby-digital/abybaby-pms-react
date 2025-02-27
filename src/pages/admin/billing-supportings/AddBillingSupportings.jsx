@@ -152,7 +152,6 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
                 </select>
 
                 {/* Upload Section */}
@@ -188,7 +187,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                
                 </select>
 
                 {/* Upload Section */}
@@ -223,7 +222,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("gift_bill") === "0" || watch("gift_bill") === "NA" ? (
                   <div className="mt-2">
@@ -245,7 +244,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("billing_ppt") === "0" || watch("billing_ppt") === "NA" ? (
                   <div className="mt-2">
@@ -267,7 +266,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("report") === "0" || watch("report") === "NA" ? (
                   <div className="mt-2">
@@ -289,7 +288,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("day_wise_log_book") === "0" || watch("day_wise_log_book") === "NA" ? (
                   <div className="mt-2">
@@ -311,7 +310,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("day_wise_meter_console") === "0" || watch("day_wise_meter_console") === "NA" ? (
                   <div className="mt-2">
@@ -333,7 +332,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("no_objection_certificate") === "0" || watch("no_objection_certificate") === "NA" ? (
                   <div className="mt-2">
@@ -355,7 +354,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("snacks_bill") === "0" || watch("snacks_bill") === "NA" ? (
                   <div className="mt-2">
@@ -377,7 +376,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("element_wise_photo") === "0" || watch("element_wise_photo") === "NA" ? (
                   <div className="mt-2">
@@ -399,7 +398,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("nagar_nigan") === "0" || watch("nagar_nigan") === "NA" ? (
                   <div className="mt-2">
@@ -421,7 +420,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("fuel_bill") === "0" || watch("fuel_bill") === "NA" ? (
                   <div className="mt-2">
@@ -443,7 +442,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("customer_gift") === "0" || watch("customer_gift") === "NA" ? (
                   <div className="mt-2">
@@ -465,7 +464,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("customer_acknowledge") === "0" || watch("customer_acknowledge") === "NA" ? (
                   <div className="mt-2">
@@ -487,7 +486,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                 
                 </select>
                 {watch("route_plan") === "0" || watch("route_plan") === "NA" ? (
                   <div className="mt-2">
@@ -509,7 +508,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("approvel_copy") === "0" || watch("approvel_copy") === "NA" ? (
                   <div className="mt-2">
@@ -531,7 +530,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("po") === "0" || watch("po") === "NA" ? (
                   <div className="mt-2">
@@ -553,7 +552,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("wayforward_learning") === "0" || watch("wayforward_learning") === "NA" ? (
                   <div className="mt-2">
@@ -575,7 +574,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("courier_delivery_challan") === "0" || watch("courier_delivery_challan") === "NA" ? (
                   <div className="mt-2">
@@ -597,7 +596,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("transport_bill") === "0" || watch("transport_bill") === "NA" ? (
                   <div className="mt-2">
@@ -619,7 +618,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("anocher_bill") === "0" || watch("anocher_bill") === "NA" ? (
                   <div className="mt-2">
@@ -641,7 +640,7 @@ export default function AddBillingSupportings() {
                   <option value="">--Select--</option>
                   <option value="1">Yes</option>
                   <option value="0">No</option>
-                  <option value="NA">Not Applicable</option>
+                  
                 </select>
                 {watch("any_other_supporting") === "0" || watch("any_other_supporting") === "NA" ? (
                   <div className="mt-2">
