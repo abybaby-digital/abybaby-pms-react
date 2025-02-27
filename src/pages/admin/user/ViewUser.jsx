@@ -94,10 +94,10 @@ const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleL
                                             <TableCell className="font-bold text-lg">User Details :</TableCell>
                                             <TableCell>{user?.user_details || "N/A"}</TableCell>
                                         </TableRow>
-                                        <TableRow>
+                                        {/* <TableRow>
                                             <TableCell className="font-bold text-lg">View Status :</TableCell>
                                             <TableCell>{user?.view_status === "1" ? "Enabled" : "Disabled"}</TableCell>
-                                        </TableRow>
+                                        </TableRow> */}
                                         {/* <TableRow>
                                             <TableCell className="font-bold text-lg">Veto Power :</TableCell>
                                             <TableCell>{user?.veto_power === "1" ? "Yes" : "No"}</TableCell>

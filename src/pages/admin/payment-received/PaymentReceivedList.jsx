@@ -176,9 +176,9 @@ export default function PaymentReceivedList() {
                                             }
                                             ></Column>
                                         <Column field="invoice_details" sortable header="Details"></Column>
-                                        <Column header="Status" body={(rowData) => (
+                                        <Column header="Payemnt Status" body={(rowData) => (
                                             <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>
-                                                {rowData.status === "1" ? "Active" : "Inactive"}
+                                                {rowData.status === "1" ? "Received" : "Not Received"}
                                             </span>
                                         )}></Column>
                                         <Column header="Actions" body={(rowData) => (

@@ -60,7 +60,7 @@ export default function AddClient() {
                             {/* Company Name Field */}
                             <div className="form-group">
                                 <label htmlFor="company_name">
-                                    Company Name <span className="text-red-600">*</span>
+                                    Client Company Name <span className="text-red-600">*</span>
                                 </label>
                                 <input
                                     type="text"

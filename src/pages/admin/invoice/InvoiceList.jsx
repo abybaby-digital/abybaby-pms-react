@@ -39,7 +39,7 @@ export default function InvoiceList() {
     },
   });
 
-  console.log(invoicelist);
+  // console.log(invoicelist);
 
   const [singleInvoiceData, setSingleInvoiceData] = useState({});
   const [addOrEdit, setAddOrEdit] = useState(null);
@@ -90,7 +90,6 @@ export default function InvoiceList() {
           "Amount",
           "Invoice Date",
           "Details",
-          "Status",
         ],
       ],
       body: invoiceList?.response.map((invoice) => [
@@ -100,7 +99,6 @@ export default function InvoiceList() {
         `₹${invoice.invoice_amount}`,
         new Date(invoice.invoice_date).toLocaleDateString(),
         invoice.invoice_details,
-        invoice.status === "1" ? "Active" : "Inactive",
       ]),
     });
     doc.save("invoice_list.pdf");
@@ -273,7 +271,7 @@ export default function InvoiceList() {
                       header="Details"
                     ></Column>
                     <Column
-                      header="Status"
+                      header="Invoice Status"
                       body={(rowData) => (
                         <span
                           className={`px-3 py-1 rounded-xl text-white shadow ${

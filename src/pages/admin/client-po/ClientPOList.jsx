@@ -255,7 +255,7 @@ export default function ClientPOList() {
                       }
                     ></Column>
                     <Column
-                      header="Status"
+                      header="Client PO Status"
                       body={(rowData) => (
                         <span
                           className={`px-3 py-1 rounded-xl text-white shadow ${
