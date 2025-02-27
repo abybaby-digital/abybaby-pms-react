@@ -483,7 +483,7 @@ export const addProject = async (
         client_service_id: client_service_id,
         other_members_id: other_members_id,
         activity_coordinator_id: activity_coordinator_id,
-        activity_coordinator_other_id:activity_coordinator_other_id,
+        activity_coordinator_other_id: activity_coordinator_other_id,
         quotation_no: quotation_no,
         project_amount_pre_gst: project_amount_pre_gst,
         project_amount_with_gst: project_amount_with_gst,
@@ -543,7 +543,7 @@ export const editProject = async (
         client_service_id: client_service_id,
         other_members_id: other_members_id,
         activity_coordinator_id: activity_coordinator_id,
-        activity_coordinator_other_id:activity_coordinator_other_id,
+        activity_coordinator_other_id: activity_coordinator_other_id,
         quotation_no: quotation_no,
         project_amount_pre_gst: project_amount_pre_gst,
         project_amount_with_gst: project_amount_with_gst,
@@ -718,14 +718,12 @@ export const getClientServiceList = async (token, business_manager_id) => {
   }
 };
 
-
 // ACTIVITY CO ORDINATOR LIST
 export const getActiveCoOrdinatorList = async (token) => {
   try {
     const response = await api.post(
       "/activity-coordinator-list",
-      {
-      },
+      {},
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1159,6 +1157,26 @@ export const addInvoice = async (
   }
 };
 
+// INVOICE NO BY PROJECT ID
+export const getInvoiceNumberByProjectId = async (token , project_id) => {
+  try {
+    const response = await api.post(
+      "/invoice-list-by-project-id",
+      {
+        project_id: project_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching invoice list:", error);
+    throw error;
+  }
+};
 // EDIT INVOICE
 // export const editInvoice = async (
 //   token,
@@ -1908,7 +1926,6 @@ export const editBillingSupportings = async (
     throw error;
   }
 };
-
 
 // PAYMENT REQUISITION LIST
 export const getBillingSupportList = async (token) => {

@@ -154,9 +154,9 @@ export default function PaymentReceivedList() {
                                             style={{ width: '5rem', textAlign: 'center' }}
                                         />
                                         <Column field="project_name" sortable header="Project Name"></Column>
-                                        <Column field="received_no" sortable header="Received No"></Column>
+                                        <Column field="invoice_no" sortable header="Invoice No"></Column>
                                         <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>
-                                        <Column field="received_date" sortable header="Received Date" body={(rowData) => new Date(rowData.received_date).toLocaleDateString()}></Column>
+                                        <Column field="invoice_date" sortable header="Received Date" body={(rowData) => new Date(rowData.invoice_date).toLocaleDateString()}></Column>
                                         <Column
                                             className="text-center"
                                             field="created_by_name"
@@ -175,7 +175,7 @@ export default function PaymentReceivedList() {
                                                 rowData.updated_by_name ? rowData.updated_by_name : "....."
                                             }
                                             ></Column>
-                                        <Column field="received_details" sortable header="Details"></Column>
+                                        <Column field="invoice_details" sortable header="Details"></Column>
                                         <Column header="Status" body={(rowData) => (
                                             <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>
                                                 {rowData.status === "1" ? "Active" : "Inactive"}

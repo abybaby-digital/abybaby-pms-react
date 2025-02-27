@@ -7,14 +7,28 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
-import { addPaymentReceived, getProjectList } from "../../../services/api"; // Import the API function for projects
-import { useState } from "react"; // Import useState
+import {
+  addPaymentReceived,
+  getInvoiceNumberByProjectId,
+  getProjectList,
+} from "../../../services/api"; // Import the API function for projects
+import { useState, useEffect } from "react"; // Import useState
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddPaymentReceived() {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm();
+
+  const [selectedInvoice, setInvoice] = useState(null);
+  const [projectId, setProjectId] = useState(null);
+
+  // console.log("project id", projectId);
 
   // State to hold image preview URL
   const [imagePreview, setImagePreview] = useState(null);
@@ -23,9 +37,38 @@ export default function AddPaymentReceived() {
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
     queryFn: async () => {
-      return await getProjectList(token); // Assume this function fetches the list of projects
-    }
+      return await getProjectList(token, "", "", "", "", "", "", 2, 1, ""); // Assume this function fetches the list of projects
+    },
   });
+
+  const receivedNo = watch("received_no");
+  console.log("rev", typeof receivedNo);
+  const receivedAmount = watch("received_amount");
+
+  // Fetch projects for the project dropdown
+  const { data: invoiceNumberList = [], isLoading: isInvoiceLoading } =
+    useQuery({
+      queryKey: ["invoice-number-list", projectId],
+      queryFn: async () => {
+        return await getInvoiceNumberByProjectId(token, projectId); // Assume this function fetches the list of projects
+      },
+      enabled: Boolean(projectId),
+    });
+
+  console.log(invoiceNumberList);
+
+  useEffect(() => {
+    if (invoiceNumberList) {
+      const selectedInv = invoiceNumberList?.response?.find(
+        (item) => item.invoice_no === receivedNo
+      );
+      if (selectedInv) {
+        setInvoice(selectedInv);
+      }
+    }
+  }, [projectId, receivedNo]);
+
+  console.log(+selectedInvoice?.invoice_amount_with_gst);
 
   const addPaymentMutation = useMutation({
     mutationFn: async (data) => {
@@ -37,12 +80,15 @@ export default function AddPaymentReceived() {
         data.received_date,
         data.received_img, // File input
         data.received_details,
+        1
       );
     },
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
         toast.success("Payment received added successfully!");
         navigate("/payment-receipt-list");
+      } else {
+        toast.error(response.message);
       }
     },
     onError: (error) => {
@@ -78,35 +124,69 @@ export default function AddPaymentReceived() {
               ADD PAYMENT RECEIVED
             </h2>
             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
-
               {/* Project ID Dropdown */}
               <div className="form-group">
-                <label htmlFor="project_id">Project ID <span className="text-red-600">*</span></label>
+                <label htmlFor="project_id">
+                  Project ID <span className="text-red-600">*</span>
+                </label>
                 <select
                   id="project_id"
-                  {...register("project_id", { required: "Project ID is required" })}
+                  {...register("project_id", {
+                    required: "Project ID is required",
+                  })}
                   className="block w-full"
+                  onChange={(e) => setProjectId(e.target.value)}
                 >
                   <option value="">Select Project</option>
-                  {
-                    isLoadingProjects ? 
-                    (
-                      <option value="#">Loading...</option>
-                    ):
-                    (
-                      projectList?.response?.map((project) => (
-                        <option key={project.id} value={project.id}>
-                          {project.project_name}
-                        </option>
-                      ))
-                    )
-                  }
+                  {isLoadingProjects ? (
+                    <option value="#">Loading...</option>
+                  ) : (
+                    projectList?.response?.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.project_name}
+                      </option>
+                    ))
+                  )}
                 </select>
-                {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
+                {errors.project_id && (
+                  <span className="text-red-600 text-sm">
+                    {errors.project_id.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Invoice No Dropdown */}
+              <div className="form-group">
+                <label htmlFor="received_no">
+                  Invoice No<span className="text-red-600">*</span>
+                </label>
+                <select
+                  id="received_no"
+                  {...register("received_no", {
+                    required: "Invoice No is required",
+                  })}
+                  className="block w-full"
+                >
+                  <option value="">Select Invoice No</option>
+                  {isInvoiceLoading ? (
+                    <option value="#">Loading...</option>
+                  ) : (
+                    invoiceNumberList?.response?.map((invoice_no) => (
+                      <option key={invoice_no.id} value={invoice_no.invoice_no}>
+                        {invoice_no.invoice_no}
+                      </option>
+                    ))
+                  )}
+                </select>
+                {errors.received_no && (
+                  <span className="text-red-600 text-sm">
+                    {errors.received_no.message}
+                  </span>
+                )}
               </div>
 
               {/* Received No Input */}
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label htmlFor="received_no">Received No <span className="text-red-600">*</span></label>
                 <input
                   type="text"
@@ -116,31 +196,84 @@ export default function AddPaymentReceived() {
                   placeholder="Enter Received No"
                 />
                 {errors.received_no && <span className="text-red-600 text-sm">{errors.received_no.message}</span>}
+              </div> */}
+
+              {/* Invoice Amount Input */}
+              <div className="form-group">
+                <label htmlFor="invoice_amount_pre_gst">
+                  Invoice Amount Pre GST
+                </label>
+                <input
+                  type="number"
+                  id="invoice_amount_pre_gst"
+                  {...register("invoice_amount_pre_gst")}
+                  className="block"
+                  disabled
+                  value={selectedInvoice?.invoice_amount_pre_gst}
+                  placeholder="Enter Amount"
+                />
+                
+              </div>
+
+              {/* Invoice Amount Input */}
+              <div className="form-group">
+                <label htmlFor="invoice_amount_with_gst">
+                  Invoice Amount With GST{" "}
+                </label>
+                <input
+                  type="number"
+                  id="invoice_amount_with_gst"
+                  {...register("invoice_amount_with_gst")}
+                  className="block"
+                  disabled
+                  value={selectedInvoice?.invoice_amount_with_gst}
+                  placeholder="Enter Amount"
+                />
+                
               </div>
 
               {/* Received Amount Input */}
               <div className="form-group">
-                <label htmlFor="received_amount">Received Amount <span className="text-red-600">*</span></label>
+                <label htmlFor="received_amount">
+                  Received Amount <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="number"
                   id="received_amount"
-                  {...register("received_amount", { required: "Received Amount is required" })}
+                  {...register("received_amount", {
+                    max: {
+                      value: selectedInvoice?.invoice_amount_with_gst,
+                      message: `Received amount must be no greater than ${+selectedInvoice?.invoice_amount_with_gst}`,
+                    },
+                  })}
                   className="block"
                   placeholder="Enter Amount"
                 />
-                {errors.received_amount && <span className="text-red-600 text-sm">{errors.received_amount.message}</span>}
+                {errors.received_amount && (
+                  <span className="text-red-600 text-sm">
+                    {errors.received_amount.message}
+                  </span>
+                )}
               </div>
 
               {/* Received Date Input */}
               <div className="form-group">
-                <label htmlFor="received_date">Received Date <span className="text-red-600">*</span></label>
+                <label htmlFor="received_date">
+                  Received Date <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="date"
                   id="received_date"
-                  {...register("received_date", { required: "Received Date is required" })}
+                  {...register("received_date", {
+                    required: "Received Date is required",
+                  })}
                   className="block"
                 />
-                {errors.received_date && <span className="text-red-600 text-sm">{errors.received_date.message}</span>}
+                {errors.received_date && (
+                  <span className="text-red-600 text-sm">
+                    {errors.received_date.message}
+                  </span>
+                )}
               </div>
 
               {/* Upload Receipt */}
@@ -159,7 +292,11 @@ export default function AddPaymentReceived() {
               {/* Image Preview */}
               {imagePreview && (
                 <div className="mt-2 text-center lg:col-span-2">
-                  <img src={imagePreview} alt="Preview" className="w-[350px] h-[350px] rounded-lg inline-block" />
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-[350px] h-[350px] rounded-lg inline-block"
+                  />
                 </div>
               )}
 
@@ -173,15 +310,13 @@ export default function AddPaymentReceived() {
                   placeholder="Enter Payment Details"
                 />
               </div>
-
             </div>
 
             {/* LOADER */}
 
-            {
-              addPaymentMutation.isPending ?
-                <FormSubmitLoader loading_msg="Creating Payment Receipt..." /> : null
-            }
+            {addPaymentMutation.isPending ? (
+              <FormSubmitLoader loading_msg="Creating Payment Receipt..." />
+            ) : null}
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button
