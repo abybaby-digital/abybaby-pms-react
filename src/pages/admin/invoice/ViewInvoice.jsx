@@ -81,7 +81,7 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
                                         <TableCell className="font-bold text-lg">Details:</TableCell>
                                         <TableCell>{invoice?.invoice_details}</TableCell>
                                     </TableRow>
-                                    <TableRow className="flex justify-between">
+                                    {/* <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Status:</TableCell>
                                         <TableCell>
                                             {invoice?.status === "1" ? (
@@ -94,7 +94,7 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
                                                 </span>
                                             )}
                                         </TableCell>
-                                    </TableRow>
+                                    </TableRow> */}
                                     {invoice?.invoice_img && (
                                         <TableRow className="flex justify-between">
                                             <TableCell className="font-bold text-lg">Invoice Image:</TableCell>

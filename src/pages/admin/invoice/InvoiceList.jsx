@@ -270,7 +270,7 @@ export default function InvoiceList() {
                       sortable
                       header="Details"
                     ></Column>
-                    <Column
+                    {/* <Column
                       header="Invoice Status"
                       body={(rowData) => (
                         <span
@@ -283,7 +283,7 @@ export default function InvoiceList() {
                           {rowData.status === "1" ? "Active" : "Inactive"}
                         </span>
                       )}
-                    ></Column>
+                    ></Column> */}
                     <Column
                       header="Actions"
                       body={(rowData) => (
