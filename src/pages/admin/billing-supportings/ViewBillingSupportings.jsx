@@ -66,6 +66,9 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                                                         : "View Image"}
                                                 </button>
                                             )}
+                                            {
+                                                billingSupportings?.center_vehicle_hire_comment && <p className="my-5 text-end"><strong>Remarks :</strong> {billingSupportings?.center_vehicle_hire_comment}</p>
+                                            }
                                         </TableCell>
                                     </TableRow>
 

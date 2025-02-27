@@ -62,6 +62,7 @@ export default function InvoiceList() {
     const keyword = debouncedSearchKeyword.toLowerCase();
     return (
       invoice.project_name?.toLowerCase()?.includes(keyword) ||
+      invoice.project_no?.toLowerCase()?.includes(keyword) ||
       invoice.invoice_no?.toLowerCase()?.includes(keyword) ||
       invoice.invoice_details?.toLowerCase()?.includes(keyword)
     );
@@ -82,6 +83,7 @@ export default function InvoiceList() {
       head: [
         [
           "Project Name",
+          "Project No",
           "Invoice No",
           "Amount",
           "Invoice Date",
@@ -91,6 +93,7 @@ export default function InvoiceList() {
       ],
       body: invoiceList?.response.map((invoice) => [
         invoice.project_name,
+        invoice.project_no,
         invoice.invoice_no,
         `₹${invoice.invoice_amount}`,
         new Date(invoice.invoice_date).toLocaleDateString(),
@@ -184,6 +187,11 @@ export default function InvoiceList() {
                       field="project_name"
                       sortable
                       header="Project Name"
+                    ></Column>
+                    <Column
+                      field="project_no"
+                      sortable
+                      header="Project No."
                     ></Column>
                     <Column
                       field="invoice_no"

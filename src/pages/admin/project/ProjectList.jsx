@@ -180,6 +180,7 @@ export default function ProjectList() {
         [
           "Project Number",
           "Project Name",
+          "Project No",
           "Client",
           "Branch",
           "Company",

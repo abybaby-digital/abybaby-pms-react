@@ -48,7 +48,7 @@ export default function BillingSupportingList() {
 
   const openModal = (id) => {
     const allBillingSupportings = billingSupportingList?.response;
-    const singleBillingSupporting = allBillingSupportings.find(
+    const singleBillingSupporting = allBillingSupportings?.find(
       (billingSupporting) => billingSupporting.id === id
     );
     setSingleBillingSupportingData(singleBillingSupporting);
@@ -57,8 +57,8 @@ export default function BillingSupportingList() {
 
   const filteredBillingSupportings = billingSupportingList?.response?.filter(
     (billingSupporting) => {
-      const keyword = debouncedSearchKeyword.toLowerCase();
-      return billingSupporting.project_name.toLowerCase().includes(keyword);
+      const keyword = debouncedSearchKeyword?.toLowerCase();
+      return billingSupporting.project_name?.toLowerCase().includes(keyword);
     }
   );
 

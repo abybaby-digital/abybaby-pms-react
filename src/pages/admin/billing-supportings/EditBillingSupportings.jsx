@@ -23,7 +23,27 @@ const EditBillingSupportings = ({ billingSupportings }) => {
     formState: { errors },
   } = useForm({
     defaultValues:{
-        project_id: billingSupportings.project_id,
+      center_vehicle_hire_bill: billingSupportings.center_vehicle_hire_bill,
+      manpower_bill: billingSupportings.manpower_bill,
+      gift_bill: billingSupportings.gift_bill,
+      billing_ppt: billingSupportings.billing_ppt,
+      report: billingSupportings.report,
+      day_wise_log_book: billingSupportings.day_wise_log_book,
+      day_wise_meter_console: billingSupportings.day_wise_meter_console,
+      no_objection_certificate: billingSupportings.no_objection_certificate,
+      snacks_bill: billingSupportings.snacks_bill,
+      element_wise_photo: billingSupportings.element_wise_photo,
+      nagar_nigan: billingSupportings.nagar_nigan,
+      fuel_bill: billingSupportings.fuel_bill,
+      customer_gift: billingSupportings.customer_gift,
+      customer_acknowledge: billingSupportings.customer_acknowledge,
+      route_plan: billingSupportings.route_plan,
+      approvel_copy: billingSupportings.approvel_copy,
+      po: billingSupportings.po,
+      wayforward_learning: billingSupportings.wayforward_learning,
+      transport_bill: billingSupportings.transport_bill,
+      anocher_bill: billingSupportings.anocher_bill,
+      any_other_supporting: billingSupportings.any_other_supporting,
     }
   });
   const [imagePreviews, setImagePreviews] = useState({});
@@ -40,7 +60,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
         billingSupportings.id,
         billingSupportings.project_id,
         data.center_vehicle_hire_bill,
-        data.center_vehicle_hire_img,
+        watch("center_vehicle_hire_bill") === "1" ? data.center_vehicle_hire_img : "",
         data.center_vehicle_hire_comment,
         data.manpower_bill,
         data.manpower_bill_img,
@@ -127,6 +147,9 @@ const EditBillingSupportings = ({ billingSupportings }) => {
   };
 
   return (
+    isLoadingProjects ? 
+    <p className="text-center text-green-500 my-5 text-lg">Preparing For edit. Please wait ...</p>
+    :
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="bg-white  mx-auto w-full overflow-hidden"
@@ -143,9 +166,9 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             {...register("project_id", { required: "Project is required" })}
             className="block w-full"
           >
-            <option value="">Select Project</option>
+            <option value="" >Select Project</option>
             {projectList?.response?.map((project) => (
-              <option key={project.id} value={project.id}>
+              <option key={project.id} value={project.id} selected={project?.id === billingSupportings?.project_id}>
                 {project.project_name}
               </option>
             ))}
@@ -166,14 +189,13 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             className="block w-full"
           >
             <option value="">--Select--</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="NA">Not Applicable</option>
+            <option value="1" selected = {billingSupportings?.center_vehicle_hire_bill === "1"}>Yes</option>
+            <option value="0" selected = {billingSupportings?.center_vehicle_hire_bill === "0"}>No</option>
+            <option value="NA" selected = {billingSupportings?.center_vehicle_hire_comment === null && billingSupportings?.center_vehicle_hire_img === null}>Not Applicable</option>
           </select>
 
           {/* Upload Section */}
-          {watch("center_vehicle_hire_bill") === "0" ||
-          watch("center_vehicle_hire_bill") === "NA" ? (
+          {watch("center_vehicle_hire_bill") === "0"  ? (
             <div className="mt-2">
               <label htmlFor="center_vehicle_hire_comment" className="text-sm">
                 Remarks
@@ -183,6 +205,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 id="center_vehicle_hire_comment"
                 cols="30"
                 rows="3"
+                value={billingSupportings.center_vehicle_hire_comment}
                 className="border rounded-2xl w-full p-2 focus:outline-none"
               ></textarea>
             </div>
@@ -198,8 +221,12 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 {...register("center_vehicle_hire_img")}
                 className="block border w-full rounded-lg p-3 bg-white"
               />
+              <a href={billingSupportings.center_vehicle_hire_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>
             </div>
           ) : null}
+
+
+
         </div>
         {/* Manpower Bill Bill Selection */}
         <div className="form-group bg-whitesmoke p-5 rounded-2xl">
@@ -210,9 +237,9 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             className="block w-full"
           >
             <option value="">--Select--</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="NA">Not Applicable</option>
+            <option value="1" selected = {billingSupportings?.manpower_bill === "1"}>Yes</option>
+            <option value="0" selected = {billingSupportings?.manpower_bill === "0"}>No</option>
+            <option value="NA" selected = {billingSupportings?.manpower_bill_comment === null && billingSupportings?.manpower_bill_img === null}>Not Applicable</option>
           </select>
 
           {/* Upload Section */}
@@ -226,6 +253,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 id="manpower_bill_comment"
                 cols="30"
                 rows="3"
+                value={billingSupportings.manpower_bill_comment}
                 className="border rounded-2xl w-full p-2 focus:outline-none"
               ></textarea>
             </div>
@@ -241,6 +269,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 {...register("manpower_bill_img")}
                 className="block border w-full rounded-lg p-3 bg-white"
               />
+              <a href={billingSupportings.manpower_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>
             </div>
           ) : null}
         </div>
@@ -253,9 +282,9 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             className="block w-full"
           >
             <option value="">--Select--</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="NA">Not Applicable</option>
+            <option value="1" selected = {billingSupportings?.gift_bill === "1"}>Yes</option>
+            <option value="0" selected = {billingSupportings?.gift_bill === "0"}>No</option>
+            <option value="NA" selected = {billingSupportings?.gift_bill_comment === null && billingSupportings?.gift_bill_img === null}>Not Applicable</option>
           </select>
           {watch("gift_bill") === "0" || watch("gift_bill") === "NA" ? (
             <div className="mt-2">
@@ -267,6 +296,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 id="gift_bill_comment"
                 cols="30"
                 rows="3"
+                value={billingSupportings.gift_bill_comment}
                 className="border rounded-2xl w-full p-2 focus:outline-none"
               ></textarea>
             </div>
@@ -282,6 +312,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 {...register("gift_bill_img")}
                 className="block border w-full rounded-lg p-3 bg-white"
               />
+              <a href={billingSupportings.gift_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>
             </div>
           ) : null}
         </div>
@@ -294,10 +325,10 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             {...register("billing_ppt")}
             className="block w-full"
           >
-            <option value="">--Select--</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="NA">Not Applicable</option>
+            <option value="" >--Select--</option>
+            <option value="1"  selected = {billingSupportings?.billing_ppt === "1"}>Yes</option>
+            <option value="0"  selected = {billingSupportings?.billing_ppt === "0"}>No</option>
+            <option value="NA" selected = {billingSupportings?.billing_ppt_comment === null && billingSupportings?.billing_ppt_img === null}>Not Applicable</option>
           </select>
           {watch("billing_ppt") === "0" || watch("billing_ppt") === "NA" ? (
             <div className="mt-2">
@@ -309,6 +340,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 id="billing_ppt_comment"
                 cols="30"
                 rows="3"
+                value={billingSupportings.billing_ppt_comment}
                 className="border rounded-2xl w-full p-2 focus:outline-none"
               ></textarea>
             </div>
@@ -324,6 +356,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 {...register("billing_ppt_img")}
                 className="block border w-full rounded-lg p-3 bg-white"
               />
+              <a href={billingSupportings.billing_ppt_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>
             </div>
           ) : null}
         </div>
@@ -333,11 +366,11 @@ const EditBillingSupportings = ({ billingSupportings }) => {
           <label htmlFor="report">Report ( Detailed & Dashboard )</label>
           <select id="report" {...register("report")} className="block w-full">
             <option value="">--Select--</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="NA">Not Applicable</option>
+            <option value="1" selected = {billingSupportings?.report === "1"}>Yes</option>
+            <option value="0" selected = {billingSupportings?.report === "0"}>No</option>
+            <option value="NA" selected = {billingSupportings?.report_comment === null && billingSupportings?.report_img === null}>Not Applicable</option>
           </select>
-          {watch("report") === "0" || watch("report") === "NA" ? (
+          {watch("report") === "0" ? (
             <div className="mt-2">
               <label htmlFor="report_comment" className="text-sm">
                 Remarks
@@ -347,6 +380,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 id="report_comment"
                 cols="30"
                 rows="3"
+                value={billingSupportings.report_comment}
                 className="border rounded-2xl w-full p-2 focus:outline-none"
               ></textarea>
             </div>
@@ -362,6 +396,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 {...register("report_img")}
                 className="block border w-full rounded-lg p-3 bg-white"
               />
+              <a href={billingSupportings.report_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>
             </div>
           ) : null}
         </div>
@@ -375,12 +410,11 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             className="block w-full"
           >
             <option value="">--Select--</option>
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-            <option value="NA">Not Applicable</option>
+            <option value="1" selected = {billingSupportings?.day_wise_log_book === "1"}>Yes</option>
+            <option value="0" selected = {billingSupportings?.day_wise_log_book === "0"}>No</option>
+            <option value="NA" selected = {billingSupportings?.day_wise_log_book_comment === null && billingSupportings?.day_wise_log_book_img === null}>Not Applicable</option>
           </select>
-          {watch("day_wise_log_book") === "0" ||
-          watch("day_wise_log_book") === "NA" ? (
+          {watch("day_wise_log_book") === "0" ? (
             <div className="mt-2">
               <label htmlFor="day_wise_log_book_comment" className="text-sm">
                 Remarks
@@ -390,6 +424,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 id="day_wise_log_book_comment"
                 cols="30"
                 rows="3"
+                value={billingSupportings.day_wise_log_book_comment}
                 className="border rounded-2xl w-full p-2 focus:outline-none"
               ></textarea>
             </div>
@@ -405,6 +440,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 {...register("day_wise_log_book_img")}
                 className="block border w-full rounded-lg p-3 bg-white"
               />
+              <a href={billingSupportings.day_wise_log_book_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>
             </div>
           ) : null}
         </div>
