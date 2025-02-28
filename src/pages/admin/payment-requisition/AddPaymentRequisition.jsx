@@ -161,6 +161,9 @@ export default function AddPaymentRequisition() {
       <SidebarInset>
         <AdminHead breadcrumb_name="Payment Requisition" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
+          {isLoadingProjects ?
+          <FormSubmitLoader loading_msg="" />
+          :
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
@@ -424,6 +427,7 @@ export default function AddPaymentRequisition() {
               </button>
             </div>
           </form>
+          }
         </div>
       </SidebarInset>
     </SidebarProvider>

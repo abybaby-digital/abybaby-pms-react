@@ -76,7 +76,11 @@ export default function AddInvoice() {
       <SidebarInset>
         <AdminHead breadcrumb_name="Invoice" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
-          <form
+          {
+            isLoadingProjects ?
+            <FormSubmitLoader loading_msg="" />
+            :
+            <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
           >
@@ -255,7 +259,7 @@ export default function AddInvoice() {
                 {addInvoiceMutation.isPending ? <ButtonLoader /> : "Submit"}
               </button>
             </div>
-          </form>
+          </form>}
         </div>
       </SidebarInset>
     </SidebarProvider>
