@@ -31,7 +31,7 @@ export default function AddClientPO() {
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
     queryFn: async () => {
-      return await getProjectList(token); // Assume this function fetches the list of projects
+      return await getProjectList(token, "", "", "", "", "", "", 1, "", ""); // Assume this function fetches the list of projects
     },
   });
 
