@@ -61,9 +61,12 @@ export default function BillingSupportingList() {
   const filteredBillingSupportings = billingSupportingList?.response?.filter(
     (billingSupporting) => {
       const keyword = debouncedSearchKeyword?.toLowerCase();
-      return billingSupporting.project_name?.toLowerCase().includes(keyword);
+      const projectName = billingSupporting.project_name?.toLowerCase() || ""; // Default to empty string if null/undefined
+      return projectName.includes(keyword);
     }
   );
+  
+
 
   function formatDate(createdAt) {
     // Split the createdAt string into date and time parts
