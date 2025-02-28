@@ -350,13 +350,15 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                                                 ?.map(Number)
                                                                 ?.includes(userId) ? null : (
                                                                 <TableCell>
-                                                                    <a
+                                                                    {
+                                                                    item?.po_img ? 
+                                                                        <a
                                                                         href={item?.po_img}
                                                                         target="_blank"
                                                                         className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
                                                                     >
                                                                         View
-                                                                    </a>
+                                                                    </a> :  "No attachment"}
                                                                 </TableCell>
                                                             )}
 

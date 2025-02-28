@@ -308,13 +308,13 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                                                     {item?.received_date?.slice(0, 10)}
                                                                 </TableCell>
                                                                 <TableCell>
-                                                                    <a
+                                                                    {item?.received_img ? <a
                                                                         href={item?.received_img}
                                                                         target="_blank"
                                                                         className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
                                                                     >
                                                                         View
-                                                                    </a>
+                                                                    </a> :  "No attachment"}
                                                                 </TableCell>
 
                                                                 <TableCell>

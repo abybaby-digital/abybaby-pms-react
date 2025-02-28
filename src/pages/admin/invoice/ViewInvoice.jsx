@@ -400,13 +400,14 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
                                                                 {item?.invoice_date?.slice(0, 10)}
                                                             </TableCell>
                                                             <TableCell>
+                                                            {item?.invoice_img ?
                                                                 <a
                                                                     href={item?.invoice_img}
                                                                     target="_blank"
                                                                     className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
                                                                 >
                                                                     View
-                                                                </a>
+                                                                </a> : "No attachment"}
                                                             </TableCell>
 
                                                             <TableCell>{item?.invoice_details}</TableCell>

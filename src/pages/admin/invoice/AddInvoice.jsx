@@ -267,16 +267,15 @@ export default function AddInvoice() {
                       placeholder="Enter Invoice Details"
                     />
                   </div>
+                  
                   {/* Invoice Finalize */}
                 <div className="form-group">
                   <label htmlFor="invoice_billing_status">
-                    Invoice Completed <span className="text-red-600">*</span>
+                    Invoice Completed
                   </label>
                   <select
                     id="invoice_billing_status"
-                    {...register("invoice_billing_status", {
-                      required: "Project ID is required",
-                    })}
+                    {...register("invoice_billing_status")}
                     className="block w-full"
                   >
                     <option value="0" className="text-red-500">No</option>

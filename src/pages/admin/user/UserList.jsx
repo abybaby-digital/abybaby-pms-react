@@ -187,7 +187,7 @@ export default function UserList() {
                                                         <img
                                                             src={rowData.profile_img}
                                                             alt="User Profile"
-                                                            className="w-10 h-10 rounded-full border shadow"
+                                                            className="w-10 h-10 rounded-full border shadow mx-auto"
                                                         />
                                                         :
                                                         <div className="text-center flex flex-col items-center">
