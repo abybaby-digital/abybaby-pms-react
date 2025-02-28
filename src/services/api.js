@@ -132,7 +132,7 @@ export const addCompany = async (
       },
     }
   );
-  return response.data.result.response;
+  return response.data.result;
 };
 
 // EDIT COMPANY
@@ -167,7 +167,7 @@ export const editCompany = async (
       },
     }
   );
-  return response.data.result.response;
+  return response.data.result;
 };
 
 // COMPANY LIST
@@ -226,7 +226,7 @@ export const addVendor = async (
       },
     }
   );
-  return response.data.result.response;
+  return response.data.result;
 };
 
 // EDIT VENDOR

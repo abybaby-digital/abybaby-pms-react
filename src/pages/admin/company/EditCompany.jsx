@@ -48,11 +48,17 @@ const EditCompany = ({ company }) => {
                 data.company_status ? "1" : "0" // Convert boolean status to "1" or "0"
             );
         },
-        onSuccess: () => {
-            // Handle success, showing toast message
-            toast.success("Company updated successfully!");
-            setModal(false);
-            setRefetchList(!refetchList);
+        onSuccess: (response) => {
+            if (response.status === 200 || response.status === 201) {
+                // Handle success, showing toast message
+                toast.success("Company updated successfully!");
+                setModal(false);
+                setRefetchList(!refetchList);
+            }
+            else {
+                toast.error(response.message);
+                toast.error(response.response.company_gst[0]);
+            }
         },
         onError: (error) => {
             // Handle error, showing error message
@@ -186,19 +192,26 @@ const EditCompany = ({ company }) => {
                 {/* Contact Email Field */}
                 <div className="form-group">
                     <label htmlFor="contact_email">
-                        Contact Email <span className="text-red-600">*</span>
+                        Contact Email 
                     </label>
                     <input
                         type="email"
-                        className="block"
+                        className="block border border-gray-300 rounded p-2 w-full"
                         id="contact_email"
-                        placeholder="Contact Email"
-                        {...register("contact_email")}
+                        placeholder="Enter your contact email"
+                        {...register("contact_email", {
+                            
+                            pattern: {
+                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                message: "Invalid email format",
+                            },
+                        })}
                     />
                     {errors.contact_email && (
-                        <p className="text-red-600 mt-2">{errors.contact_email.message}</p>
+                        <p className="text-red-600 mt-2 text-sm">{errors.contact_email.message}</p>
                     )}
                 </div>
+
 
                 {/* Active Company Switch */}
                 <div className="form-group">

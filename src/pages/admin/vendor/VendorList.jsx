@@ -171,25 +171,6 @@ export default function VendorList() {
                                         {/* DataTable */}
                                         <DataTable value={filteredVendors} stripedRows rows={10} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}">
-                                            <Column
-                                                header="S.No"
-                                                body={(rowData, { rowIndex }) => (
-                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                                                        {rowIndex + 1}
-                                                    </span>
-                                                )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
-                                            />
-                                            <Column field="vendor_code" sortable header="Vendor Code" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_name" sortable header="Vendor Name" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_category_name" sortable header="Vendor Service" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_mobile" sortable header="Mobile" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="vendor_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
-
-                                            <Column header="Status" body={() => (
-                                                <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
-                                            )}></Column>
-
                                             <Column header="Actions" body={(rowData) => (
                                                 <>
                                                     <TooltipProvider>
@@ -222,6 +203,26 @@ export default function VendorList() {
                                                     </CheckAccessEdit>
                                                 </>
                                             )}></Column>
+                                            <Column
+                                                header="S.No"
+                                                body={(rowData, { rowIndex }) => (
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowIndex + 1}
+                                                    </span>
+                                                )}
+                                                style={{ width: '5rem', textAlign: 'center' }}
+                                            />
+                                            <Column field="vendor_code" sortable header="Vendor Code" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="vendor_name" sortable header="Vendor Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="vendor_category_name" sortable header="Vendor Service" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="vendor_mobile" sortable header="Mobile" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="vendor_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
+
+                                            <Column header="Status" body={() => (
+                                                <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
+                                            )}></Column>
+
+                                            
                                         </DataTable>
                                     </div>
                                 )

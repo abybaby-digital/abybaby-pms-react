@@ -30,9 +30,16 @@ export default function AddCompany() {
                 "1"
             );
         },
-        onSuccess: () => {
-            toast.success("Company added successfully!");
-            navigate("/company-list"); // Redirect to company list after successful submission
+        onSuccess: (response) => {
+            console.log(response);
+            if (response.status === 200 || response.status === 201) {
+                toast.success("Company added successfully!");
+                navigate("/company-list"); // Redirect to company list after successful submission
+            }
+            else {
+                toast.error(response.message);
+                toast.error(response.response.company_gst[0]);
+            }
         },
         onError: (error) => {
             toast.error("Failed to add company: " + error.message);
@@ -107,13 +114,13 @@ export default function AddCompany() {
                                     id="companyGst"
                                     placeholder="Company GST"
                                     {...register("companyGst",
-                                         {
-                                        
-                                        pattern: {
-                                            value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, // Indian GST regex
-                                            message: "Please enter a valid GST number"
-                                        }
-                                    })}
+                                        {
+
+                                            pattern: {
+                                                value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, // Indian GST regex
+                                                message: "Please enter a valid GST number"
+                                            }
+                                        })}
                                 />
                                 <span className="text-red-600 text-sm">
                                     {errors.companyGst?.message}
@@ -187,9 +194,17 @@ export default function AddCompany() {
                                     className="block"
                                     id="contactEmail"
                                     placeholder="Contact Email"
-                                    {...register("contactEmail")}
+                                    {...register("contactEmail", {
+                                        
+                                        pattern: {
+                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                            message: "Invalid email address",
+                                        }
+                                    })}
                                 />
+                                {errors.contactEmail && <p className="text-red-500">{errors.contactEmail.message}</p>}
                             </div>
+
                         </div>
                         {/* /.card-body */}
 

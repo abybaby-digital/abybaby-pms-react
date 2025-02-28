@@ -20,9 +20,14 @@ export default function AddBranch() {
             // Pass the form data and status to the addBranch API
             return await addBranch(token, data.branchCode, data.branchName, data.branchAddress, "1");
         },
-        onSuccess: () => {
-            toast.success("Branch added successfully!");
+        onSuccess: (response) => {
+            if(response.status === 200 || response.status === 201){
+                toast.success("Branch added successfully!");
             navigate("/branch-list"); // Redirect to branch list after successful submission
+            }
+            else{
+                toast.error(response.message)
+            }
         },
         onError: (error) => {
             toast.error("Failed to add branch: " + error.message);

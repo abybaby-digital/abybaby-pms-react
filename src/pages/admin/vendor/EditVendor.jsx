@@ -34,7 +34,7 @@ const EditVendor = ({ vendor }) => {
     });
 
     // Fetch required lists for the form
-    const { data: branchList } = useQuery({
+    const { data: branchList , branchloading} = useQuery({
         queryKey: ["branch-list"],
         queryFn: () => getBranchList(token),
     });
@@ -45,12 +45,12 @@ const EditVendor = ({ vendor }) => {
     })
 
 
-    const { data: vendorCategoryList } = useQuery({
+    const { data: vendorCategoryList , isLoading: vendorcatloading } = useQuery({
         queryKey: ["vendor-category-list"],
         queryFn: () => getVendorCategoryList(token),
     });
 
-    const { data: stateList } = useQuery({
+    const { data: stateList, isLoading: stateloading } = useQuery({
         queryKey: ["state-list"],
         queryFn: () => getStateList(token),
     });
@@ -102,6 +102,9 @@ const EditVendor = ({ vendor }) => {
     };
 
     return (
+        vendorcatloading && branchloading && stateloading ? 
+        <p className="my-10 animate-pulse text-green">Please Wait , Preparing for edit...</p>
+        :
         <form
             onSubmit={handleSubmit(onSubmit)}
             className="mx-auto w-full overflow-hidden"
@@ -346,7 +349,7 @@ const EditVendor = ({ vendor }) => {
                     {editVendorMutation.isPending ? <ButtonLoader /> : "Submit"}
                 </button>
             </div>
-        </form>
+        </form> 
     );
 };
 
