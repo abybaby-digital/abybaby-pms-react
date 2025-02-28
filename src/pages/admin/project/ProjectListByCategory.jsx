@@ -241,6 +241,7 @@ export default function ProjectListByCategory() {
                     </label>
                     <select
                       name="fyear"
+                      value={fincYear}
                       className="text-sm"
                       onChange={(e) => {
                         setFincYear(e.target.value);
@@ -260,6 +261,7 @@ export default function ProjectListByCategory() {
                     </label>
                     <select
                       name="fyear"
+                      value={companyFilter}
                       className="text-sm"
                       onChange={(e) => {
                         setCompanyFilter(e.target.value);
@@ -280,6 +282,7 @@ export default function ProjectListByCategory() {
                     <select
                       name="branch"
                       className="text-sm"
+                      value={branchFilter}
                       onChange={(e) => {
                         setBranchFilter(e.target.value);
                       }}
@@ -302,6 +305,7 @@ export default function ProjectListByCategory() {
                       onChange={(e) => {
                         setClientFilter(e.target.value);
                       }}
+                      value={clientFilter}
                     >
                       <option value="">--SELECT--</option>
                       {clientList?.response?.map((item) => (
@@ -311,6 +315,71 @@ export default function ProjectListByCategory() {
                       ))}
                     </select>
                   </div>
+                  {/* <div className="status">
+                    <label htmlFor="status" className="text-sm">
+                      Project Status
+                    </label>
+                    <select
+                      name="status"
+                      className="text-sm"
+                      onChange={(e) => {
+                        setStatus(e.target.value);
+                      }}
+                    >
+                      <option value="">--SELECT--</option>
+                      <option value="1">Running</option>
+                      <option value="2">Closed</option>
+                      
+                    </select>
+                  </div>
+                  <div className="billing_status">
+                    <label htmlFor="billing_status" className="text-sm">
+                      Bill Status
+                    </label>
+                    <select
+                      name="billing_status"
+                      className="text-sm"
+                      onChange={(e) => {
+                        setBilled(e.target.value);
+                      }}
+                    >
+                      <option value="">--SELECT--</option>
+                      <option value="1">Billed</option>
+                      <option value="0">Unbilled</option>
+                    </select>
+                  </div>
+                  <div className="payment_status">
+                    <label htmlFor="payment_status" className="text-sm">
+                      Payment Status
+                    </label>
+                    <select
+                      name="payment_status"
+                      className="text-sm"
+                      onChange={(e) => {
+                        setPayment(e.target.value);
+                      }}
+                    >
+                      <option value="">--SELECT--</option>
+                      <option value="1">Paid</option>
+                      <option value="0">Unpaid</option>
+                    </select>
+                  </div> */}
+                </div>
+                {/* Reset Button */}
+                <div className="text-center mt-4">
+                  <button
+                    type="button"
+                    className="bg-black px-3 py-1 rounded-2xl shadow active:scale-95 text-white"
+                    onClick={() => {
+                      // Reset all the filter states
+                      setFincYear('');
+                      setCompanyFilter('');
+                      setBranchFilter('');
+                      setClientFilter('');
+                    }}
+                  >
+                    RESET FILTER
+                  </button>
                 </div>
                 {/* {
                                     fincYear === null && companyFilter === null && branchFilter === null && clientFilter === null ?
@@ -380,6 +449,50 @@ export default function ProjectListByCategory() {
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
                     <Column
+                      header="Actions"
+                      body={(rowData) => (
+                        <>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <button
+                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                  onClick={() => {
+                                    singleProject(rowData.id);
+                                    setAddOrEdit("view");
+                                  }}
+                                >
+                                  <FaEye />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>View Project</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <button
+                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                  onClick={() => {
+                                    singleProject(rowData.id);
+                                    setAddOrEdit("edit");
+                                  }}
+                                >
+                                  <MdEditSquare />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Edit Project</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </>
+                      )}
+                    ></Column>
+                    <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
                         <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
@@ -405,6 +518,7 @@ export default function ProjectListByCategory() {
                       field="client_name"
                       sortable
                       header="Client"
+                      className="truncate"
                       style={{ textTransform: "capitalize" }}
                     ></Column>
                     <Column
@@ -511,50 +625,7 @@ export default function ProjectListByCategory() {
                       )}
                     ></Column>
 
-                    <Column
-                      header="Actions"
-                      body={(rowData) => (
-                        <>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    singleProject(rowData.id);
-                                    setAddOrEdit("view");
-                                  }}
-                                >
-                                  <FaEye />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>View Project</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    singleProject(rowData.id);
-                                    setAddOrEdit("edit");
-                                  }}
-                                >
-                                  <MdEditSquare />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Edit Project</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </>
-                      )}
-                    ></Column>
+                    
                   </DataTable>
                 </div>
               )}

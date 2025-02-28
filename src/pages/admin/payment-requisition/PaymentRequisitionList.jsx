@@ -308,6 +308,52 @@ export default function PaymentRequisitionList() {
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
                     <Column
+                      header="Actions"
+                      body={(rowData) => (
+                        <>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <button
+                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                  onClick={() => {
+                                    openModal(rowData.id);
+                                    setAddOrEdit("view");
+                                  }}
+                                >
+                                  <FaEye />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>View Payment</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <CheckAccessEdit edit_access="Payment Requition">
+                            {/* <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <button
+                                    className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                    onClick={() => {
+                                      openModal(rowData.id);
+                                      setAddOrEdit("edit");
+                                    }}
+                                  >
+                                    <MdEditSquare />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Edit Payment</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider> */}
+                          </CheckAccessEdit>
+                        </>
+                      )}
+                    ></Column>
+                    <Column
                       body={(rowData) => (
                         rowData.admin_approve_status === "0" ||
                             rowData.finance_approve_status === "0" ||

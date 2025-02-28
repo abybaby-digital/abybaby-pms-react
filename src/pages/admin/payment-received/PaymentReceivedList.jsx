@@ -144,43 +144,6 @@ export default function PaymentReceivedList() {
                                     {/* DataTable */}
                                     <DataTable value={filteredPayments} showGridlines stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                         currentPageReportTemplate="{first} to {last} of {totalRecords}">
-                                        <Column
-                                            header="S.No"
-                                            body={(rowData, { rowIndex }) => (
-                                                <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                                                    {rowIndex + 1}
-                                                </span>
-                                            )}
-                                            style={{ width: '5rem', textAlign: 'center' }}
-                                        />
-                                        <Column field="project_name" sortable header="Project Name"></Column>
-                                        <Column field="received_no" sortable header="Invoice No"></Column>
-                                        <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>
-                                        <Column field="received_date" sortable header="Received Date" body={(rowData) => new Date(rowData.received_date).toLocaleDateString()}></Column>
-                                        <Column
-                                            className="text-center"
-                                            field="created_by_name"
-                                            sortable
-                                            header="Created By"
-                                            body={(rowData) =>
-                                            rowData.created_by_name ? rowData.created_by_name : "....."
-                                            }
-                                            ></Column>
-                                            <Column
-                                            className="text-center"
-                                            field="updated_by_name"
-                                            sortable
-                                            header="Updated By"
-                                            body={(rowData) =>
-                                                rowData.updated_by_name ? rowData.updated_by_name : "....."
-                                            }
-                                            ></Column>
-                                        <Column field="invoice_details" sortable header="Details"></Column>
-                                        <Column header="Payemnt Status" body={(rowData) => (
-                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>
-                                                {rowData.status === "1" ? "Received" : "Not Received"}
-                                            </span>
-                                        )}></Column>
                                         <Column header="Actions" body={(rowData) => (
                                             <>
                                                 <TooltipProvider>
@@ -218,6 +181,44 @@ export default function PaymentReceivedList() {
                                                 </CheckAccessEdit>
                                             </>
                                         )}></Column>
+                                        <Column
+                                            header="S.No"
+                                            body={(rowData, { rowIndex }) => (
+                                                <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                    {rowIndex + 1}
+                                                </span>
+                                            )}
+                                            style={{ width: '5rem', textAlign: 'center' }}
+                                        />
+                                        <Column field="project_name" sortable header="Project Name"></Column>
+                                        <Column field="received_no" sortable header="Invoice No"></Column>
+                                        <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>
+                                        <Column field="received_date" sortable header="Received Date" body={(rowData) => new Date(rowData.received_date).toLocaleDateString()}></Column>
+                                        <Column
+                                            className="text-center"
+                                            field="created_by_name"
+                                            sortable
+                                            header="Created By"
+                                            body={(rowData) =>
+                                            rowData.created_by_name ? rowData.created_by_name : "....."
+                                            }
+                                            ></Column>
+                                            <Column
+                                            className="text-center"
+                                            field="updated_by_name"
+                                            sortable
+                                            header="Updated By"
+                                            body={(rowData) =>
+                                                rowData.updated_by_name ? rowData.updated_by_name : "....."
+                                            }
+                                            ></Column>
+                                        <Column field="invoice_details" sortable header="Details"></Column>
+                                        <Column header="Payemnt Status" body={(rowData) => (
+                                            <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>
+                                                {rowData.status === "1" ? "Received" : "Not Received"}
+                                            </span>
+                                        )}></Column>
+                                        
                                     </DataTable>
                                 </div>
                             )}

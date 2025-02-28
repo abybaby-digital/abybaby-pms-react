@@ -237,6 +237,7 @@ export default function ProjectList() {
                     </label>
                     <select
                       name="fyear"
+                      value={fincYear}
                       className="text-sm"
                       onChange={(e) => {
                         setFincYear(e.target.value);
@@ -256,6 +257,7 @@ export default function ProjectList() {
                     </label>
                     <select
                       name="fyear"
+                      value={companyFilter}
                       className="text-sm"
                       onChange={(e) => {
                         setCompanyFilter(e.target.value);
@@ -276,6 +278,7 @@ export default function ProjectList() {
                     <select
                       name="branch"
                       className="text-sm"
+                      value={branchFilter}
                       onChange={(e) => {
                         setBranchFilter(e.target.value);
                       }}
@@ -298,6 +301,7 @@ export default function ProjectList() {
                       onChange={(e) => {
                         setClientFilter(e.target.value);
                       }}
+                      value={clientFilter}
                     >
                       <option value="">--SELECT--</option>
                       {clientList?.response?.map((item) => (
@@ -307,7 +311,7 @@ export default function ProjectList() {
                       ))}
                     </select>
                   </div>
-                  <div className="status">
+                  {/* <div className="status">
                     <label htmlFor="status" className="text-sm">
                       Project Status
                     </label>
@@ -321,7 +325,7 @@ export default function ProjectList() {
                       <option value="">--SELECT--</option>
                       <option value="1">Running</option>
                       <option value="2">Closed</option>
-                      {/* <option value="3">Cancelled</option> */}
+                      
                     </select>
                   </div>
                   <div className="billing_status">
@@ -355,7 +359,23 @@ export default function ProjectList() {
                       <option value="1">Paid</option>
                       <option value="0">Unpaid</option>
                     </select>
-                  </div>
+                  </div> */}
+                </div>
+                {/* Reset Button */}
+                <div className="text-center mt-4">
+                  <button
+                    type="button"
+                    className="bg-black px-3 py-1 rounded-2xl shadow active:scale-95 text-white"
+                    onClick={() => {
+                      // Reset all the filter states
+                      setFincYear('');
+                      setCompanyFilter('');
+                      setBranchFilter('');
+                      setClientFilter('');
+                    }}
+                  >
+                    RESET FILTER
+                  </button>
                 </div>
                 {/* {
                                     fincYear === null && companyFilter === null && branchFilter === null && clientFilter === null ?
@@ -364,6 +384,7 @@ export default function ProjectList() {
                                         </div>) : null
                                 } */}
               </div>
+
               {isLoading ? (
                 <TableSkeleton columns="5" />
               ) : (
@@ -425,6 +446,51 @@ export default function ProjectList() {
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
                     <Column
+                      header="Actions"
+                      body={(rowData) => (
+                        <>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <button
+                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                  onClick={() => {
+                                    singleProject(rowData.id);
+                                    setAddOrEdit("view");
+                                  }}
+                                >
+                                  <FaEye />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>View Project</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <CheckAccessEdit edit_access="Project">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <button
+                                    className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                    onClick={() => {
+                                      singleProject(rowData.id);
+                                      setAddOrEdit("edit");
+                                    }}
+                                  >
+                                    <MdEditSquare />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Edit Project</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </CheckAccessEdit>
+                        </>
+                      )}
+                    ></Column>
+                    <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
                         <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
@@ -439,7 +505,7 @@ export default function ProjectList() {
                       sortable
                       header="Project Name"
                       style={{ whiteSpace: "nowrap", width: "50px" }}
-                      
+
                     ></Column>
                     <Column
                       field="project_number"
@@ -522,19 +588,18 @@ export default function ProjectList() {
                       header="Project Status"
                       body={(rowData) => (
                         <span
-                          className={`bg-dark text-sm ${
-                            rowData.status === "1"
+                          className={`bg-dark text-sm ${rowData.status === "1"
                               ? "bg-green-500"
                               : rowData.status === "2"
-                              ? "bg-red-500"
-                              : "bg-gray-500"
-                          } px-3 py-1 rounded-xl text-white shadow`}
+                                ? "bg-red-500"
+                                : "bg-gray-500"
+                            } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.status === "1"
                             ? "Running"
                             : rowData.status === "2"
-                            ? "Closed"
-                            : "Cancelled"}
+                              ? "Closed"
+                              : "Cancelled"}
                         </span>
                       )}
                     ></Column>
@@ -542,11 +607,10 @@ export default function ProjectList() {
                       header="Billing Status"
                       body={(rowData) => (
                         <span
-                          className={`bg-dark text-sm ${
-                            rowData.billing_status === "1"
+                          className={`bg-dark text-sm ${rowData.billing_status === "1"
                               ? "bg-green-500"
                               : "bg-red-500"
-                          } px-3 py-1 rounded-xl text-white shadow`}
+                            } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.billing_status === "1"
                             ? "Billed"
@@ -558,62 +622,17 @@ export default function ProjectList() {
                       header="Payment Status"
                       body={(rowData) => (
                         <span
-                          className={`bg-dark text-sm ${
-                            rowData.payment_status === "1"
+                          className={`bg-dark text-sm ${rowData.payment_status === "1"
                               ? "bg-green-500"
                               : "bg-red-500"
-                          } px-3 py-1 rounded-xl text-white shadow`}
+                            } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.payment_status === "1" ? "Paid" : "Unpaid"}
                         </span>
                       )}
                     ></Column>
 
-                    <Column
-                      header="Actions"
-                      body={(rowData) => (
-                        <>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    singleProject(rowData.id);
-                                    setAddOrEdit("view");
-                                  }}
-                                >
-                                  <FaEye />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>View Project</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <CheckAccessEdit edit_access="Project">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <button
-                                    className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                    onClick={() => {
-                                      singleProject(rowData.id);
-                                      setAddOrEdit("edit");
-                                    }}
-                                  >
-                                    <MdEditSquare />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Edit Project</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </CheckAccessEdit>
-                        </>
-                      )}
-                    ></Column>
+                    
                   </DataTable>
                 </div>
               )}

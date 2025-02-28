@@ -62,6 +62,37 @@ export default function BillingSupportingList() {
     }
   );
 
+  function formatDate(createdAt) {
+    // Split the createdAt string into date and time parts
+    const [date, time] = createdAt.split(' ');
+  
+    // Split the time into hours, minutes, and seconds
+    let [hours, minutes, seconds] = time.split(':').map(Number);
+  
+    // Determine AM or PM based on hours
+    let ampm = 'AM';
+    
+    if (hours === 0) {
+      hours = 12; // Treat 00:XX:XX as 12:XX:XX PM (Noon)
+      ampm = 'PM';
+    } else if (hours >= 12) {
+      ampm = 'PM'; // Any hour >= 12 is PM
+      if (hours > 12) hours -= 12; // Convert to 12-hour format for PM
+    } else {
+      ampm = 'AM'; // Any hour < 12 is AM
+    }
+  
+    // Format the time to ensure two digits for minutes and seconds
+    const formattedTime = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
+  
+    // Return the formatted date with time and AM/PM
+    return `${date} at ${formattedTime}`;
+  }
+  
+
+  
+  
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -100,40 +131,6 @@ export default function BillingSupportingList() {
                     paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
-                    <Column
-                      header="S.No"
-                      body={(rowData, { rowIndex }) => (
-                        <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                          {rowIndex + 1}
-                        </span>
-                      )}
-                      style={{ width: "5rem", textAlign: "center" }}
-                    />
-                    <Column
-                      field="project_name"
-                      sortable
-                      header="Project Name"
-                    ></Column>
-                    <Column
-                      header="Created By"
-                      body={(rowData) =>
-                        rowData.created_by_name
-                          ? `${
-                              rowData.created_by_name
-                            } (${rowData.created_at?.slice(0, 10)})`
-                          : "..."
-                      }
-                    ></Column>
-                    <Column
-                      header="Updated By"
-                      body={(rowData) =>
-                        rowData.updated_by_name
-                          ? `${
-                              rowData.updated_by_name
-                            } (${rowData.updated_at?.slice(0, 10)})`
-                          : "..."
-                      }
-                    ></Column>
                     <Column
                       header="Actions"
                       body={(rowData) => (
@@ -179,6 +176,41 @@ export default function BillingSupportingList() {
                         </>
                       )}
                     ></Column>
+                    <Column
+                      header="S.No"
+                      body={(rowData, { rowIndex }) => (
+                        <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                          {rowIndex + 1}
+                        </span>
+                      )}
+                      style={{ width: "1rem", textAlign: "center" }}
+                    />
+                    <Column
+                      field="project_name"
+                      sortable
+                      header="Project Name"
+                    ></Column>
+                    <Column
+                      header="Created By"
+                      body={(rowData) =>
+                        rowData.created_by_name
+                          ? `${
+                              rowData.created_by_name
+                            } (${formatDate(rowData.created_at)})`
+                          : "..."
+                      }
+                    ></Column>
+                    <Column
+                      header="Updated By"
+                      body={(rowData) =>
+                        rowData.updated_by_name
+                          ? `${
+                              rowData.updated_by_name
+                            } (${formatDate(rowData.created_at)})`
+                          : "..."
+                      }
+                    ></Column>
+                    
                   </DataTable>
                 </div>
               )}

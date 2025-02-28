@@ -72,7 +72,7 @@ const ViewCompany = ({ company, add_or_edit }) => {
                                         <TableCell>{company?.contact_email}</TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell className="font-bold text-lg">Status</TableCell>
+                                        <TableCell className="font-bold text-lg">Company Status</TableCell>
                                         <TableCell>
                                             {company?.status === "1" ? (
                                                 <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">

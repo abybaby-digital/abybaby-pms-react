@@ -171,3 +171,9 @@ input[type="checkbox"]:checked {
   }
 }
 
+.p-datatable-table th,.p-datatable-table td{
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+

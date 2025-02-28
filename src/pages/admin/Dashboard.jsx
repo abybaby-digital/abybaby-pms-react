@@ -453,10 +453,10 @@ export default function Dashboard() {
                 <p className="text-2xl font-bold">
                   {projectReport?.response[6]?.project_count}
                 </p>
-                <p className="text-lg text-lightdark">
+                {/* <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
                   {projectReport?.response[6]?.project_amount_pre_gst} (pre GST)
-                </p>
+                </p> */}
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
                   {projectReport?.response[6]?.project_amount_with_gst} (with GST)
