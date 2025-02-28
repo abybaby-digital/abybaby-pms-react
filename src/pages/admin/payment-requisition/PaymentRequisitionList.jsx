@@ -300,7 +300,7 @@ export default function PaymentRequisitionList() {
                     value={filteredPayments}
                     showGridlines
                     stripedRows
-                    rows={5}
+                    rows={10}
                     rowsPerPageOptions={[5, 10, 25, 50]}
                     tableStyle={{ minWidth: "20rem" }}
                     paginator

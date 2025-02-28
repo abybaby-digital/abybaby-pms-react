@@ -159,7 +159,7 @@ export default function UserList() {
                                         <DataTable
                                             value={filteredUsers}
                                             stripedRows
-                                            rows={5}
+                                            rows={10}
                                             rowsPerPageOptions={[5, 10, 25, 50]}
                                             paginator
                                             paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
