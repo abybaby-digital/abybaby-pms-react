@@ -27,6 +27,8 @@ export default function AddPaymentRequisition() {
     watch,
   } = useForm();
 
+  // console.log("pr", watch("project_id"));
+
   // State to hold vendor details
   const [selectedVendor, setSelectedVendor] = useState(null);
   // State for file preview (image or PDF)
@@ -294,7 +296,7 @@ export default function AddPaymentRequisition() {
               </div>
 
               {/* Requisition Amount Input */}
-              {watch("project_id") !== "" ? (
+              {watch("project_id") !== "" && watch("project_id") !== undefined ? (
                 <div className="form-group">
                   <label htmlFor="requisition_amount">
                     Requisition Amount <span className="text-red-600">*</span>
