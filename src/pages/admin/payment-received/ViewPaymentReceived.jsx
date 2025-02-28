@@ -12,14 +12,21 @@ import {
     TableBody,
     TableCell,
     TableRow,
+    TableHeader,
+    TableHead,
 } from "@/components/ui/table";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 
 import EditPaymentReceived from "./EditPaymentReceived"; // Assuming you have an EditPaymentReceived component
+import { useSelector } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { getProjectById } from "../../../services/api";
 
 const ViewPaymentReceived = ({ payment, add_or_edit }) => {
+    const token = useSelector((state) => state.auth.token);
+    const userId = useSelector((state) => state.auth.user?.id);
     const { modal, setModal } = useContext(dialogOpenCloseContext);
     const [imageModalOpen, setImageModalOpen] = useState(false); // state to control image modal visibility
     const [imageSrc, setImageSrc] = useState(null); // state to store the image source
@@ -28,6 +35,25 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
         setImageSrc(src); // set the image source to the clicked image
         setImageModalOpen(true); // open the image modal
     };
+
+    const [project_by_id, setProjectById] = useState(null);
+
+
+
+    const { data: projectById, isLoading } = useQuery({
+        queryKey: ["project-view-by-id", payment?.project_id],
+        queryFn: async () => {
+            return await getProjectById(token, payment?.project_id);
+        },
+    });
+
+    // console.log(projectById);
+    useEffect(() => {
+        if (projectById) {
+            setProjectById(projectById?.response);
+            // console.log("project_by_id", project_by_id.invoice);
+        }
+    });
 
     return (
         <>
@@ -47,65 +73,261 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                     </DialogHeader>
                     <DialogDescription>
                         {add_or_edit === "view" ? (
-                            <Table className="text-black">
-                                <TableBody className="grid lg:grid-cols-2 sm:grid-cols-1 gap-5 p-5">
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Project Name:</TableCell>
-                                        <TableCell>{payment?.project_name}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received No:</TableCell>
-                                        <TableCell>{payment?.received_no}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Amount:</TableCell>
-                                        <TableCell>₹{payment?.received_amount}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Received Date:</TableCell>
-                                        <TableCell>{new Date(payment?.received_date).toLocaleDateString()}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Created By :</TableCell>
-                                        <TableCell>{payment?.created_by_name ? payment?.created_by_name : "...."}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Updated By:</TableCell>
-                                        <TableCell>{payment?.updated_by_name ? payment?.updated_by_name : "...."}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Details:</TableCell>
-                                        <TableCell>{payment?.received_details}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Status:</TableCell>
-                                        <TableCell>
-                                            {payment?.status === "1" ? (
-                                                <span className="bg-green-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Active
-                                                </span>
-                                            ) : (
-                                                <span className="bg-red-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Inactive
-                                                </span>
-                                            )}
-                                        </TableCell>
-                                    </TableRow>
-                                    {payment?.received_img && (
-                                        <TableRow className="flex justify-between">
-                                            <TableCell className="font-bold text-lg">Receipt:</TableCell>
-                                            <TableCell>
-                                                <img
-                                                    src={payment.received_img}
-                                                    alt="Receipt"
-                                                    className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
-                                                    onClick={() => handleImageClick(payment.received_img)} // Make the image clickable
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
+                            isLoading ?
+                                <p className="text-center text-2xl">Loading ...</p>
+                                :
+                                <>
+                                    <div className="project_data">
+                                        <Table className="text-black">
+                                            <TableBody className="grid lg:grid-cols-3 grid-cols-1 p-5 gap-5">
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Project Number :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_number}
+                                                    </TableCell>
+                                                </TableRow>
+                                                {/* <TableRow>
+                                         <TableCell className="font-bold text-lg">Purchase Order No</TableCell>
+                                         <TableCell>{project?.purchase_order_no}</TableCell>
+                                     </TableRow> */}
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Project Name :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Client :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.client_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Branch :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.branch_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Company :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.company_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Vertical Head :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.vertical_head_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Branch Manager :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.business_manager_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Client Service :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.client_service_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Others :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.other_service_names}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Activity Co-ordinator :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.activity_coordinator_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Others Activity Co-ordinator :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.activity_coordinator_name_other}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Quotation No :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.quotation_no}
+                                                    </TableCell>
+                                                </TableRow>
+                                                {project_by_id?.project?.other_members_id
+                                                    ?.split(",")
+                                                    ?.map(Number)
+                                                    ?.includes(userId) ? null : (
+                                                    <TableRow>
+                                                        <TableCell className="font-bold text-lg">
+                                                            Project Amount (pre GST) :
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {project_by_id?.project?.project_amount_pre_gst}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                                {project_by_id?.project?.other_members_id
+                                                    ?.split(",")
+                                                    ?.map(Number)
+                                                    ?.includes(userId) ? null : (
+                                                    <TableRow>
+                                                        <TableCell className="font-bold text-lg">
+                                                            Project Amount (with GST) :
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {project_by_id?.project?.project_amount_with_gst}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Start Date :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_start_date}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        End Date :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_end_date}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Financial Year :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.financial_years}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Project Status :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.status === "1" ? (
+                                                            <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Running
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Closed
+                                                            </span>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Billing Status :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.billing_status === "1" ? (
+                                                            <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Billed
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Unbilled
+                                                            </span>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Payment Status :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.payment_status === "1" ? (
+                                                            <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Paid
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Unpaid
+                                                            </span>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                    <div className="client_po my-5">
+                                        <h2 className="text-black text-2xl font-bold bg-whitesmoke text-center p-3 mx-5 capitalize font-merri">
+                                            Payment Received
+                                        </h2>
+                                        <div className="px-5">
+                                            <Table className="text-black">
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="w-[100px]">Sl No</TableHead>
+                                                        <TableHead>Payment Receipt No</TableHead>
+                                                        <TableHead>Payment Received Amount</TableHead>
+                                                        <TableHead>Payment Received Date</TableHead>
+                                                        <TableHead>Payment Received attachment</TableHead>
+                                                        <TableHead>Payment Received details</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {project_by_id?.payment_received?.map(
+                                                        (item, idx) => (
+                                                            <TableRow key={item.id}>
+                                                                <TableCell>{idx + 1}</TableCell>
+                                                                <TableCell>{item?.received_no}</TableCell>
+                                                                <TableCell>{item?.received_amount}</TableCell>
+                                                                <TableCell>
+                                                                    {item?.received_date?.slice(0, 10)}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <a
+                                                                        href={item?.received_img}
+                                                                        target="_blank"
+                                                                        className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
+                                                                    >
+                                                                        View
+                                                                    </a>
+                                                                </TableCell>
+
+                                                                <TableCell>
+                                                                    {item?.received_details}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    )}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </div>
+                                </>
                         ) : (
                             <EditPaymentReceived payment={payment} /> // Add or edit the payment information here
                         )}

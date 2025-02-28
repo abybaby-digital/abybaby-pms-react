@@ -19,7 +19,7 @@ export default function AddBillingSupportings() {
 
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
-    queryFn: async () => await getProjectList(token, "", "", "", "", "", "", 2, "", ""),
+    queryFn: async () => await getProjectList(token, "", "", "", "", "", "", 2, 0, 0),
   });
 
   const addBillingMutation = useMutation({

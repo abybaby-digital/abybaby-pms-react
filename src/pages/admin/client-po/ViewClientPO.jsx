@@ -12,14 +12,21 @@ import {
     TableBody,
     TableCell,
     TableRow,
+    TableHeader,
+    TableHead,
 } from "@/components/ui/table";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 
 import EditClientPO from "./EditClientPO"; // Assuming you have an EditClientPO component
+import { useSelector } from "react-redux";
+import { getProjectById } from "../../../services/api";
+import { useQuery } from "@tanstack/react-query";
 
 const ViewClientPO = ({ clientPO, add_or_edit }) => {
+    const token = useSelector((state) => state.auth.token);
+    const userId = useSelector((state) => state.auth.user?.id);
     const { modal, setModal } = useContext(dialogOpenCloseContext);
     const [imageModalOpen, setImageModalOpen] = useState(false);  // state to control image modal visibility
     const [fileSrc, setFileSrc] = useState(null); // state to store the file source (image or PDF)
@@ -28,6 +35,26 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
         setFileSrc(src); // set the file source to the clicked file
         setImageModalOpen(true); // open the file modal (image or PDF)
     };
+
+
+    const [project_by_id, setProjectById] = useState(null);
+
+
+
+    const { data: projectById, isLoading } = useQuery({
+        queryKey: ["project-view-by-id", clientPO?.project_id],
+        queryFn: async () => {
+            return await getProjectById(token, clientPO?.project_id);
+        },
+    });
+
+    // console.log(projectById);
+    useEffect(() => {
+        if (projectById) {
+            setProjectById(projectById?.response);
+            // console.log("project_by_id", project_by_id.invoice);
+        }
+    });
 
     return (
         <>
@@ -47,83 +74,305 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                     </DialogHeader>
                     <DialogDescription>
                         {add_or_edit === "view" ? (
-                            <Table className="text-black">
-                                <TableBody className="grid lg:grid-cols-2 sm:grid-cols-1 gap-5 p-5">
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Project Name:</TableCell>
-                                        <TableCell>{clientPO?.project_name}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">PO No:</TableCell>
-                                        <TableCell>{clientPO?.client_po_no || "Not Available"}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Amount (pre GST):</TableCell>
-                                        <TableCell>₹{clientPO?.po_amount_pre_gst ? clientPO?.po_amount_pre_gst : "...."}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Amount (with GST):</TableCell>
-                                        <TableCell>₹{clientPO?.po_amount_with_gst ? clientPO?.po_amount_with_gst : "...."}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">PO Date:</TableCell>
-                                        <TableCell>{new Date(clientPO?.po_date).toLocaleDateString()}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Payment Schedule (Days):</TableCell>
-                                        <TableCell>{clientPO?.payment_schedule_days} days</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Created By :</TableCell>
-                                        <TableCell>{clientPO?.created_by_name ? clientPO?.created_by_name : "...."}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Updated By:</TableCell>
-                                        <TableCell>{clientPO?.updated_by_name ? clientPO?.updated_by_name : "...."}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Details:</TableCell>
-                                        <TableCell>{clientPO?.project_order_details}</TableCell>
-                                    </TableRow>
-                                    <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Status:</TableCell>
-                                        <TableCell>
-                                            {clientPO?.status === "1" ? (
-                                                <span className="bg-green-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Active
-                                                </span>
-                                            ) : (
-                                                <span className="bg-red-500 px-3 py-1 rounded-xl text-white shadow">
-                                                    Inactive
-                                                </span>
-                                            )}
-                                        </TableCell>
-                                    </TableRow>
-                                    {clientPO?.po_img && (
-                                        <TableRow className="flex justify-between">
-                                            <TableCell className="font-bold text-lg">PO Image:</TableCell>
-                                            <TableCell>
-                                                {/* Check if po_img is a PDF or an image */}
-                                                {clientPO.po_img.endsWith(".pdf") ? (
-                                                    <button
-                                                        className="text-blue-500"
-                                                        onClick={() => handleFileClick(clientPO.po_img)}
-                                                    >
-                                                        View PO PDF
-                                                    </button>
-                                                ) : (
-                                                    <img
-                                                        src={clientPO.po_img}
-                                                        alt="PO Image"
-                                                        className="w-32 h-32 object-cover rounded-md shadow cursor-pointer"
-                                                        onClick={() => handleFileClick(clientPO.po_img)} // Make the image clickable
-                                                    />
+                            isLoading ?
+                                <p className="text-center text-2xl">Loading ...</p>
+                                :
+                                <>
+                                    <div className="project_data">
+                                        <Table className="text-black">
+                                            <TableBody className="grid lg:grid-cols-3 grid-cols-1 p-5 gap-5">
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Project Number :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_number}
+                                                    </TableCell>
+                                                </TableRow>
+                                                {/* <TableRow>
+                                            <TableCell className="font-bold text-lg">Purchase Order No</TableCell>
+                                            <TableCell>{project?.purchase_order_no}</TableCell>
+                                        </TableRow> */}
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Project Name :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Client :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.client_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Branch :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.branch_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Company :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.company_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Vertical Head :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.vertical_head_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Branch Manager :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.business_manager_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Client Service :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.client_service_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Others :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.other_service_names}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Activity Co-ordinator :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.activity_coordinator_name}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Others Activity Co-ordinator :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.activity_coordinator_name_other}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Quotation No :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.quotation_no}
+                                                    </TableCell>
+                                                </TableRow>
+                                                {project_by_id?.project?.other_members_id
+                                                    ?.split(",")
+                                                    ?.map(Number)
+                                                    ?.includes(userId) ? null : (
+                                                    <TableRow>
+                                                        <TableCell className="font-bold text-lg">
+                                                            Project Amount (pre GST) :
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {project_by_id?.project?.project_amount_pre_gst}
+                                                        </TableCell>
+                                                    </TableRow>
                                                 )}
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
+                                                {project_by_id?.project?.other_members_id
+                                                    ?.split(",")
+                                                    ?.map(Number)
+                                                    ?.includes(userId) ? null : (
+                                                    <TableRow>
+                                                        <TableCell className="font-bold text-lg">
+                                                            Project Amount (with GST) :
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {project_by_id?.project?.project_amount_with_gst}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Start Date :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_start_date}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        End Date :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.project_end_date}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Financial Year :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.financial_years}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Project Status :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.status === "1" ? (
+                                                            <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Running
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Closed
+                                                            </span>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Billing Status :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.billing_status === "1" ? (
+                                                            <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Billed
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Unbilled
+                                                            </span>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell className="font-bold text-lg">
+                                                        Payment Status :
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {project_by_id?.project?.payment_status === "1" ? (
+                                                            <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Paid
+                                                            </span>
+                                                        ) : (
+                                                            <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">
+                                                                Unpaid
+                                                            </span>
+                                                        )}
+                                                    </TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                    <div className="client_po my-5">
+                                        <h2 className="text-black text-2xl font-bold bg-whitesmoke text-center p-3 mx-5 capitalize font-merri">
+                                            Client Purchase order
+                                        </h2>
+                                        <div className="px-5">
+                                            <Table className="text-black">
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="w-[100px]">Sl No</TableHead>
+
+                                                        {project_by_id?.project?.other_members_id
+                                                            ?.split(",")
+                                                            ?.map(Number)
+                                                            ?.includes(userId) ? null : (
+                                                            <TableHead>
+                                                                Client PO amount ( pre GST )
+                                                            </TableHead>
+                                                        )}
+                                                        {project_by_id?.project?.other_members_id
+                                                            ?.split(",")
+                                                            ?.map(Number)
+                                                            ?.includes(userId) ? null : (
+                                                            <TableHead>
+                                                                Client PO amount ( with GST )
+                                                            </TableHead>
+                                                        )}
+                                                        <TableHead>Client PO date</TableHead>
+                                                        {project_by_id?.project?.other_members_id
+                                                            ?.split(",")
+                                                            ?.map(Number)
+                                                            ?.includes(userId) ? null : (
+                                                            <TableHead>PO attachment</TableHead>
+                                                        )}
+
+                                                        <TableHead>Pament schedule days</TableHead>
+                                                        <TableHead>PO details</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {project_by_id?.client_po?.map((item, idx) => (
+                                                        <TableRow key={item.id}>
+                                                            <TableCell>{idx + 1}</TableCell>
+                                                            {project_by_id?.project?.other_members_id
+                                                                ?.split(",")
+                                                                ?.map(Number)
+                                                                ?.includes(userId) ? null : (
+                                                                <TableCell>
+                                                                    {item?.po_amount_pre_gst}
+                                                                </TableCell>
+                                                            )}
+                                                            {project_by_id?.project?.other_members_id
+                                                                ?.split(",")
+                                                                ?.map(Number)
+                                                                ?.includes(userId) ? null : (
+                                                                <TableCell>
+                                                                    {item?.po_amount_with_gst}
+                                                                </TableCell>
+                                                            )}
+
+                                                            <TableCell>
+                                                                {item?.po_date?.slice(0, 10)}
+                                                            </TableCell>
+
+                                                            {project_by_id?.project?.other_members_id
+                                                                ?.split(",")
+                                                                ?.map(Number)
+                                                                ?.includes(userId) ? null : (
+                                                                <TableCell>
+                                                                    <a
+                                                                        href={item?.po_img}
+                                                                        target="_blank"
+                                                                        className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
+                                                                    >
+                                                                        View
+                                                                    </a>
+                                                                </TableCell>
+                                                            )}
+
+                                                            <TableCell>
+                                                                {item?.payment_schedule_days}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {item?.project_order_details}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        </div>
+                                    </div>
+                                </>
                         ) : (
                             <EditClientPO clientPO={clientPO} /> // Add or edit the client PO information here
                         )}

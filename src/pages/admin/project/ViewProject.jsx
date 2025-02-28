@@ -316,7 +316,7 @@ const ViewProject = ({ project, add_or_edit }) => {
                           </TableHeader>
                           <TableBody>
                             {project_by_id?.client_po?.map((item, idx) => (
-                              <TableRow>
+                              <TableRow key={item.id}>
                                 <TableCell>{idx + 1}</TableCell>
                                 {project_by_id?.project?.other_members_id
                                   ?.split(",")
@@ -403,7 +403,7 @@ const ViewProject = ({ project, add_or_edit }) => {
                           </TableHeader>
                           <TableBody>
                             {project_by_id?.invoice?.map((item, idx) => (
-                              <TableRow>
+                              <TableRow key={item.id}>
                                 <TableCell>{idx + 1}</TableCell>
                                 <TableCell>{item?.invoice_no}</TableCell>
                                 {project_by_id?.project?.other_members_id
@@ -461,12 +461,12 @@ const ViewProject = ({ project, add_or_edit }) => {
                           <TableBody>
                             {project_by_id?.payment_received?.map(
                               (item, idx) => (
-                                <TableRow>
+                                <TableRow key={item.id}>
                                   <TableCell>{idx + 1}</TableCell>
                                   <TableCell>{item?.received_no}</TableCell>
                                   <TableCell>{item?.received_amount}</TableCell>
                                   <TableCell>
-                                    {item?.invoice_date?.slice(0, 10)}
+                                    {item?.received_date?.slice(0, 10)}
                                   </TableCell>
                                   <TableCell>
                                     <a

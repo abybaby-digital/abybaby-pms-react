@@ -1120,7 +1120,7 @@ export const addInvoice = async (
   invoice_date,
   invoice_img,
   invoice_details,
-  status
+  invoice_billing_status
 ) => {
   try {
     const formData = new FormData();
@@ -1132,7 +1132,7 @@ export const addInvoice = async (
     formData.append("invoice_amount_with_gst", invoice_amount_with_gst);
     formData.append("invoice_date", invoice_date);
     formData.append("invoice_details", invoice_details);
-    formData.append("status", status);
+    formData.append("invoice_billing_status", invoice_billing_status);
 
     // Append the invoice image if it exists
     if (invoice_img && invoice_img[0]) {

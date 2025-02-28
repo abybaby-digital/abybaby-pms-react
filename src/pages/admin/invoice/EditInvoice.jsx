@@ -15,6 +15,9 @@ const EditInvoice = ({ invoice }) => {
 
     // Initialize image preview state
     const [imagePreview, setImagePreview] = useState(null);
+    const [selectedProject, setProject] = useState(null);
+
+
 
     // Fetch projects for the project dropdown
     const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
@@ -24,7 +27,7 @@ const EditInvoice = ({ invoice }) => {
         }
     });
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+    const { register, handleSubmit, watch , formState: { errors }, setValue } = useForm({
         defaultValues: {
             project_id: invoice.project_id, // Ensure this is set as the default value
             invoice_no: invoice.invoice_no,
@@ -36,6 +39,13 @@ const EditInvoice = ({ invoice }) => {
             status: invoice.status,
         }
     });
+
+    useEffect(() => {
+        if (projectList) {
+            const foundProject = projectList?.response?.find((item) => item.id === +watch("project_id"));
+            setProject(foundProject);
+        }
+    }, [watch("project_id")])
 
     // Pre-fill the form with existing data
     useEffect(() => {
@@ -142,21 +152,10 @@ const EditInvoice = ({ invoice }) => {
                         {errors.invoice_no && <span className="text-red-600 text-sm">{errors.invoice_no.message}</span>}
                     </div>
 
-                    {/* Invoice Amount pre gst Input */}
-                    <div className="form-group">
-                        <label htmlFor="invoice_amount_pre_gst">Invoice Amount <span className="text-red-600">*</span></label>
-                        <input
-                            type="number"
-                            id="invoice_amount_pre_gst"
-                            {...register("invoice_amount_pre_gst", { required: "Invoice Amount is required" })}
-                            className="block"
-                            placeholder="Enter Amount"
-                        />
-                        {errors.invoice_amount_pre_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_pre_gst.message}</span>}
-                    </div>
+                    
                     {/* Invoice Amount with gst Input */}
                     <div className="form-group">
-                        <label htmlFor="invoice_amount_with_gst">Invoice Amount <span className="text-red-600">*</span></label>
+                        <label htmlFor="invoice_amount_with_gst">Invoice Amount (with GST) <span className="text-red-600">*</span></label>
                         <input
                             type="number"
                             id="invoice_amount_with_gst"
@@ -165,6 +164,18 @@ const EditInvoice = ({ invoice }) => {
                             placeholder="Enter Amount"
                         />
                         {errors.invoice_amount_with_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_with_gst.message}</span>}
+                    </div>
+                    {/* Invoice Amount pre gst Input */}
+                    <div className="form-group">
+                        <label htmlFor="invoice_amount_pre_gst">Invoice Amount (pre GST) <span className="text-red-600">*</span></label>
+                        <input
+                            type="number"
+                            id="invoice_amount_pre_gst"
+                            {...register("invoice_amount_pre_gst", { required: "Invoice Amount is required" })}
+                            className="block"
+                            placeholder="Enter Amount"
+                        />
+                        {errors.invoice_amount_pre_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_pre_gst.message}</span>}
                     </div>
 
                     {/* Invoice Date Input */}
@@ -211,13 +222,27 @@ const EditInvoice = ({ invoice }) => {
                         />
                     </div>
 
-                    {/* Status */}
+                    {/* Invoice Finalize */}
                     <div className="form-group">
-                        <label htmlFor="status">Status</label>
-                        <select {...register("status")} id="status">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
+                        <label htmlFor="invoice_billing_status">
+                            Invoice Completed <span className="text-red-600">*</span>
+                        </label>
+                        <select
+                            id="invoice_billing_status"
+                            {...register("invoice_billing_status", {
+                                required: "Project ID is required",
+                            })}
+                            className="block w-full"
+                        >
+                            <option value="0" className="text-red-500">No</option>
+                            <option value="1" className="text-green-500">Yes</option>
+
                         </select>
+                        {errors.project_id && (
+                            <span className="text-red-600 text-sm">
+                                {errors.project_id.message}
+                            </span>
+                        )}
                     </div>
 
                 </div>
