@@ -575,7 +575,8 @@ export const getProjectList = async (
   take,
   status,
   billing_status,
-  payment_status
+  payment_status,
+  invoice_payment_status
 ) => {
   try {
     const response = await api.post(
@@ -590,6 +591,7 @@ export const getProjectList = async (
         status: status,
         billing_status: billing_status,
         payment_status: payment_status,
+        invoice_payment_status: invoice_payment_status,
       },
       {
         headers: {
@@ -847,7 +849,7 @@ export const addUser = async (
   contact_number,
   password,
   profile_img, // This will be a file object (image)
-  user_details,
+  user_details
 ) => {
   try {
     const formData = new FormData();
@@ -863,7 +865,6 @@ export const addUser = async (
     formData.append("contact_number", contact_number);
     formData.append("password", password);
     formData.append("user_details", user_details);
-
 
     // Append the profile image if it exists
     if (profile_img) {
@@ -897,7 +898,7 @@ export const editUser = async (
   contact_number,
   password,
   profile_img, // This will be a file object (image)
-  user_details,
+  user_details
 ) => {
   try {
     const formData = new FormData();
@@ -1155,7 +1156,7 @@ export const addInvoice = async (
 };
 
 // INVOICE NO BY PROJECT ID
-export const getInvoiceNumberByProjectId = async (token , project_id) => {
+export const getInvoiceNumberByProjectId = async (token, project_id) => {
   try {
     const response = await api.post(
       "/invoice-list-by-project-id",

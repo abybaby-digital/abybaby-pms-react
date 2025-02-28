@@ -79,11 +79,12 @@ export default function Dashboard() {
   });
   //   console.log(projectList);
 
-  const projectListByCategory = (title, navigate_url, status, billed, paid) => {
+  const projectListByCategory = (title, navigate_url, status, billed, paid, partial) => {
     sessionStorage.setItem("project_list_title", title);
     sessionStorage.setItem("status", status);
     sessionStorage.setItem("billed", billed);
     sessionStorage.setItem("paid", paid);
+    sessionStorage.setItem("partial", partial);
     navigate(navigate_url);
   };
 
@@ -473,7 +474,8 @@ export default function Dashboard() {
                     "/project-list/partial-payment",
                     "2",
                     "1",
-                    "1"
+                    "",
+                    "2"
                   );
                 }}
                 className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"

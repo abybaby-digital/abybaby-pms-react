@@ -49,12 +49,14 @@ export default function ProjectListByCategory() {
   const [status, setStatus] = useState(null);
   const [billing, setBilled] = useState(null);
   const [payment, setPayment] = useState(null);
+  const [partial, setPartial] = useState(null);
 
   useEffect(() => {
     setStatus(sessionStorage.getItem("status"));
     setBilled(sessionStorage.getItem("billed"));
     setPayment(sessionStorage.getItem("paid"));
-  }, [status, billing, payment]);
+    setPartial(sessionStorage.getItem("partial"));
+  }, [status, billing, payment, partial]);
 
   console.log(status);
 
@@ -71,6 +73,7 @@ export default function ProjectListByCategory() {
       status,
       billing,
       payment,
+      partial
     ],
     queryFn: async () => {
       return await getProjectList(
@@ -83,7 +86,8 @@ export default function ProjectListByCategory() {
         take,
         status,
         billing,
-        payment
+        payment,
+        partial
       );
     },
   });

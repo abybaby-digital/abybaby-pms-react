@@ -62,7 +62,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
 
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
-    queryFn: async () => await getProjectList(token),
+    queryFn: async () => await getProjectList(token, "", "", "", "", "", "", 2, "", ""),
   });
 
   const editBillingMutation = useMutation({

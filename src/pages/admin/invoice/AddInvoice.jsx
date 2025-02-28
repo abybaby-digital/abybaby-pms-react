@@ -27,7 +27,7 @@ export default function AddInvoice() {
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
     queryFn: async () => {
-      return await getProjectList(token); // Assume this function fetches the list of projects
+      return await getProjectList(token, "", "", "", "", "", "", 2, "", ""); // Assume this function fetches the list of projects
     },
   });
 

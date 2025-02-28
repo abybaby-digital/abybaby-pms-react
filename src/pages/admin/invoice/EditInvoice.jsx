@@ -20,7 +20,7 @@ const EditInvoice = ({ invoice }) => {
     const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
         queryKey: ["project-list"],
         queryFn: async () => {
-            return await getProjectList(token); // Assuming this function fetches the list of projects
+            return await getProjectList(token, "", "", "", "", "", "", 2, "", ""); // Assuming this function fetches the list of projects
         }
     });
 
