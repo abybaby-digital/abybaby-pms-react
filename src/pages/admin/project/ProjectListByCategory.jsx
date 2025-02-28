@@ -32,6 +32,7 @@ import { FaFilePdf } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 
 export default function ProjectListByCategory() {
   const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
@@ -455,50 +456,51 @@ export default function ProjectListByCategory() {
                   >
                     {
                       roleId === 8 ? null :
-                      <Column
-                      header="Actions"
-                      body={(rowData) => (
-                        <>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    singleProject(rowData.id);
-                                    setAddOrEdit("view");
-                                  }}
-                                >
-                                  <FaEye />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>View Project</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    singleProject(rowData.id);
-                                    setAddOrEdit("edit");
-                                  }}
-                                >
-                                  <MdEditSquare />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Edit Project</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </>
-                      )}
-                    ></Column>
+                        <Column
+                          header="Actions"
+                          body={(rowData) => (
+                            <>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <button
+                                      className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                      onClick={() => {
+                                        singleProject(rowData.id);
+                                        setAddOrEdit("view");
+                                      }}
+                                    >
+                                      <FaEye />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>View Project</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              <CheckAccessEdit edit_access="Project">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <button
+                                        className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                        onClick={() => {
+                                          singleProject(rowData.id);
+                                          setAddOrEdit("edit");
+                                        }}
+                                      >
+                                        <MdEditSquare />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>Edit Project</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </CheckAccessEdit>
+                            </>
+                          )}
+                        ></Column>
                     }
                     <Column
                       header="S.No"
@@ -509,7 +511,7 @@ export default function ProjectListByCategory() {
                       )}
                       style={{ width: "5rem", textAlign: "center" }}
                     />
-                    
+
                     <Column
                       field="project_name"
                       sortable
@@ -548,65 +550,64 @@ export default function ProjectListByCategory() {
                       style={{ textTransform: "capitalize" }}
                     ></Column>
                     {
-                      roleId === 8 ? 
-                      null :
-                      <Column
-                      header="Project Amount (pre GST)"
-                      sortable
-                      body={(rowData) =>
-                        rowData.other_members_id
-                          ?.split(",")
-                          ?.map(Number)
-                          ?.includes(userId) ? (
-                          <span className="block text-center">-</span>
-                        ) : (
-                          <span className="block text-center">
-                            {rowData.project_amount_pre_gst}
-                          </span>
-                        )
-                      }
-                      style={{ textTransform: "capitalize" }}
-                    />
+                      roleId === 8 ?
+                        null :
+                        <Column
+                          header="Project Amount (pre GST)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.other_members_id
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.project_amount_pre_gst}
+                              </span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
                     }
-                   {
-                    roleId === 8 ? 
-                    null :
-                    <Column
-                    header="Project Amount (with GST)"
-                    sortable
-                    body={(rowData) =>
-                      rowData.other_members_id
-                        ?.split(",")
-                        ?.map(Number)
-                        ?.includes(userId) ? (
-                        <span className="block text-center">-</span>
-                      ) : (
-                        <span className="block text-center">
-                          {rowData.project_amount_with_gst}
-                        </span>
-                      )
+                    {
+                      roleId === 8 ?
+                        null :
+                        <Column
+                          header="Project Amount (with GST)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.other_members_id
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.project_amount_with_gst}
+                              </span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
                     }
-                    style={{ textTransform: "capitalize" }}
-                  />
-                   }
 
                     <Column
                       header="Project Status"
                       body={(rowData) => (
                         <span
-                          className={`bg-dark text-sm ${
-                            rowData.status === "1"
+                          className={`bg-dark text-sm ${rowData.status === "1"
                               ? "bg-green-500"
                               : rowData.status === "0"
-                              ? "bg-red-500"
-                              : "bg-gray-500"
-                          } px-3 py-1 rounded-xl text-white shadow`}
+                                ? "bg-red-500"
+                                : "bg-gray-500"
+                            } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.status === "1"
                             ? "Running"
                             : rowData.status === "2"
-                            ? "Closed"
-                            : "Cancelled"}
+                              ? "Closed"
+                              : "Cancelled"}
                         </span>
                       )}
                     ></Column>
@@ -614,11 +615,10 @@ export default function ProjectListByCategory() {
                       header="Billing Status"
                       body={(rowData) => (
                         <span
-                          className={`bg-dark text-sm ${
-                            rowData.billed_status === "1"
+                          className={`bg-dark text-sm ${rowData.billed_status === "1"
                               ? "bg-green-500"
                               : "bg-red-500"
-                          } px-3 py-1 rounded-xl text-white shadow`}
+                            } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.billed_status === "1"
                             ? "Billed"
@@ -630,18 +630,17 @@ export default function ProjectListByCategory() {
                       header="Payment Status"
                       body={(rowData) => (
                         <span
-                          className={`bg-dark text-sm ${
-                            rowData.received_status === "1"
+                          className={`bg-dark text-sm ${rowData.received_status === "1"
                               ? "bg-green-500"
                               : "bg-red-500"
-                          } px-3 py-1 rounded-xl text-white shadow`}
+                            } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.received_status === "1" ? "Paid" : "Unpaid"}
                         </span>
                       )}
                     ></Column>
 
-                    
+
                   </DataTable>
                 </div>
               )}
