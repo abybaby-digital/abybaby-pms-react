@@ -37,6 +37,7 @@ export default function ProjectListByCategory() {
   const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.id);
+  const roleId = useSelector((state) => state.auth.user?.role_id);
   const titleTable = sessionStorage.getItem("project_list_title");
 
   // FILTERING STATE VARIABLES FOR PROJECT FILTER
@@ -452,7 +453,9 @@ export default function ProjectListByCategory() {
                     paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
-                    <Column
+                    {
+                      roleId === 8 ? null :
+                      <Column
                       header="Actions"
                       body={(rowData) => (
                         <>
@@ -496,6 +499,7 @@ export default function ProjectListByCategory() {
                         </>
                       )}
                     ></Column>
+                    }
                     <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
@@ -543,7 +547,10 @@ export default function ProjectListByCategory() {
                       header="End Date"
                       style={{ textTransform: "capitalize" }}
                     ></Column>
-                    <Column
+                    {
+                      roleId === 8 ? 
+                      null :
+                      <Column
                       header="Project Amount (pre GST)"
                       sortable
                       body={(rowData) =>
@@ -560,23 +567,28 @@ export default function ProjectListByCategory() {
                       }
                       style={{ textTransform: "capitalize" }}
                     />
+                    }
+                   {
+                    roleId === 8 ? 
+                    null :
                     <Column
-                      header="Project Amount (with GST)"
-                      sortable
-                      body={(rowData) =>
-                        rowData.other_members_id
-                          ?.split(",")
-                          ?.map(Number)
-                          ?.includes(userId) ? (
-                          <span className="block text-center">-</span>
-                        ) : (
-                          <span className="block text-center">
-                            {rowData.project_amount_with_gst}
-                          </span>
-                        )
-                      }
-                      style={{ textTransform: "capitalize" }}
-                    />
+                    header="Project Amount (with GST)"
+                    sortable
+                    body={(rowData) =>
+                      rowData.other_members_id
+                        ?.split(",")
+                        ?.map(Number)
+                        ?.includes(userId) ? (
+                        <span className="block text-center">-</span>
+                      ) : (
+                        <span className="block text-center">
+                          {rowData.project_amount_with_gst}
+                        </span>
+                      )
+                    }
+                    style={{ textTransform: "capitalize" }}
+                  />
+                   }
 
                     <Column
                       header="Project Status"
