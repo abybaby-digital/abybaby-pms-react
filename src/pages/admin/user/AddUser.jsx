@@ -134,7 +134,7 @@ export default function AddUser() {
                 // data?.other_service_id !== undefined ? data.other_service_id?.map((item) => (item.value.toString())).join(",") : "",
                 data.contact_number,
                 data.password,
-                data.profile_img, // This will be passed as a file (if uploaded)
+                (data.profile_img?.length === 0) ? null : data.profile_img,
                 data.user_details,
                 "1"
             );

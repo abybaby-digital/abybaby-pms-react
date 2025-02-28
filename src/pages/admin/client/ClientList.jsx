@@ -166,30 +166,7 @@ export default function ClientList() {
                                         {/* DataTable */}
                                         <DataTable value={filteredClients} stripedRows rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '20rem' }} paginator paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}">
-                                                <Column
-                                                header="S.No"
-                                                body={(rowData, { rowIndex }) => (
-                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                                                        {rowIndex + 1}
-                                                    </span>
-                                                )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
-                                            />
-                                            <Column field="company_name" sortable header="Company Name" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="contact_person" sortable header="Contact Person" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="client_gst" sortable header="Client GST" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="client_email" sortable header="Contact Email" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="office_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
-
-                                            <Column header="Status" body={(rowData) => (
-                                                rowData.status === "1" ? (
-                                                    <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
-                                                ) : (
-                                                    <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">Closed</span>
-                                                )
-                                            )}></Column>
-
-                                            <Column header="Actions" body={(rowData) => (
+                                                <Column header="Actions" body={(rowData) => (
                                                 <>
                                                     <TooltipProvider>
                                                         <Tooltip>
@@ -221,6 +198,31 @@ export default function ClientList() {
                                                     </CheckAccessEdit>
                                                 </>
                                             )}></Column>
+                                                
+                                                <Column
+                                                header="S.No"
+                                                body={(rowData, { rowIndex }) => (
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowIndex + 1}
+                                                    </span>
+                                                )}
+                                                style={{ width: '5rem', textAlign: 'center' }}
+                                            />
+                                            <Column field="company_name" sortable header="Company Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="contact_person" sortable header="Contact Person" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="client_gst" sortable header="Client GST" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="client_email" sortable header="Contact Email" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="office_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
+
+                                            <Column header="Client Status" body={(rowData) => (
+                                                rowData.status === "1" ? (
+                                                    <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
+                                                ) : (
+                                                    <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">Closed</span>
+                                                )
+                                            )}></Column>
+
+                                            
                                         </DataTable>
                                     </div>
                                 )

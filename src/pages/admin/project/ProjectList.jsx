@@ -438,7 +438,7 @@ export default function ProjectList() {
                   <DataTable
                     value={filteredProjects}
                     stripedRows
-                    rows={5}
+                    rows={10}
                     rowsPerPageOptions={[5, 10, 25, 50]}
                     tableStyle={{ minWidth: "20rem" }}
                     paginator

@@ -189,22 +189,22 @@ export default function Dashboard() {
             </form>
           </div>
 
-          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 lg:grid-cols-4 grid-cols-1">
+          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-4 lg:grid-cols-2 ">
           <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <MdBallot className="text-3xl text-white inline" />
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[7]?.project_count}
+                  {projectReport?.response[0]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[7]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[0]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[7]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[0]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
                   Total Projects
@@ -224,15 +224,15 @@ export default function Dashboard() {
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[0]?.project_count}
+                  {projectReport?.response[1]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[0]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[1]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[0]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[1]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
                   Running Projects
@@ -261,18 +261,18 @@ export default function Dashboard() {
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[1]?.project_count}
+                  {projectReport?.response[2]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[1]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[2]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[1]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[2]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
-                  Closed Projects
+                  Closed Projects (Billed + Unbilled)
                 </p>
               </div>
               <button
@@ -298,15 +298,15 @@ export default function Dashboard() {
               </div>
               <div className="dash-card-content text-end">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[2]?.project_count}
+                  {projectReport?.response[3]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[2]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[3]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[2]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[3]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
                   Unbilled Closed Projects
@@ -339,15 +339,15 @@ export default function Dashboard() {
               </div>
               <div className="dash-card-content text-end">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[3]?.project_count}
+                  {projectReport?.response[4]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[3]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[4]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[3]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[4]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
                   Billed Closed Project
@@ -377,15 +377,15 @@ export default function Dashboard() {
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[4]?.project_count}
+                  {projectReport?.response[5]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[4]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[5]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[4]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[5]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
                   Payment Outstanding Projects ( Billed )
@@ -415,15 +415,15 @@ export default function Dashboard() {
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[5]?.project_count}
+                  {projectReport?.response[6]?.project_count}
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[5]?.project_amount_pre_gst} (pre GST)
+                  {projectReport?.response[6]?.project_amount_pre_gst} (pre GST)
                 </p>
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[5]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[6]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
                   Payment Received Projects
@@ -452,7 +452,7 @@ export default function Dashboard() {
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
-                  {projectReport?.response[6]?.project_count}
+                  {projectReport?.response[7]?.project_count}
                 </p>
                 {/* <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
@@ -460,7 +460,7 @@ export default function Dashboard() {
                 </p> */}
                 <p className="text-lg text-lightdark">
                   <MdOutlineCurrencyRupee className="inline mb-1" />
-                  {projectReport?.response[6]?.project_amount_with_gst} (with GST)
+                  {projectReport?.response[7]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
                 Partial Payment Received
