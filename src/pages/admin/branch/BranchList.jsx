@@ -169,7 +169,7 @@ export default function BranchList() {
                                             <Column field="branch_code" sortable header="branch code" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="branch_name" sortable header="branch name" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="branch_address" sortable header="branch address" style={{ textTransform: "capitalize", width: "35%" }}></Column>
-                                            <Column header="Status" body={() => (
+                                            <Column header="Branch Status" body={() => (
                                                 <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
                                             )}></Column>
 

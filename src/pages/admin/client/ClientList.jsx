@@ -208,7 +208,7 @@ export default function ClientList() {
                                                 )}
                                                 style={{ width: '5rem', textAlign: 'center' }}
                                             />
-                                            <Column field="company_name" sortable header="Company Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="company_name" sortable header="Client Company Name" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="contact_person" sortable header="Contact Person" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="client_gst" sortable header="Client GST" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="client_email" sortable header="Contact Email" style={{ textTransform: "capitalize" }}></Column>

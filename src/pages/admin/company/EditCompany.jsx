@@ -116,7 +116,6 @@ const EditCompany = ({ company }) => {
                         id="company_gst"
                         placeholder="Company GST"
                         {...register("company_gst", {
-                            required: "Company GST is required",
                             pattern: {
                                 value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, // Example for India GST number
                                 message: "Please enter a valid GST number",
@@ -194,7 +193,7 @@ const EditCompany = ({ company }) => {
                         className="block"
                         id="contact_email"
                         placeholder="Contact Email"
-                        {...register("contact_email", { required: "Contact email is required" })}
+                        {...register("contact_email")}
                     />
                     {errors.contact_email && (
                         <p className="text-red-600 mt-2">{errors.contact_email.message}</p>

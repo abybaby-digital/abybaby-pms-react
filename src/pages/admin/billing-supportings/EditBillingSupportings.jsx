@@ -24,6 +24,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
     setValue
   } = useForm({
     defaultValues: {
+      project_id: billingSupportings?.project_id,
       center_vehicle_hire_bill: billingSupportings.center_vehicle_hire_bill,
       center_vehicle_hire_bill_comment: billingSupportings.center_vehicle_hire_bill_comment,
       manpower_bill: billingSupportings.manpower_bill,

@@ -86,7 +86,7 @@ export default function AddClient() {
                                     className="block"
                                     id="contact_person"
                                     placeholder="Contact Person"
-                                    {...register("contact_person", { required: "Contact Person is required" })}
+                                    {...register("contact_person")}
                                 />
                                 {errors.contact_person && (
                                     <span className="text-red-600 text-sm">
@@ -105,7 +105,7 @@ export default function AddClient() {
                                     className="block"
                                     id="office_address"
                                     placeholder="Office Address"
-                                    {...register("office_address", { required: "Office Address is required" })}
+                                    {...register("office_address")}
                                 />
                                 {errors.office_address && (
                                     <span className="text-red-600 text-sm">
@@ -125,7 +125,6 @@ export default function AddClient() {
                                     id="contact_number"
                                     placeholder="Contact Number"
                                     {...register("contact_number", {
-                                        required: "Contact Number is required",
                                         pattern: {
                                             value: /^[0-9]{10}$/, // Ensures the input is exactly 10 digits
                                             message: "Please enter a valid 10-digit phone number",
@@ -172,7 +171,7 @@ export default function AddClient() {
                                     id="client_gst"
                                     placeholder="Client GST"
                                     {...register("client_gst", {
-                                        required: "Client GST is required",
+                                        
                                         pattern: {
                                             value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, // Indian GST regex
                                             message: "Please enter a valid GST number",
