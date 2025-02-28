@@ -99,134 +99,139 @@ const EditInvoice = ({ invoice }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full overflow-hidden">
-            <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
+        isLoadingProjects ?
+            <div className="h-[350px] flex justify-center items-center">
+                <p className="text-green-500 font-bold text-xl animate-pulse">Prepairing for edit , Please Wait ...</p>
+            </div>
+            :
+            <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full overflow-hidden">
+                <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
 
-                {/* Project ID Dropdown */}
-                <div className="form-group">
-                    <label htmlFor="project_id">Project <span className="text-red-600">*</span></label>
-                    <select
-                        id="project_id"
-                        {...register("project_id", { required: "Project is required" })}
-                        className="block w-full"
-                    >
-                        <option value="">Select Project</option>
-                        {isLoadingProjects ? (
-                            <option>Loading projects...</option>
-                        ) : (
-                            projectList?.response?.map((project) => (
-                                <option key={project.id} value={project.id} selected={project?.id === invoice?.project_id}>
-                                    {project.project_name}
-                                </option>
-                            ))
-                        )}
-                    </select>
-                    {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
-                </div>
-
-                {/* Invoice No Input */}
-                <div className="form-group">
-                    <label htmlFor="invoice_no">Invoice No <span className="text-red-600">*</span></label>
-                    <input
-                        type="text"
-                        id="invoice_no"
-                        {...register("invoice_no", { required: "Invoice No is required" })}
-                        className="block"
-                        placeholder="Enter Invoice No"
-                    />
-                    {errors.invoice_no && <span className="text-red-600 text-sm">{errors.invoice_no.message}</span>}
-                </div>
-
-                {/* Invoice Amount pre gst Input */}
-                <div className="form-group">
-                    <label htmlFor="invoice_amount_pre_gst">Invoice Amount <span className="text-red-600">*</span></label>
-                    <input
-                        type="number"
-                        id="invoice_amount_pre_gst"
-                        {...register("invoice_amount_pre_gst", { required: "Invoice Amount is required" })}
-                        className="block"
-                        placeholder="Enter Amount"
-                    />
-                    {errors.invoice_amount_pre_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_pre_gst.message}</span>}
-                </div>
-                {/* Invoice Amount with gst Input */}
-                <div className="form-group">
-                    <label htmlFor="invoice_amount_with_gst">Invoice Amount <span className="text-red-600">*</span></label>
-                    <input
-                        type="number"
-                        id="invoice_amount_with_gst"
-                        {...register("invoice_amount_with_gst", { required: "Invoice Amount is required" })}
-                        className="block"
-                        placeholder="Enter Amount"
-                    />
-                    {errors.invoice_amount_with_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_with_gst.message}</span>}
-                </div>
-
-                {/* Invoice Date Input */}
-                <div className="form-group">
-                    <label htmlFor="invoice_date">Invoice Date <span className="text-red-600">*</span></label>
-                    <input
-                        type="date"
-                        id="invoice_date"
-                        {...register("invoice_date", { required: "Invoice Date is required" })}
-                        className="block"
-                    />
-                    {errors.invoice_date && <span className="text-red-600 text-sm">{errors.invoice_date.message}</span>}
-                </div>
-
-                {/* Image Preview */}
-                {imagePreview && (
-                    <div className="mt-2">
-                        <img src={imagePreview} alt="Preview" className="w-full h-[150px] object-contain rounded-lg" />
+                    {/* Project ID Dropdown */}
+                    <div className="form-group">
+                        <label htmlFor="project_id">Project <span className="text-red-600">*</span></label>
+                        <select
+                            id="project_id"
+                            {...register("project_id", { required: "Project is required" })}
+                            className="block w-full"
+                        >
+                            <option value="">Select Project</option>
+                            {isLoadingProjects ? (
+                                <option>Loading Projects, Please wait....</option>
+                            ) : (
+                                projectList?.response?.map((project) => (
+                                    <option key={project.id} value={project.id} selected={project?.id === invoice?.project_id}>
+                                        {project.project_name}
+                                    </option>
+                                ))
+                            )}
+                        </select>
+                        {errors.project_id && <span className="text-red-600 text-sm">{errors.project_id.message}</span>}
                     </div>
-                )}
 
-                {/* Upload New Invoice Image (Mandatory) */}
-                <div className="form-group lg:col-span-2">
-                    <label htmlFor="invoice_img">Upload Invoice Image</label>
-                    <input
-                        type="file"
-                        id="invoice_img"
-                        accept="image/*"
-                        {...register("invoice_img")}
-                        className="block border w-full rounded-lg p-3"
-                        onChange={handleImageChange} // Add this line
-                    />
-                    {errors.invoice_img && <span className="text-red-600 text-sm">{errors.invoice_img.message}</span>}
+                    {/* Invoice No Input */}
+                    <div className="form-group">
+                        <label htmlFor="invoice_no">Invoice No <span className="text-red-600">*</span></label>
+                        <input
+                            type="text"
+                            id="invoice_no"
+                            {...register("invoice_no", { required: "Invoice No is required" })}
+                            className="block"
+                            placeholder="Enter Invoice No"
+                        />
+                        {errors.invoice_no && <span className="text-red-600 text-sm">{errors.invoice_no.message}</span>}
+                    </div>
+
+                    {/* Invoice Amount pre gst Input */}
+                    <div className="form-group">
+                        <label htmlFor="invoice_amount_pre_gst">Invoice Amount <span className="text-red-600">*</span></label>
+                        <input
+                            type="number"
+                            id="invoice_amount_pre_gst"
+                            {...register("invoice_amount_pre_gst", { required: "Invoice Amount is required" })}
+                            className="block"
+                            placeholder="Enter Amount"
+                        />
+                        {errors.invoice_amount_pre_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_pre_gst.message}</span>}
+                    </div>
+                    {/* Invoice Amount with gst Input */}
+                    <div className="form-group">
+                        <label htmlFor="invoice_amount_with_gst">Invoice Amount <span className="text-red-600">*</span></label>
+                        <input
+                            type="number"
+                            id="invoice_amount_with_gst"
+                            {...register("invoice_amount_with_gst", { required: "Invoice Amount is required" })}
+                            className="block"
+                            placeholder="Enter Amount"
+                        />
+                        {errors.invoice_amount_with_gst && <span className="text-red-600 text-sm">{errors.invoice_amount_with_gst.message}</span>}
+                    </div>
+
+                    {/* Invoice Date Input */}
+                    <div className="form-group">
+                        <label htmlFor="invoice_date">Invoice Date <span className="text-red-600">*</span></label>
+                        <input
+                            type="date"
+                            id="invoice_date"
+                            {...register("invoice_date", { required: "Invoice Date is required" })}
+                            className="block"
+                        />
+                        {errors.invoice_date && <span className="text-red-600 text-sm">{errors.invoice_date.message}</span>}
+                    </div>
+
+                    {/* Image Preview */}
+                    {imagePreview && (
+                        <div className="mt-2">
+                            <img src={imagePreview} alt="Preview" className="w-full h-[150px] object-contain rounded-lg" />
+                        </div>
+                    )}
+
+                    {/* Upload New Invoice Image (Mandatory) */}
+                    <div className="form-group lg:col-span-2">
+                        <label htmlFor="invoice_img">Upload Invoice Image</label>
+                        <input
+                            type="file"
+                            id="invoice_img"
+                            accept="image/*"
+                            {...register("invoice_img")}
+                            className="block border w-full rounded-lg p-3"
+                            onChange={handleImageChange} // Add this line
+                        />
+                        {errors.invoice_img && <span className="text-red-600 text-sm">{errors.invoice_img.message}</span>}
+                    </div>
+
+                    {/* Invoice Details */}
+                    <div className="form-group lg:col-span-2">
+                        <label htmlFor="invoice_details">Invoice Details</label>
+                        <textarea
+                            id="invoice_details"
+                            {...register("invoice_details")}
+                            className="block border w-full rounded-lg p-3"
+                            placeholder="Enter Invoice Details"
+                        />
+                    </div>
+
+                    {/* Status */}
+                    <div className="form-group">
+                        <label htmlFor="status">Status</label>
+                        <select {...register("status")} id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+
                 </div>
 
-                {/* Invoice Details */}
-                <div className="form-group lg:col-span-2">
-                    <label htmlFor="invoice_details">Invoice Details</label>
-                    <textarea
-                        id="invoice_details"
-                        {...register("invoice_details")}
-                        className="block border w-full rounded-lg p-3"
-                        placeholder="Enter Invoice Details"
-                    />
+                <div className="card-footer text-center bg-gray-100 py-5">
+                    <button
+                        type="submit"
+                        className="px-10 py-2 text-white bg-lightdark rounded-2xl"
+                        disabled={editInvoiceMutation.isPending}
+                    >
+                        {editInvoiceMutation.isPending ? <ButtonLoader /> : "Submit"}
+                    </button>
                 </div>
-
-                {/* Status */}
-                <div className="form-group">
-                    <label htmlFor="status">Status</label>
-                    <select {...register("status")} id="status">
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
-                    </select>
-                </div>
-
-            </div>
-
-            <div className="card-footer text-center bg-gray-100 py-5">
-                <button
-                    type="submit"
-                    className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                    disabled={editInvoiceMutation.isPending}
-                >
-                    {editInvoiceMutation.isPending ? <ButtonLoader /> : "Submit"}
-                </button>
-            </div>
-        </form>
+            </form>
     );
 };
 

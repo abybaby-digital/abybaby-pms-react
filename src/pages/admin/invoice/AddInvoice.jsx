@@ -100,7 +100,7 @@ export default function AddInvoice() {
                   {
                     isLoadingProjects ? 
                     (
-                      <option value="#">Loading...</option>
+                      <option value="#">Loading Projects, Please wait...</option>
                     ):
                     (
                       projectList?.response?.map((project) => (

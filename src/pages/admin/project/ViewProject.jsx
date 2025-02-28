@@ -226,12 +226,12 @@ const ViewProject = ({ project, add_or_edit }) => {
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-bold text-lg">
-                            Status :
+                            Project Status :
                           </TableCell>
                           <TableCell>
                             {project_by_id?.project?.status === "1" ? (
                               <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">
-                                Active
+                                Running
                               </span>
                             ) : (
                               <span className="bg-dark text-sm bg-red-500 px-3 py-1 rounded-xl text-white shadow">

@@ -848,7 +848,6 @@ export const addUser = async (
   password,
   profile_img, // This will be a file object (image)
   user_details,
-  view_status
 ) => {
   try {
     const formData = new FormData();
@@ -864,7 +863,7 @@ export const addUser = async (
     formData.append("contact_number", contact_number);
     formData.append("password", password);
     formData.append("user_details", user_details);
-    formData.append("view_status", view_status);
+
 
     // Append the profile image if it exists
     if (profile_img) {
@@ -899,7 +898,6 @@ export const editUser = async (
   password,
   profile_img, // This will be a file object (image)
   user_details,
-  view_status
 ) => {
   try {
     const formData = new FormData();
@@ -915,7 +913,6 @@ export const editUser = async (
     formData.append("contact_number", contact_number);
     formData.append("password", password);
     formData.append("user_details", user_details);
-    formData.append("view_status", view_status);
 
     // Append the profile image if it exists
     // if (profile_img) {

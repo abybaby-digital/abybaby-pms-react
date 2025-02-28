@@ -32,9 +32,11 @@ export default function EditUser({ user }) {
   console.log("selected user", user.selected_state);
 
   // Profile Image Preview State
-  const [profilePreview, setProfilePreview] = useState(
-    user.profile_img || null
-  );
+  // const [profilePreview, setProfilePreview] = useState(
+  //   user.profile_img || null
+  // );
+  // Initialize image preview state
+  const [imagePreview, setImagePreview] = useState(null);
   const [vhId, setVHid] = useState(user?.vertical_head_id);
   const [bmId, setBMid] = useState(user?.client_service_id);
 
@@ -137,26 +139,11 @@ export default function EditUser({ user }) {
       state_id: user.selected_state,
       company_id: { value: user.company_id, label: user.company_name },
       branch_id: { value: user.branch_id, label: user.branch_name },
-      // vertical_head_id: user.name_prefix
-      //   ? { value: VH_w_vh?.id, label: VH_w_vh?.name }
-      //   : { value: VH_wo_vh?.id, label: VH_wo_vh?.name },
-      // vertical_head_id: { value: user.name_prefix_id, label: user.name_prefix },
-      // branch_manager_id: preselectedBM,
-      // client_service_id: user.client_service_id
-      //   ? user.client_service_id
-      //       .split(",")
-      //       .map((id) => ({ value: id, label: id }))
-      //   : [],
-      // other_service_id: user.other_service_id
-      //   ? user.other_service_id
-      //       .split(",")
-      //       .map((id) => ({ value: id, label: id }))
-      //   : [],
       contact_number: user.contact_number,
       password: "",
       user_details: user.user_details || "",
       status: user.status === "1" ? "active" : "inactive",
-      profile_img: user.profile_img || "",
+      profile_img: null,
     },
   });
 
@@ -164,20 +151,13 @@ export default function EditUser({ user }) {
   const profileImgFile = watch("profile_img");
 
   useEffect(() => {
-    if (profileImgFile && profileImgFile.length > 0) {
-      const file = profileImgFile[0];
+    // Set initial image preview if there is an existing image
+    if (user.profile_img) {
+      setImagePreview(user.profile_img); // Assuming invoice has invoice_img URL for preview
+  }
+  }, [user, user.profile_img]);
 
-      if (file && file instanceof Blob) {
-        // Check if the file is an instance of Blob (valid File object)
-        const reader = new FileReader();
-        reader.onloadend = () => setProfilePreview(reader.result);
-        reader.readAsDataURL(file);
-      }
-    } else if (user.profile_img) {
-      // If no file is selected, use the existing profile image URL
-      setProfilePreview(user.profile_img || null);
-    }
-  }, [profileImgFile, user.profile_img]);
+
 
   // Watch Role Selection
   const selectedRole = watch("role_id");
@@ -228,7 +208,7 @@ export default function EditUser({ user }) {
         data.role_id.value,
         data.state_id?.map((item) => item.value).join(","),
         data.company_id.value,
-        data.branch_id.value,
+        +data.branch_id.value,
         // vertical_head_id.vertical_head_id,
         // data?.vertical_head_id?.value || null,
         // data?.branch_manager_id?.map((item) => item.value).join(",") || null,
@@ -238,7 +218,6 @@ export default function EditUser({ user }) {
         data.password || null,
         data.profile_img,
         data.user_details,
-        data.view_status ? "1" : "0",
         data.status === "active" ? "1" : "0"
       );
     },
@@ -265,6 +244,15 @@ export default function EditUser({ user }) {
     console.log(data);
     editUserMutation.mutate(data);
   };
+
+  // Handle image file change for preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const objectUrl = URL.createObjectURL(file);
+        setImagePreview(objectUrl); // Set the preview image URL
+    }
+};
 
   return (
     <div className="flex flex-1 flex-col gap-2 lg:justify-center">
@@ -419,11 +407,11 @@ export default function EditUser({ user }) {
           </div>
 
           {/* Profile Image */}
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>Profile Image</label>
             <input
               type="file"
-              {...register("profile_img")} // Only register the file input
+              {...register("profile_img")}
             />
             {profilePreview && (
               <img
@@ -432,7 +420,25 @@ export default function EditUser({ user }) {
                 className="w-20 h-20 border rounded-full"
               />
             )}
-          </div>
+          </div> */}
+          <div className="form-group lg:col-span-2">
+                        <label htmlFor="profile_img">Profile Image</label>
+                        <input
+                            type="file"
+                            id="profile_img"
+                            accept="image/*"
+                            {...register("profile_img")}
+                            className="block border w-full rounded-lg p-3"
+                            onChange={handleImageChange} // Add this line
+                        />
+                        {errors.profile_img && <span className="text-red-600 text-sm">{errors.profile_img.message}</span>}
+                    </div>
+                    {/* Image Preview */}
+                    {imagePreview && (
+                        <div className="mt-2">
+                            <img src={imagePreview} alt="Preview" className="w-full h-[150px] object-contain rounded-lg" />
+                        </div>
+                    )}
 
           {/* User Details */}
           <div className="form-group">

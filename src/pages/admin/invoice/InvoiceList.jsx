@@ -175,6 +175,52 @@ export default function InvoiceList() {
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
                     <Column
+                      header="Actions"
+                      body={(rowData) => (
+                        <>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <button
+                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                  onClick={() => {
+                                    openModal(rowData.id);
+                                    setAddOrEdit("view");
+                                  }}
+                                >
+                                  <FaEye />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>View Invoice</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <CheckAccessEdit edit_access="Invoice">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <button
+                                    className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                    onClick={() => {
+                                      openModal(rowData.id);
+                                      setAddOrEdit("edit");
+                                    }}
+                                  >
+                                    <MdEditSquare />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Edit Invoice</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </CheckAccessEdit>
+                        </>
+                      )}
+                    ></Column>
+                    <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
                         <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
@@ -284,52 +330,7 @@ export default function InvoiceList() {
                         </span>
                       )}
                     ></Column> */}
-                    <Column
-                      header="Actions"
-                      body={(rowData) => (
-                        <>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    openModal(rowData.id);
-                                    setAddOrEdit("view");
-                                  }}
-                                >
-                                  <FaEye />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>View Invoice</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          <CheckAccessEdit edit_access="Invoice">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <button
-                                    className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                    onClick={() => {
-                                      openModal(rowData.id);
-                                      setAddOrEdit("edit");
-                                    }}
-                                  >
-                                    <MdEditSquare />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Edit Invoice</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </CheckAccessEdit>
-                        </>
-                      )}
-                    ></Column>
+                    
                   </DataTable>
                 </div>
               )}

@@ -85,7 +85,7 @@ export default function CompanyList() {
                                         <Column field="contact_number" sortable header="Contact Number" style={{ textTransform: "capitalize", width: "35%" }}></Column>
                                         <Column field="contact_email" sortable header="Contact Email" style={{ textTransform: "capitalize", width: "35%" }}></Column>
                                         <Column
-                                            header="Status"
+                                            header="Company Status"
                                             body={(rowData) => (
                                                 rowData.status ? (
                                                     <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>

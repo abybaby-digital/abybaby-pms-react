@@ -292,16 +292,14 @@ const EditProject = ({ project }) => {
         {/* Project Number Field */}
         <div className="form-group">
           <label htmlFor="client_po_no">
-            Client PO Number <span className="text-red-600">*</span>
+            Client PO Number
           </label>
           <input
             type="number"
             className="block"
             id="client_po_no"
             placeholder="Client PO Number"
-            {...register("client_po_no", {
-              required: "Project Number is required",
-            })}
+            {...register("client_po_no")}
           />
           {errors.client_po_no && (
             <span className="text-red-600 text-sm">
