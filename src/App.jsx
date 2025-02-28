@@ -7,6 +7,7 @@ import Login from "./pages/admin/Login";
 import ProtectedRoute from "./pages/admin/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import CompanyList from "./pages/admin/company/CompanyList";
+import AddCompany from "./pages/admin/company/AddCompany";
 import AddBranch from "./pages/admin/branch/AddBranch";
 import BranchList from "./pages/admin/branch/BranchList";
 import { PrimeReactProvider } from "primereact/api";
@@ -36,9 +37,10 @@ import CryptoJS from "crypto-js";
 import { useDispatch } from "react-redux";
 import { setToken, setUsers } from "./redux/features/Auth/AuthSlice";
 import ChangePassword from "./pages/admin/ChangePassword";
+import Dashboard from "./pages/admin/Dashboard";
 // Lazy-loaded components
-const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
-const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
+// const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
+// const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
 
 
 // const ScrollToTop = () => {

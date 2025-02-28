@@ -63,10 +63,10 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                         </span>
                       ) : (
                         <span className="bg-red-500 px-5 py-1 rounded-xl text-white font-semibold">
-                          Not Applicable
+                          No
                         </span>
                       )}
-                      {billingSupportings?.center_vehicle_hire_img && (
+                      {billingSupportings?.center_vehicle_hire_bill !== "0" && billingSupportings?.center_vehicle_hire_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -109,7 +109,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.manpower_bill_img && (
+                      {billingSupportings?.manpower_bill !== "0" && billingSupportings?.manpower_bill_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -150,7 +150,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.gift_bill_img && (
+                      {billingSupportings?.gift_bill !== "0" && billingSupportings?.gift_bill_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -189,7 +189,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.billing_ppt_img && (
+                      {billingSupportings?.billing_ppt !== "0"  && billingSupportings?.billing_ppt_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -227,7 +227,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                         </span>
                       )}
 
-                      {billingSupportings?.report_img && (
+                      { billingSupportings?.report !== "0"  && billingSupportings?.report_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -268,7 +268,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.day_wise_log_book_img && (
+                      {billingSupportings?.day_wise_log_book !== "0" && billingSupportings?.day_wise_log_book_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -313,7 +313,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.day_wise_meter_console_img && (
+                      {billingSupportings?.day_wise_meter_console !== "0" && billingSupportings?.day_wise_meter_console_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -359,7 +359,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.no_objection_certificate_img && (
+                      {billingSupportings?.no_objection_certificate !== "0" && billingSupportings?.no_objection_certificate_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -404,7 +404,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.snacks_bill_img && (
+                      {billingSupportings?.snacks_bill !== "0" && billingSupportings?.snacks_bill_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -443,7 +443,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.element_wise_photo_img && (
+                      {billingSupportings?.element_wise_photo !== "0" && billingSupportings?.element_wise_photo_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -486,7 +486,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.nagar_nigan_img && (
+                      {billingSupportings?.nagar_nigan !== "0" && billingSupportings?.nagar_nigan_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -525,7 +525,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.fuel_bill_img && (
+                      {billingSupportings?.fuel_bill !== "0" && billingSupportings?.fuel_bill_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -564,7 +564,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.customer_gift_img && (
+                      {billingSupportings?.customer_gift !== "0" && billingSupportings?.customer_gift_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -606,7 +606,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.route_plan_img && (
+                      {billingSupportings?.route_plan !== "0" && billingSupportings?.route_plan_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -645,7 +645,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.approvel_copy_img && (
+                      {billingSupportings?.approvel_copy !== "0" && billingSupportings?.approvel_copy_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -684,6 +684,20 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
+                      {billingSupportings?.po !== "0" && billingSupportings?.po_img && (
+                        <button
+                          className="text-blue-500 ms-5"
+                          onClick={() =>
+                            handleFileClick(
+                              billingSupportings.po_img
+                            )
+                          }
+                        >
+                          {billingSupportings.po_img.endsWith(".pdf")
+                            ? "View PDF"
+                            : "View Image"}
+                        </button>
+                      )}
                       {billingSupportings?.po_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -711,7 +725,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.wayforward_learning_img && (
+                      { billingSupportings?.wayforward_learning !== "0" && billingSupportings?.wayforward_learning_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -756,7 +770,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.courier_delivery_challan_img && (
+                      {billingSupportings?.courier_delivery_challan !== "0" && billingSupportings?.courier_delivery_challan_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -800,7 +814,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.transport_bill_img && (
+                      {billingSupportings?.transport_bill !== "0" && billingSupportings?.transport_bill_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -843,7 +857,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.anocher_bill_img && (
+                      {billingSupportings?.anocher_bill !== "0" && billingSupportings?.anocher_bill_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
@@ -883,7 +897,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.any_other_supporting_img && (
+                      {billingSupportings?.any_other_supporting !== "0" && billingSupportings?.any_other_supporting_img && (
                         <button
                           className="text-blue-500 ms-5"
                           onClick={() =>
