@@ -24,6 +24,9 @@ import { MdEditSquare } from "react-icons/md";
 export default function BillingSupportingList() {
   const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
+  const userId = useSelector((state) => state.auth.user?.id);
+  console.log(userId);
+  
 
   // Fetch billing supporting data (replacing PO data)
   const { data: billingSupportingList = [], isLoading } = useQuery({
