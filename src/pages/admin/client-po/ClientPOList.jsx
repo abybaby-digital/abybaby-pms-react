@@ -63,6 +63,7 @@ export default function ClientPOList() {
     const keyword = debouncedSearchKeyword.toLowerCase();
     return (
       clientPO.project_name?.toLowerCase().includes(keyword) ||
+      clientPO.project_no?.toLowerCase().includes(keyword) ||
       clientPO.po_no?.toLowerCase().includes(keyword) ||
       clientPO.project_order_details?.toLowerCase().includes(keyword)
     );
@@ -224,6 +225,11 @@ export default function ClientPOList() {
                       field="project_name"
                       sortable
                       header="Project Name"
+                    ></Column>
+                    <Column
+                      field="project_no"
+                      sortable
+                      header="Project No"
                     ></Column>
                     <Column field="client_po_no" sortable header="PO No"></Column>
                     {/* <Column field="po_amount_pre_gst" sortable header="PO Amount (pre GST)" body={(rowData) => `₹${rowData.po_amount_pre_gst}`}></Column> */}

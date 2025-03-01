@@ -140,6 +140,14 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                                                     Vertical Head :
                                                                 </TableCell>
                                                                 <TableCell>
+                                                                    {project_by_id?.project?.vh_prefix_name}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell className="font-bold text-lg">
+                                                                    Vertical Head Name:
+                                                                </TableCell>
+                                                                <TableCell>
                                                                     {project_by_id?.project?.vertical_head_name}
                                                                 </TableCell>
                                                             </TableRow>
@@ -332,6 +340,8 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
 
                                                         <TableHead>Pament schedule days</TableHead>
                                                         <TableHead>PO details</TableHead>
+                                                        <TableHead>PO created by</TableHead>
+                                                        <TableHead>PO updated by</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -381,6 +391,12 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                                             </TableCell>
                                                             <TableCell>
                                                                 {item?.project_order_details}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {item?.created_by_name}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {item?.updated_by_name}
                                                             </TableCell>
                                                         </TableRow>
                                                     ))}

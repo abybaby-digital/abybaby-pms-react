@@ -55,7 +55,7 @@ const AdminHead = ({ breadcrumb_name }) => {
                     </summary>
                     <ul className="absolute  border z-50 bg-white top-[110%] rounded-2xl text-nowrap right-0 shadow-lg overflow-hidden  flex flex-col items-center p-5">
                         {
-                            user.profile_img ?
+                            user.profile_img !== "https://test.abybabyoffice.com/storage/user/profile/" ?
                             <li><img src={user.profile_img} alt="profile_image" className="w-[50px] aspect-square object-cover rounded-full" /></li>
                             
                         : <FaUserLarge className="inline me-1 bg-whitesmoke text-5xl  rounded-full shadow border p-2" />}

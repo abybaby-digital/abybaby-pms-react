@@ -390,6 +390,8 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
                                                         <TableHead>Invoice Date :</TableHead>
                                                         <TableHead>Invoice attachment :</TableHead>
                                                         <TableHead>Invoice details :</TableHead>
+                                                        <TableHead>Created By :</TableHead>
+                                                        <TableHead>Updated By :</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -425,6 +427,8 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
                                                             </TableCell>
 
                                                             <TableCell>{item?.invoice_details}</TableCell>
+                                                            <TableCell>{item?.created_by_name}</TableCell>
+                                                            <TableCell>{item?.updated_by_name}</TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>

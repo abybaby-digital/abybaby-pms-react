@@ -21,19 +21,31 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { MdOutlineClose } from "react-icons/md";
 import EditProject from "./EditProject"; // Assuming EditProject component exists
 import { useQuery } from "@tanstack/react-query";
-import { getProjectById } from "../../../services/api";
+import { changeProjectPaymentStatus, getProjectById } from "../../../services/api";
 import { useSelector } from "react-redux";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
+import axios from "axios";
 
 const ViewProject = ({ project, add_or_edit }) => {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.id);
-  const { modal, setModal } = useContext(dialogOpenCloseContext);
+  const roleId = useSelector((state) => state.auth.user?.role_id);
+  const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
+
+  const changePaymentStatus = async (projectId) => {
+    try {
+      const response = await changeProjectPaymentStatus(token, projectId);
+      console.log(response);
+    } catch (error) {
+      console.error("Error changing payment status:", error);
+      throw error;
+    }
+  };
 
   const [project_by_id, setProjectById] = useState(null);
 
   const { data: projectById, isLoading } = useQuery({
-    queryKey: ["project-view-by-id", project.id],
+    queryKey: ["project-view-by-id", project.id, refetchList],
     queryFn: async () => {
       return await getProjectById(token, project.id);
     },
@@ -121,6 +133,14 @@ const ViewProject = ({ project, add_or_edit }) => {
                         <TableRow>
                           <TableCell className="font-bold text-lg">
                             Vertical Head :
+                          </TableCell>
+                          <TableCell>
+                            {project_by_id?.project?.vh_prefix_name}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-bold text-lg">
+                            Vertical Head Name:
                           </TableCell>
                           <TableCell>
                             {project_by_id?.project?.vertical_head_name}
@@ -272,6 +292,20 @@ const ViewProject = ({ project, add_or_edit }) => {
                             )}
                           </TableCell>
                         </TableRow>
+                        {(roleId === 1 || roleId === 4) &&
+                          (project?.payment_status === "0" && project?.billing_status === "1" && project_by_id?.project?.status === "2") &&
+                          <TableRow className="col-span-3 flex flex-col items-center justify-center bg-whitesmoke py-2 rounded-lg ">
+                            <TableCell className="font-bold text-lg">
+                              To Change Project Payment Status Click here:
+                            </TableCell>
+                            <TableCell>
+                              <button onClick={() => {
+                                changePaymentStatus(project_by_id?.project?.id);
+                                setRefetchList(!refetchList);
+                                setModal(false);
+                              }} className="bg-green-500 active:scale-95 py-2 px-5 rounded-lg text-white">Payment Done</button>
+                            </TableCell>
+                          </TableRow>}
                       </TableBody>
                     </Table>
                   </div>
@@ -312,6 +346,8 @@ const ViewProject = ({ project, add_or_edit }) => {
 
                               <TableHead>Pament schedule days</TableHead>
                               <TableHead>PO details</TableHead>
+                              <TableHead>PO created by</TableHead>
+                              <TableHead>PO updated by</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -346,12 +382,12 @@ const ViewProject = ({ project, add_or_edit }) => {
                                   <TableCell>
                                     {item?.po_img ?
                                       <a
-                                      href={item?.po_img}
-                                      target="_blank"
-                                      className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
-                                    >
-                                      View
-                                    </a> : "No attachment"
+                                        href={item?.po_img}
+                                        target="_blank"
+                                        className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
+                                      >
+                                        View
+                                      </a> : "No attachment"
                                     }
                                   </TableCell>
                                 )}
@@ -361,6 +397,12 @@ const ViewProject = ({ project, add_or_edit }) => {
                                 </TableCell>
                                 <TableCell>
                                   {item?.project_order_details}
+                                </TableCell>
+                                <TableCell>
+                                  {item?.created_by_name}
+                                </TableCell>
+                                <TableCell>
+                                  {item?.updated_by_name}
                                 </TableCell>
                               </TableRow>
                             ))}
@@ -401,6 +443,8 @@ const ViewProject = ({ project, add_or_edit }) => {
                               <TableHead>Invoice Date :</TableHead>
                               <TableHead>Invoice attachment :</TableHead>
                               <TableHead>Invoice details :</TableHead>
+                              <TableHead>Created By :</TableHead>
+                              <TableHead>Updated By :</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -427,16 +471,18 @@ const ViewProject = ({ project, add_or_edit }) => {
                                 <TableCell>
                                   {item?.invoice_img ?
                                     <a
-                                    href={item?.invoice_img}
-                                    target="_blank"
-                                    className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
-                                  >
-                                    View
-                                  </a> : "No attachment"
+                                      href={item?.invoice_img}
+                                      target="_blank"
+                                      className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
+                                    >
+                                      View
+                                    </a> : "No attachment"
                                   }
                                 </TableCell>
 
                                 <TableCell>{item?.invoice_details}</TableCell>
+                                <TableCell>{item?.created_by_name}</TableCell>
+                                <TableCell>{item?.updated_by_name}</TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
@@ -460,6 +506,8 @@ const ViewProject = ({ project, add_or_edit }) => {
                               <TableHead>Payment Received Date</TableHead>
                               <TableHead>Payment Received attachment</TableHead>
                               <TableHead>Payment Received details</TableHead>
+                              <TableHead>Created By</TableHead>
+                              <TableHead>Received Status</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -475,17 +523,26 @@ const ViewProject = ({ project, add_or_edit }) => {
                                   <TableCell>
                                     {item?.received_img ?
                                       <a
-                                      href={item?.received_img}
-                                      target="_blank"
-                                      className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
-                                    >
-                                      View
-                                    </a> : "No attachment"
+                                        href={item?.received_img}
+                                        target="_blank"
+                                        className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
+                                      >
+                                        View
+                                      </a> : "No attachment"
                                     }
                                   </TableCell>
 
                                   <TableCell>
                                     {item?.received_details}
+                                  </TableCell>
+                                  <TableCell>
+                                    {item?.created_by_name}
+                                  </TableCell>
+                                  <TableCell>
+                                    {item?.received_status === "1" ?
+                                      <p className="border border-green-500 text-green-500 px-2 py-1 text-[12px] text-center rounded-xl">Full Paid</p> : item?.received_status === "2" ? <p className="border border-orange-500 text-orange-500 px-2 py-1 rounded-xl text-[12px] text-center text-nowrap">Partial Payment</p> : "..."
+
+                                    }
                                   </TableCell>
                                 </TableRow>
                               )

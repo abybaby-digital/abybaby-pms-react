@@ -309,6 +309,8 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                                         <TableHead>Payment Received Date</TableHead>
                                                         <TableHead>Payment Received attachment</TableHead>
                                                         <TableHead>Payment Received details</TableHead>
+                                                        <TableHead>Created By</TableHead>
+                                                        <TableHead>Received Status</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
@@ -322,17 +324,28 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                                                     {item?.received_date?.slice(0, 10)}
                                                                 </TableCell>
                                                                 <TableCell>
-                                                                    {item?.received_img ? <a
-                                                                        href={item?.received_img}
-                                                                        target="_blank"
-                                                                        className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
-                                                                    >
-                                                                        View
-                                                                    </a> : "No attachment"}
+                                                                    {item?.received_img ?
+                                                                        <a
+                                                                            href={item?.received_img}
+                                                                            target="_blank"
+                                                                            className="border border-blue-500 text-blue-500 py-1 px-2 rounded-xl"
+                                                                        >
+                                                                            View
+                                                                        </a> : "No attachment"
+                                                                    }
                                                                 </TableCell>
 
                                                                 <TableCell>
                                                                     {item?.received_details}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {item?.created_by_name}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {item?.received_status === "1" ?
+                                                                        <p className="border border-green-500 text-green-500 px-2 py-1 text-[12px] text-center rounded-xl">Full Paid</p> : item?.received_status === "2" ? <p className="border border-orange-500 text-orange-500 px-2 py-1 rounded-xl text-[12px] text-center text-nowrap">Partial Payment</p> : "..."
+
+                                                                    }
                                                                 </TableCell>
                                                             </TableRow>
                                                         )

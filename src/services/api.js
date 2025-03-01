@@ -628,6 +628,28 @@ export const getProjectById = async (token, project_id) => {
   }
 };
 
+// PROJECT PAYMENT STATUS
+
+export const changeProjectPaymentStatus = async (token, project_id) => {
+  try {
+    const response = await api.post(
+      "/project-payment-status",
+      {
+        project_id: project_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching project by id:", error);
+    throw error;
+  }
+};
+
 // IMPORT PROJECT
 
 export const importProject = async (token, file) => {
