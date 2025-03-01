@@ -47,7 +47,7 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
 
 
     const { data: projectById, isLoading } = useQuery({
-        queryKey: ["project-view-by-id", payment?.project_id],
+        queryKey: ["project-view-by-id", payment?.project_id, modal],
         queryFn: async () => {
             return await getProjectById(token, payment?.project_id);
         },

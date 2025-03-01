@@ -115,10 +115,23 @@ const EditClientPO = ({ clientPO }) => {
 
   // Handle file change for preview (image or PDF)
   const handleFileChange = (e) => {
+    // const file = e.target.files[0];
+    // if (file) {
+    //   const objectUrl = URL.createObjectURL(file);
+    //   setImagePreview(objectUrl); // Set the preview image URL
+    // }
     const file = e.target.files[0];
     if (file) {
-      const objectUrl = URL.createObjectURL(file);
-      setImagePreview(objectUrl); // Set the preview image URL
+      const fileType = file.type.split("/")[0]; // Get the type (image/pdf)
+      if (fileType === "image") {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else if (file.type === "application/pdf") {
+        setImagePreview(URL.createObjectURL(file));
+      }
     }
   };
 
@@ -127,6 +140,9 @@ const EditClientPO = ({ clientPO }) => {
   }, [clientPO.project_id]); // Include clientPO.project_id in dependency array
 
   return (
+    isLoadingProjects ? 
+    <p className="text-green-500 animate-pulse text-2xl text-center">Preparing for edit , please wait ....</p>
+    :
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="mx-auto w-full overflow-hidden"
@@ -302,7 +318,7 @@ const EditClientPO = ({ clientPO }) => {
           <input
             type="file"
             id="po_img"
-            accept="image/*"
+            accept=".jpg, .jpeg, .png, .pdf"
             {...register("po_img")}
             className="block border w-full rounded-lg p-3"
             onChange={handleFileChange} // Add this line

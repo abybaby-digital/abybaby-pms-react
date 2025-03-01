@@ -34,7 +34,7 @@ export default function ClientPOList() {
 
   // Fetch client PO list data
   const { data: clientPOList = [], isLoading } = useQuery({
-    queryKey: ["client-po-list", refetchList],
+    queryKey: ["client-po-list", refetchList, modal],
     queryFn: async () => {
       return await getClientPOList(token); // Add the function for fetching client POs
     },

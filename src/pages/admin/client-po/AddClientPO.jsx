@@ -87,10 +87,23 @@ export default function AddClientPO() {
 
   // Handle image or PDF file input change and display preview
   const handleFileChange = (e) => {
+    // const file = e.target.files[0];
+    // if (file) {
+    //   const objectUrl = URL.createObjectURL(file);
+    //   setImagePreview(objectUrl); // Set the preview URL
+    // }
     const file = e.target.files[0];
     if (file) {
-      const objectUrl = URL.createObjectURL(file);
-      setImagePreview(objectUrl); // Set the preview URL
+      const fileType = file.type.split("/")[0]; // Get the type (image/pdf)
+      if (fileType === "image") {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else if (file.type === "application/pdf") {
+        setImagePreview(URL.createObjectURL(file));
+      }
     }
   };
 
@@ -238,7 +251,7 @@ export default function AddClientPO() {
                 <input
                   type="file"
                   id="po_img"
-                  accept="image/*"
+                  accept=".jpg, .jpeg, .png, .pdf"
                   {...register("po_img")}
                   className="block border w-full rounded-lg p-3"
                   onChange={handleFileChange} // Add this line for preview or file handling
@@ -248,14 +261,7 @@ export default function AddClientPO() {
               {/* Image/PDF Preview */}
               {imagePreview && (
                 <div className="mt-2 text-center lg:col-span-2">
-                  {imagePreview.includes("pdf") ? (
-                    <iframe
-                      src={imagePreview}
-                      width="350px"
-                      height="350px"
-                      className="rounded-lg"
-                    ></iframe>
-                  ) : (
+                  {!imagePreview.includes("pdf") ? null : (
                     <img
                       src={imagePreview}
                       alt="Preview"
@@ -264,6 +270,24 @@ export default function AddClientPO() {
                   )}
                 </div>
               )}
+              {/* {imagePreview && (
+                  <>
+                    {imagePreview.includes("data:image") ? (
+                      <img
+                        src={imagePreview}
+                        alt="Image Preview"
+                        className="inline max-w-full h-[200px] object-contain"
+                      />
+                    ) : imagePreview.includes("pdf") ? (
+                      <iframe
+                        src={imagePreview}
+                        width="100%"
+                        height="500px"
+                        title="PDF Preview"
+                      />
+                    ) : null}
+                  </>
+                )} */}
 
               {/* Payment Schedule Days Input */}
               <div className="form-group">

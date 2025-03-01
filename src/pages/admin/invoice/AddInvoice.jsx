@@ -79,11 +79,26 @@ export default function AddInvoice() {
 
   // Handle image file input change and display preview
   const handleImageChange = (e) => {
+    // const file = e.target.files[0];
+    // if (file) {
+    //   const objectUrl = URL.createObjectURL(file);
+    //   setImagePreview(objectUrl); // Set the preview image URL
+    // }
+
     const file = e.target.files[0];
     if (file) {
-      const objectUrl = URL.createObjectURL(file);
-      setImagePreview(objectUrl); // Set the preview image URL
+      const fileType = file.type.split("/")[0]; // Get the type (image/pdf)
+      if (fileType === "image") {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      } else if (file.type === "application/pdf") {
+        setImagePreview(URL.createObjectURL(file));
+      }
     }
+
   };
 
   return (
@@ -239,7 +254,7 @@ export default function AddInvoice() {
                     <input
                       type="file"
                       id="invoice_img"
-                      accept="image/*"
+                      accept=".jpg, .jpeg, .png, .pdf"
                       {...register("invoice_img")}
                       className="block border w-full rounded-lg p-3"
                       onChange={handleImageChange} // Add this line for image preview
@@ -247,7 +262,7 @@ export default function AddInvoice() {
                   </div>
 
                   {/* Image Preview */}
-                  {imagePreview && (
+                  {/* {imagePreview && (
                     <div className="mt-2 text-center lg:col-span-2">
                       <img
                         src={imagePreview}
@@ -255,7 +270,25 @@ export default function AddInvoice() {
                         className="w-[350px] h-[350px] rounded-lg inline-block"
                       />
                     </div>
-                  )}
+                  )} */}
+                  {imagePreview && (
+                  <>
+                    {imagePreview.includes("data:image") ? (
+                      <img
+                        src={imagePreview}
+                        alt="Image Preview"
+                        className="inline max-w-full h-[200px] object-contain"
+                      />
+                    ) : imagePreview.includes("pdf") ? (
+                      <iframe
+                        src={imagePreview}
+                        width="100%"
+                        height="500px"
+                        title="PDF Preview"
+                      />
+                    ) : null}
+                  </>
+                )}
 
                   {/* Invoice Details */}
                   <div className="form-group lg:col-span-2">

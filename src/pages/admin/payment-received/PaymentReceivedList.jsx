@@ -26,7 +26,7 @@ export default function PaymentReceivedList() {
     const token = useSelector((state) => state.auth.token);
 
     const { data: paymentList = [], isLoading } = useQuery({
-        queryKey: ["payment-received-list", refetchList],
+        queryKey: ["payment-received-list", refetchList, modal],
         queryFn: async () => {
             return await getPaymentReceivedList(token);
         }

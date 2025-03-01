@@ -33,7 +33,7 @@ export default function InvoiceList() {
 
   // Fetch invoice list data
   const { data: invoiceList = [], isLoading } = useQuery({
-    queryKey: ["invoice-list", refetchList],
+    queryKey: ["invoice-list", refetchList, modal],
     queryFn: async () => {
       return await getInvoiceList(token); // Add the function for fetching invoices
     },

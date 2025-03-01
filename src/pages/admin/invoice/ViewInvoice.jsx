@@ -47,7 +47,7 @@ const ViewInvoice = ({ invoice, add_or_edit }) => {
 
 
     const { data: projectById, isLoading } = useQuery({
-        queryKey: ["project-view-by-id", invoice?.project_id],
+        queryKey: ["project-view-by-id", invoice?.project_id , modal],
         queryFn: async () => {
             return await getProjectById(token, invoice?.project_id);
         },

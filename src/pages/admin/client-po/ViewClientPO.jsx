@@ -48,7 +48,7 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
 
 
     const { data: projectById, isLoading } = useQuery({
-        queryKey: ["project-view-by-id", clientPO?.project_id],
+        queryKey: ["project-view-by-id", clientPO?.project_id, modal],
         queryFn: async () => {
             return await getProjectById(token, clientPO?.project_id);
         },
@@ -89,7 +89,7 @@ const ViewClientPO = ({ clientPO, add_or_edit }) => {
                                             <AccordionTrigger className="text-xl text-black font-bold text-center font-merri">Project Details</AccordionTrigger>
                                             <AccordionContent>
                                                 <div className="project_data">
-                                                    <Table className="text-black">
+                                                    <Table className="text-black bg-white">
                                                         <TableBody className="grid lg:grid-cols-3 grid-cols-1 p-5 gap-5">
                                                             <TableRow>
                                                                 <TableCell className="font-bold text-lg">
