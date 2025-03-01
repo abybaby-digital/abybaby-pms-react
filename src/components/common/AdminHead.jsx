@@ -54,7 +54,11 @@ const AdminHead = ({ breadcrumb_name }) => {
                         <span className="inline-block p-2 px-5"><FaUserLarge className="inline me-1 bg-whitesmoke text-2xl p-1 rounded-full " />{user.name}{" "}({user.role})</span>
                     </summary>
                     <ul className="absolute  border z-50 bg-white top-[110%] rounded-2xl text-nowrap right-0 shadow-lg overflow-hidden  flex flex-col items-center p-5">
-                        <li><img src={user.profile_img} alt="profile_image" className="w-[50px] aspect-square object-cover rounded-full" /></li>
+                        {
+                            user.profile_img ?
+                            <li><img src={user.profile_img} alt="profile_image" className="w-[50px] aspect-square object-cover rounded-full" /></li>
+                            
+                        : <FaUserLarge className="inline me-1 bg-whitesmoke text-5xl  rounded-full shadow border p-2" />}
                         <li className="px-5 py-2"><MdMarkEmailRead className="inline me-2"/>{user.email}</li>
                         <li className="cursor-pointer w-full text-center hover:text-white hover:bg-black px-3 py-2 rounded-xl border mb-1" onClick={() => navigate("/change-password")} >< TbPasswordFingerprint className="inline me-1" />Change Password</li>
                         <li className="cursor-pointer w-full text-center hover:text-white hover:bg-black px-3 py-2 rounded-xl border" onClick={() => dispatch(logout())}><CgLogOut className="inline me-1" />Logout</li>
