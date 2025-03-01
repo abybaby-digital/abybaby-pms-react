@@ -34,6 +34,9 @@ import toast from "react-hot-toast";
 export default function PaymentRequisitionList() {
   const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
+  const role_id = useSelector((state) => state.auth.user?.role_id);
+  console.log("role",role_id);
+  
 
   const { data: paymentList = [], isLoading } = useQuery({
     queryKey: ["payment-requisition-list", refetchList, modal],
@@ -353,7 +356,9 @@ export default function PaymentRequisitionList() {
                         </>
                       )}
                     ></Column>
-                    <Column
+                    {
+                      role_id === 4 &&
+                      <Column
                       body={(rowData) => (
                         rowData.admin_approve_status === "0" ||
                             rowData.finance_approve_status === "0" ||
@@ -371,6 +376,8 @@ export default function PaymentRequisitionList() {
                       )}
                       style={{ width: "3rem", textAlign: "center" }}
                     />
+
+                    }
                     <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
