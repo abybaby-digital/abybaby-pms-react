@@ -511,7 +511,7 @@ export default function PaymentRequisitionList() {
                         </span>
                       )}
                     ></Column>
-                    <Column
+                    {/* <Column
                       header="Actions"
                       body={(rowData) => (
                         <>
@@ -535,7 +535,7 @@ export default function PaymentRequisitionList() {
                           </TooltipProvider>
 
                           <CheckAccessEdit edit_access="Payment Requition">
-                            {/* <TooltipProvider>
+                            <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger>
                                   <button
@@ -552,11 +552,11 @@ export default function PaymentRequisitionList() {
                                   <p>Edit Payment</p>
                                 </TooltipContent>
                               </Tooltip>
-                            </TooltipProvider> */}
+                            </TooltipProvider>
                           </CheckAccessEdit>
                         </>
                       )}
-                    ></Column>
+                    ></Column> */}
                   </DataTable>
                 </div>
               )}

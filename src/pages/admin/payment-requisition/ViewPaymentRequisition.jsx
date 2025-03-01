@@ -77,6 +77,10 @@ const ViewPaymentReceived = ({ payment, add_or_edit }) => {
                                         <TableCell>₹{payment?.requisition_amount}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">Approved Amount:</TableCell>
+                                        <TableCell>₹{payment?.approved_amount}</TableCell>
+                                    </TableRow>
+                                    <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Date of Payment:</TableCell>
                                         <TableCell>{new Date(payment?.date_of_payments).toLocaleDateString()}</TableCell>
                                     </TableRow>
