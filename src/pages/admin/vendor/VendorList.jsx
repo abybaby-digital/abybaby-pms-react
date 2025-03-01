@@ -218,7 +218,7 @@ export default function VendorList() {
                                             <Column field="vendor_mobile" sortable header="Mobile" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="vendor_address" sortable header="Address" style={{ textTransform: "capitalize", width: "20%" }}></Column>
 
-                                            <Column header="Status" body={() => (
+                                            <Column header="Vendor Status" body={() => (
                                                 <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
                                             )}></Column>
 

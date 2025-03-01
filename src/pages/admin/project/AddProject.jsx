@@ -176,6 +176,7 @@ export default function AddProject() {
         navigate("/project-list");
       } else {
         toast.error(response.message);
+        toast.error(response.response.project_end_date[0]);
       }
     },
     onError: (error) => {
@@ -348,6 +349,9 @@ export default function AddProject() {
                         setValue("vertical_head_id", selectedOption); // Update the vertical_head_id
                         setValue("branch_manager_id", []); // Reset branch_manager_id when VH changes
                         setValue("client_service_id", []); // Reset branch_manager_id when VH changes
+                        setValue("other_members_id", []); // Reset branch_manager_id when VH changes
+                        setValue("activity_coordinator_id", []); // Reset branch_manager_id when VH changes
+                        setValue("activity_coordinator_other_id", []); // Reset branch_manager_id when VH changes
                       }}
                       placeholder="Select Vertical Head"
                     />
@@ -422,10 +426,12 @@ export default function AddProject() {
                       components={animatedComponents}
                       placeholder="Select Client Service"
                       isMulti
-                      isDisabled={
-                        watch("branch_manager_id") === undefined ||
-                        watch("branch_manager_id")?.length === 0
-                      }
+                      
+                      onChange={(selectedOption) => {
+                        setValue("client_service_id", selectedOption); // Update the vertical_head_id
+                        setValue("other_members_id", []); // Reset branch_manager_id when VH changes
+                  
+                      }}
                     />
                   )}
                 />
@@ -489,10 +495,11 @@ export default function AddProject() {
                       }))}
                       components={animatedComponents}
                       placeholder="Select Active Co-ordinator"
-                      isDisabled={
-                        watch("client_service_id") === undefined ||
-                        watch("client_service_id")?.length === 0
-                      }
+                      onChange={(selectedOption) => {
+                        setValue("activity_coordinator_id", selectedOption); // Update the vertical_head_id
+                        setValue("activity_coordinator_other_id", []); // Reset branch_manager_id when VH changes
+                  
+                      }}
                       isMulti
                     />
                   )}
@@ -523,8 +530,8 @@ export default function AddProject() {
                       components={animatedComponents}
                       placeholder="Select Other Active Co-ordinator"
                       isDisabled={
-                        watch("client_service_id") === undefined ||
-                        watch("client_service_id")?.length === 0
+                        watch("activity_coordinator_id") === undefined ||
+                        watch("activity_coordinator_id")?.length === 0
                       }
                       isMulti
                     />

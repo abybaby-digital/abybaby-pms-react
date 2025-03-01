@@ -72,7 +72,7 @@ const EditClient = ({ client }) => {
                 {/* Company Name Field */}
                 <div className="form-group">
                     <label htmlFor="company_name">
-                        Company Name <span className="text-red-600">*</span>
+                        Client Company Name <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="text"
@@ -89,7 +89,7 @@ const EditClient = ({ client }) => {
                 {/* Contact Person Field */}
                 <div className="form-group">
                     <label htmlFor="contact_person">
-                        Contact Person <span className="text-red-600">*</span>
+                        Client Contact Person <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="text"
@@ -106,7 +106,7 @@ const EditClient = ({ client }) => {
                 {/* Office Address Field */}
                 <div className="form-group">
                     <label htmlFor="office_address">
-                        Office Address <span className="text-red-600">*</span>
+                        Client Office Address <span className="text-red-600">*</span>
                     </label>
                     <input
                         className="block"
@@ -122,7 +122,7 @@ const EditClient = ({ client }) => {
                 {/* Contact Number Field */}
                 <div className="form-group">
                     <label htmlFor="contact_number">
-                        Contact Number <span className="text-red-600">*</span>
+                        Client Contact Number <span className="text-red-600">*</span>
                     </label>
                     <input
                         type="text"

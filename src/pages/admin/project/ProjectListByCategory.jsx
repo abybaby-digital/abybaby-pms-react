@@ -94,35 +94,35 @@ export default function ProjectListByCategory() {
     },
   });
 
-  const { data: FYList = [] } = useQuery({
-    queryKey: ["finance-year-list"],
-    queryFn: async () => {
-      return await getFYList(token);
-    },
-  });
+  // const { data: FYList = [] } = useQuery({
+  //   queryKey: ["finance-year-list"],
+  //   queryFn: async () => {
+  //     return await getFYList(token);
+  //   },
+  // });
 
-  const { data: companyList = [] } = useQuery({
-    queryKey: ["company-filter-list"],
-    queryFn: async () => {
-      return await getCompanyList(token);
-    },
-  });
+  // const { data: companyList = [] } = useQuery({
+  //   queryKey: ["company-filter-list"],
+  //   queryFn: async () => {
+  //     return await getCompanyList(token);
+  //   },
+  // });
 
-  const { data: branchList = [] } = useQuery({
-    queryKey: ["branch-filter-list"],
-    queryFn: async () => {
-      return await getBranchList(token);
-    },
-  });
+  // const { data: branchList = [] } = useQuery({
+  //   queryKey: ["branch-filter-list"],
+  //   queryFn: async () => {
+  //     return await getBranchList(token);
+  //   },
+  // });
 
-  const { data: clientList = [] } = useQuery({
-    queryKey: ["client-filter-list"],
-    queryFn: async () => {
-      return await getClientList(token);
-    },
-  });
+  // const { data: clientList = [] } = useQuery({
+  //   queryKey: ["client-filter-list"],
+  //   queryFn: async () => {
+  //     return await getClientList(token);
+  //   },
+  // });
 
-  console.log(FYList);
+  // console.log(FYList);
 
   // useEffect(() => {
   //     if (projectList) {

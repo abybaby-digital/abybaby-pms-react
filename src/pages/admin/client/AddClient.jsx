@@ -98,7 +98,7 @@ export default function AddClient() {
                             {/* Office Address Field */}
                             <div className="form-group">
                                 <label htmlFor="office_address">
-                                    Office Address <span className="text-red-600">*</span>
+                                    Client Office Address <span className="text-red-600">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -117,7 +117,7 @@ export default function AddClient() {
                             {/* Contact Number Field */}
                             <div className="form-group">
                                 <label htmlFor="contact_number">
-                                    Contact Number <span className="text-red-600">*</span>
+                                    Client Contact Number <span className="text-red-600">*</span>
                                 </label>
                                 <input
                                     type="number"

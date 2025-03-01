@@ -42,7 +42,7 @@ const ViewVendor = ({ vendor, add_or_edit }) => {
                     <DialogDescription>
                             {add_or_edit === "view" ? (
                                 <Table className="text-black">
-                                    <TableBody className="grid lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+                                    <TableBody className="grid p-5 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
                                         <TableRow className="flex justify-between">
                                             <TableCell className="font-bold text-lg">Vendor Code:</TableCell>
                                             <TableCell>{vendor?.vendor_code}</TableCell>
@@ -96,7 +96,7 @@ const ViewVendor = ({ vendor, add_or_edit }) => {
                                             <TableCell>{vendor?.ifsc_code}</TableCell>
                                         </TableRow>
                                         <TableRow className="flex justify-between">
-                                            <TableCell className="font-bold text-lg">Status:</TableCell>
+                                            <TableCell className="font-bold text-lg">Vendor Status:</TableCell>
                                             <TableCell>
                                                 {vendor?.status === "1" ? (
                                                     <span className="bg-dark text-sm bg-green-500 px-3 py-1 rounded-xl text-white shadow">Active</span>
