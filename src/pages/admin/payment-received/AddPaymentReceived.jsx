@@ -69,6 +69,7 @@ export default function AddPaymentReceived() {
   }, [projectId, receivedNo]);
 
   console.log(+selectedInvoice?.invoice_amount_with_gst);
+  console.log(+selectedInvoice?.invoice_amount_with_gst);
 
   const addPaymentMutation = useMutation({
     mutationFn: async (data) => {
@@ -246,8 +247,8 @@ export default function AddPaymentReceived() {
                   id="received_amount"
                   {...register("received_amount", {
                     max: {
-                      value: selectedInvoice?.invoice_amount_with_gst,
-                      message: `Received amount must be no greater than ${+selectedInvoice?.invoice_amount_with_gst}`,
+                      value: +selectedInvoice?.invoice_amount_with_gst - +selectedInvoice?.received_amount_with_gst,
+                      message: `Received amount should not be greater than ${+selectedInvoice?.invoice_amount_with_gst - +selectedInvoice?.received_amount_with_gst}`,
                     },
                   })}
                   className="block"
