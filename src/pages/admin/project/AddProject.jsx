@@ -227,7 +227,7 @@ export default function AddProject() {
               {/* PO Number Field */}
               <div className="form-group">
                 <label htmlFor="client_po_number">
-                  Client PO Number <span className="text-red-600">*</span>
+                  Client PO Number
                 </label>
                 <input
                   type="number"
@@ -553,7 +553,7 @@ export default function AddProject() {
                   type="text"
                   className="block"
                   id="quotation_no"
-                  placeholder="Project Amount"
+                  placeholder="Quotation No"
                   {...register("quotation_no", {
                     required: "Quotation Number is required",
                   })}
