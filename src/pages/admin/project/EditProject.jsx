@@ -538,6 +538,7 @@ const EditProject = ({ project }) => {
                   </span>
                 )}
               </div>
+              
               {/*Other  Activity Co-ordinator Field */}
 
               <div className="form-group">

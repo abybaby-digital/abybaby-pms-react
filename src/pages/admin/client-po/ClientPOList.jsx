@@ -70,27 +70,63 @@ export default function ClientPOList() {
   });
 
   // Export to Excel
+  // const exportToExcel = () => {
+  //   const ws = XLSX.utils.json_to_sheet(clientPOList?.response || []);
+  //   const wb = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, "Client PO List");
+  //   XLSX.writeFile(wb, "client_po_list.xlsx");
+  // };
+
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(clientPOList?.response || []);
+    if (!clientPOList?.response || clientPOList.response.length === 0) {
+      alert("No data available to export!");
+      return;
+    }
+    // Define custom column headers
+    const formattedData = clientPOList?.response?.map((item, index) => ({
+      sl_no: index + 1,
+      "Project Name": item.project_name,
+      "Project Number": item.project_no,
+      "PO Number": item.po_no,
+      "PO amount pre GST": item.po_amount_pre_gst,
+      "PO amount with GST": item.po_amount_with_gst,
+      "PO date": new Date(item.po_date).toLocaleDateString(),
+      "Payment Schedule days": item.payment_schedule_days,
+      "Details": item.project_order_details,
+    }));
+
+    // Convert JSON to Excel sheet
+    const ws = XLSX.utils.json_to_sheet(formattedData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Client PO List");
+
+    // Save file
     XLSX.writeFile(wb, "client_po_list.xlsx");
   };
 
+
   // Export to PDF
   const exportToPDF = () => {
+
+    if (!clientPOList?.response || clientPOList.response.length === 0) {
+      alert("No data available to export!");
+      return;
+    }
+
     const doc = new jsPDF("l", "mm", "a4");
     doc.autoTable({
       head: [
-        ["Project Name", "PO No", "Amount", "PO Date", "Details", "Status"],
+        ["Project Name", "Project Number", "PO Number", "PO amount pre GST", "PO amount with GST", "PO date", "Payment Schedule days", "Details"],
       ],
       body: clientPOList?.response.map((clientPO) => [
         clientPO.project_name,
+        clientPO.project_no,
         clientPO.po_no || "N/A",
-        `₹${clientPO.po_amount}`,
+        clientPO.po_amount_pre_gst,
+        clientPO.po_amount_with_gst,
         new Date(clientPO.po_date).toLocaleDateString(),
+        clientPO.payment_schedule_days,
         clientPO.project_order_details,
-        clientPO.status === "1" ? "Active" : "Inactive",
       ]),
     });
     doc.save("client_po_list.pdf");
@@ -282,23 +318,23 @@ export default function ClientPOList() {
                       }
                     ></Column>
                     <Column
-                    className="text-center"
+                      className="text-center"
                       field="created_by_name"
                       sortable
                       header="Created By"
                       body={(rowData) =>
-                       rowData.created_by_name ? rowData.created_by_name : "....."
+                        rowData.created_by_name ? rowData.created_by_name : "....."
                       }
                     ></Column>
                     <Column
-                    className="text-center"
+                      className="text-center"
                       field="updated_by_name"
                       sortable
                       header="Updated By"
                       body={(rowData) =>
                         rowData.updated_by_name ? rowData.updated_by_name : "....."
                       }
-                    ></Column>  
+                    ></Column>
                     <Column
                       field="project_order_details"
                       sortable
@@ -311,17 +347,16 @@ export default function ClientPOList() {
                       header="Client PO Status"
                       body={(rowData) => (
                         <span
-                          className={`px-3 py-1 rounded-xl text-white shadow ${
-                            rowData.status === "1"
-                              ? "bg-green-500"
-                              : "bg-red-500"
-                          }`}
+                          className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1"
+                            ? "bg-green-500"
+                            : "bg-red-500"
+                            }`}
                         >
                           {rowData.status === "1" ? "Active" : "Inactive"}
                         </span>
                       )}
                     ></Column>
-                    
+
                   </DataTable>
                 </div>
               )}

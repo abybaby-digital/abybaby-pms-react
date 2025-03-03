@@ -71,15 +71,45 @@ export default function InvoiceList() {
   });
 
   // Export to Excel
+  // const exportToExcel = () => {
+  //   const ws = XLSX.utils.json_to_sheet(invoiceList?.response || []);
+  //   const wb = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, "Invoice List");
+  //   XLSX.writeFile(wb, "invoice_list.xlsx");
+  // };
+
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(invoiceList?.response || []);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Invoice List");
-    XLSX.writeFile(wb, "invoice_list.xlsx");
-  };
+    if (!invoiceList?.response || invoiceList.response.length === 0) {
+      alert("No data available to export!");
+      return;
+    }
+        // Define custom column headers
+        const formattedData = invoiceList?.response?.map((item, index) => ({
+          sl_no: index + 1,
+          "Project Name": item.project_name,
+          "Project Number": item.project_no,
+          "Invoice No": item.invoice_no,
+          "Invoice amount pre gst": item.invoice_amount_pre_gst,
+          "Invoice amount with gst": item.invoice_amount_with_gst,
+          "Received Amount": item.received_amount,
+          "Invoice date": new Date(item.invoice_date).toLocaleDateString(),
+        }));
+    
+        // Convert JSON to Excel sheet
+        const ws = XLSX.utils.json_to_sheet(formattedData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Project List");
+    
+        // Save file
+        XLSX.writeFile(wb, "invoice_list.xlsx");
+      };
 
   // Export to PDF
   const exportToPDF = () => {
+    if (!invoiceList?.response || invoiceList.response.length === 0) {
+      alert("No data available to export!");
+      return;
+    }
     const doc = new jsPDF("l", "mm", "a4");
     doc.autoTable({
       head: [
@@ -87,7 +117,9 @@ export default function InvoiceList() {
           "Project Name",
           "Project No",
           "Invoice No",
-          "Amount",
+          "Invoice Amount Pre GST",
+          "Invoice Amount With GST",
+          "Received Amount",
           "Invoice Date",
           "Details",
         ],
@@ -96,7 +128,9 @@ export default function InvoiceList() {
         invoice.project_name,
         invoice.project_no,
         invoice.invoice_no,
-        `₹${invoice.invoice_amount}`,
+        invoice.invoice_amount_pre_gst,
+        invoice.invoice_amount_with_gst,
+        invoice.received_amount,
         new Date(invoice.invoice_date).toLocaleDateString(),
         invoice.invoice_details,
       ]),

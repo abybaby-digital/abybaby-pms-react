@@ -61,25 +61,53 @@ export default function PaymentReceivedList() {
     });
 
     // Export to Excel
+    // const exportToExcel = () => {
+    //     const ws = XLSX.utils.json_to_sheet(paymentList?.response || []);
+    //     const wb = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
+    //     XLSX.writeFile(wb, "payment_received_list.xlsx");
+    // };
+
     const exportToExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(paymentList?.response || []);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
-        XLSX.writeFile(wb, "payment_received_list.xlsx");
-    };
+        if (!paymentList?.response || paymentList.response.length === 0) {
+          alert("No data available to export!");
+          return;
+        }
+            // Define custom column headers
+            const formattedData = paymentList?.response?.map((item, index) => ({
+              sl_no: index + 1,
+              "Project Name": item.project_name,
+              "Project Number": item.project_no,
+              "Receipt No": item.received_no,
+              "Received amount": item.received_amount,
+              "Receipt date": new Date(item.received_date).toLocaleDateString(),
+            }));
+        
+            // Convert JSON to Excel sheet
+            const ws = XLSX.utils.json_to_sheet(formattedData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
+        
+            // Save file
+            XLSX.writeFile(wb, "payment_received_list.xlsx");
+          };
 
     // Export to PDF
     const exportToPDF = () => {
+        if (!paymentList?.response || paymentList.response.length === 0) {
+            alert("No data available to export!");
+            return;
+          }
         const doc = new jsPDF('l', 'mm', 'a4');
         doc.autoTable({
-            head: [["Project Name", "Received No", "Amount", "Received Date", "Details", "Status"]],
+            head: [["Project Name","Project No", "Received No", "Amount", "Received Date", "Details"]],
             body: paymentList?.response.map(payment => [
                 payment.project_name,
+                payment.project_no,
                 payment.received_no,
-                `₹${payment.received_amount}`,
+                payment.received_amount,
                 new Date(payment.received_date).toLocaleDateString(),
                 payment.received_details,
-                payment.status === "1" ? "Active" : "Inactive",
             ]),
         });
         doc.save("payment_received_list.pdf");
