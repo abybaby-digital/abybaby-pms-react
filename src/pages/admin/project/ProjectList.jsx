@@ -158,7 +158,8 @@ export default function ProjectList() {
       "Client Service": item.client_service_name,
       "Other Members": item.other_service_names,
       "Quotation No": item.quotation_no,
-      "Project Amount": item.project_amount,
+      "Project Amount pre GST": item.project_amount_pre_gst,
+      "Project Amount with GST": item.project_amount_with_gst,
       "Start Date": item.project_start_date,
       "End Date": item.project_end_date,
       Status: item.status,
@@ -181,7 +182,6 @@ export default function ProjectList() {
         [
           "Project Number",
           "Project Name",
-          "Project No",
           "Client",
           "Branch",
           "Company",
@@ -192,7 +192,8 @@ export default function ProjectList() {
           "Quotation No",
           "Start Date",
           "End Date",
-          "Project Amount",
+          "Project Amount pre GST",
+          "Project Amount with GST",
           "Status",
         ],
       ],
@@ -209,7 +210,8 @@ export default function ProjectList() {
         project.quotation_no,
         project.project_start_date,
         project.project_end_date,
-        project.project_amount,
+        project.project_amount_pre_gst,
+        project.project_amount_with_gst,
         project.status === "1" ? "Active" : "Inactive", // Status check
       ]),
     });
