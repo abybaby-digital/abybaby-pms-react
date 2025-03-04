@@ -356,7 +356,7 @@ export default function ProjectList() {
                     <Column
                       field="project_number"
                       sortable
-                      header="Project Number"
+                      header="Project No"
                       style={{ whiteSpace: "nowrap" }}
                     ></Column>
                     <Column
