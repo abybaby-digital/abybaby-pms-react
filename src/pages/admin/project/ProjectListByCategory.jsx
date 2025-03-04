@@ -239,7 +239,7 @@ export default function ProjectListByCategory() {
             <div className="card-body p-5 bg-white shadow overflow-hidden">
               {/* filtering Projects */}
 
-              
+
               {isLoading ? (
                 <TableSkeleton columns="5" />
               ) : (
@@ -348,7 +348,7 @@ export default function ProjectListByCategory() {
                           )}
                         ></Column>
                     }
-                    <Column
+                    {/* <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
                         <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
@@ -356,7 +356,14 @@ export default function ProjectListByCategory() {
                         </span>
                       )}
                       style={{ width: "5rem", textAlign: "center" }}
-                    />
+                    /> */}
+
+                    <Column
+                      field="project_number"
+                      sortable
+                      header="Project No"
+                      style={{ textTransform: "capitalize" }}
+                    ></Column>
 
                     <Column
                       field="project_name"
@@ -364,12 +371,7 @@ export default function ProjectListByCategory() {
                       header="Project Name"
                       style={{ textTransform: "capitalize" }}
                     ></Column>
-                    <Column
-                      field="project_number"
-                      sortable
-                      header="Project Number"
-                      style={{ textTransform: "capitalize" }}
-                    ></Column>
+
                     <Column
                       field="client_name"
                       sortable
@@ -443,10 +445,10 @@ export default function ProjectListByCategory() {
                       body={(rowData) => (
                         <span
                           className={`bg-dark text-sm ${rowData.status === "1"
-                              ? "bg-green-500"
-                              : rowData.status === "0"
-                                ? "bg-red-500"
-                                : "bg-gray-500"
+                            ? "bg-green-500"
+                            : rowData.status === "0"
+                              ? "bg-red-500"
+                              : "bg-gray-500"
                             } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.status === "1"
@@ -462,8 +464,8 @@ export default function ProjectListByCategory() {
                       body={(rowData) => (
                         <span
                           className={`bg-dark text-sm ${rowData.billed_status === "1"
-                              ? "bg-green-500"
-                              : "bg-red-500"
+                            ? "bg-green-500"
+                            : "bg-red-500"
                             } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.billed_status === "1"
@@ -477,8 +479,8 @@ export default function ProjectListByCategory() {
                       body={(rowData) => (
                         <span
                           className={`bg-dark text-sm ${rowData.received_status === "1"
-                              ? "bg-green-500"
-                              : "bg-red-500"
+                            ? "bg-green-500"
+                            : "bg-red-500"
                             } px-3 py-1 rounded-xl text-white shadow`}
                         >
                           {rowData.received_status === "1" ? "Paid" : "Unpaid"}
