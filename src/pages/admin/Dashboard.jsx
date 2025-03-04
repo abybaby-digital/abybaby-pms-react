@@ -90,7 +90,7 @@ export default function Dashboard() {
 
   // RUNNING PROJECT
   const { data: runningProjectList = [] } = useQuery({
-    queryKey: ["running-project", fincYear],
+    queryKey: ["running-project", fincYear , token],
     queryFn: async () => {
       return await getProjectList(
         token,
@@ -108,7 +108,7 @@ export default function Dashboard() {
   });
   // UNBILLED CLOSED PROJECT
   const { data: unbilledClosedProjectList = [] } = useQuery({
-    queryKey: ["unbilled-closed-project", fincYear],
+    queryKey: ["unbilled-closed-project", fincYear , token],
     queryFn: async () => {
       return await getProjectList(
         token,
@@ -126,7 +126,7 @@ export default function Dashboard() {
   });
   // BILLED CLOSED PROJECT
   const { data: billedClosedProjectList = [] } = useQuery({
-    queryKey: ["billed-closed-project", fincYear],
+    queryKey: ["billed-closed-project", fincYear, token],
     queryFn: async () => {
       return await getProjectList(
         token,
@@ -144,7 +144,7 @@ export default function Dashboard() {
   });
   // PAYMENT OUTSTANDING PROJECT
   const { data: paymentOutstandingProjectList = [] } = useQuery({
-    queryKey: ["payment-outstanding-project", fincYear],
+    queryKey: ["payment-outstanding-project", fincYear,token],
     queryFn: async () => {
       return await getProjectList(
         token,
