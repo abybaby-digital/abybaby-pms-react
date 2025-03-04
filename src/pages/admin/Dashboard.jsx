@@ -90,7 +90,7 @@ export default function Dashboard() {
 
   // RUNNING PROJECT
   const { data: runningProjectList = [] } = useQuery({
-    queryKey: ["running-project", fincYear , token],
+    queryKey: ["running-project", fincYear, token],
     queryFn: async () => {
       return await getProjectList(
         token,
@@ -108,7 +108,7 @@ export default function Dashboard() {
   });
   // UNBILLED CLOSED PROJECT
   const { data: unbilledClosedProjectList = [] } = useQuery({
-    queryKey: ["unbilled-closed-project", fincYear , token],
+    queryKey: ["unbilled-closed-project", fincYear, token],
     queryFn: async () => {
       return await getProjectList(
         token,
@@ -144,7 +144,7 @@ export default function Dashboard() {
   });
   // PAYMENT OUTSTANDING PROJECT
   const { data: paymentOutstandingProjectList = [] } = useQuery({
-    queryKey: ["payment-outstanding-project", fincYear,token],
+    queryKey: ["payment-outstanding-project", fincYear, token],
     queryFn: async () => {
       return await getProjectList(
         token,
@@ -161,7 +161,7 @@ export default function Dashboard() {
     },
   });
 
-//   console.log(runningProjectList.response);
+  //   console.log(runningProjectList.response);
 
   return (
     <SidebarProvider>
@@ -190,7 +190,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-4 lg:grid-cols-2 ">
-          <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
+            <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <MdBallot className="text-3xl text-white inline" />
               </div>
@@ -218,9 +218,10 @@ export default function Dashboard() {
                 More Info
               </Link>
             </div>
-            <div className="dash-card bg-white rounded-3xl shadow border flex items-start justify-between p-5">
-              <div className="bg-[#fec107] shadow-lg shadow-[#fec107] -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
-                <MdOutlinePendingActions className="text-3xl text-white inline" />
+
+            <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
+              <div className="bg-[#27a844] shadow-lg shadow-[#27a844]  -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
+                <GiCardboardBoxClosed className="text-3xl text-white inline" />
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
@@ -235,16 +236,16 @@ export default function Dashboard() {
                   {projectReport?.response[1]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
-                  Running Projects
+                  Closed Projects (Billed + Unbilled)
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => {
                   projectListByCategory(
-                    "running project",
-                    "/project-list/running",
-                    "1",
+                    "closed project",
+                    "/project-list/closed",
+                    "2",
                     null,
                     null
                   );
@@ -255,9 +256,9 @@ export default function Dashboard() {
                 More Info
               </button>
             </div>
-            <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
-              <div className="bg-[#27a844] shadow-lg shadow-[#27a844]  -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
-                <GiCardboardBoxClosed className="text-3xl text-white inline" />
+            <div className="dash-card bg-white rounded-3xl shadow border flex items-start justify-between p-5">
+              <div className="bg-[#fec107] shadow-lg shadow-[#fec107] -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
+                <MdOutlinePendingActions className="text-3xl text-white inline" />
               </div>
               <div className="dash-card-content text-end mb-8">
                 <p className="text-2xl font-bold">
@@ -272,16 +273,16 @@ export default function Dashboard() {
                   {projectReport?.response[2]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
-                  Closed Projects (Billed + Unbilled)
+                  Running Projects
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => {
                   projectListByCategory(
-                    "closed project",
-                    "/project-list/closed",
-                    "2",
+                    "running project",
+                    "/project-list/running",
+                    "1",
                     null,
                     null
                   );
@@ -309,7 +310,7 @@ export default function Dashboard() {
                   {projectReport?.response[3]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
-                  Unbilled Closed Projects
+                  Closed Projects (Unbilled)
                 </p>
               </div>
               <button
@@ -329,10 +330,10 @@ export default function Dashboard() {
                 More Info
               </button>
             </div>
-            
+
           </div>
           <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-4 lg:grid-cols-2">
-            
+
             <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <FaMoneyBillTrendUp className="text-3xl text-white inline" />
@@ -350,7 +351,7 @@ export default function Dashboard() {
                   {projectReport?.response[4]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
-                  Billed Closed Project
+                  Closed Project (Billed)
                 </p>
               </div>
               <button
@@ -463,7 +464,7 @@ export default function Dashboard() {
                   {projectReport?.response[7]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
-                Partial Payment Received
+                  Partial Payment Received
                 </p>
               </div>
               <button

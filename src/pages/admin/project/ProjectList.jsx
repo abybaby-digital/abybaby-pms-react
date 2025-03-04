@@ -343,7 +343,7 @@ export default function ProjectList() {
                           )}
                         ></Column>
                     }
-                    <Column
+                    {/* <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
                         <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
@@ -351,8 +351,14 @@ export default function ProjectList() {
                         </span>
                       )}
                       style={{ width: "1rem", textAlign: "center" }}
-                    />
+                    /> */}
                     {/* <Column field="project_number" sortable header="Project Number" style={{ textTransform: "capitalize" }}></Column> */}
+                    <Column
+                      field="project_number"
+                      sortable
+                      header="Project Number"
+                      style={{ whiteSpace: "nowrap" }}
+                    ></Column>
                     <Column
                       field="project_name"
                       sortable
@@ -360,12 +366,7 @@ export default function ProjectList() {
                       style={{ whiteSpace: "nowrap", width: "50px" }}
 
                     ></Column>
-                    <Column
-                      field="project_number"
-                      sortable
-                      header="Project Number"
-                      style={{ whiteSpace: "nowrap" }}
-                    ></Column>
+                    
                     <Column
                       field="client_name"
                       sortable
