@@ -12,6 +12,7 @@ import {
   getProjectList,
   getBranchList,
   getVendorList,
+  getProjectById,
 } from "../../../services/api";
 import { useState, useEffect } from "react";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
@@ -38,19 +39,15 @@ export default function AddPaymentRequisition() {
 
   const project_id = watch("project_id");
   const entered_requisition_amount = watch("requisition_amount");
-  // console.log(entered_requisition_amount);
+  console.log(project_id);
 
-  const getSingleProject = (id) => {
-    const singleProject = projectList?.response?.find(
-      (project) => project.id === id
-    );
-    setSingleProj(singleProject);
-  };
+  const { data: projectById } = useQuery({
+    queryKey: ["single-project", project_id],
+    queryFn: async () => await getProjectById(token, project_id)
+  })
 
-  useEffect(() => {
-    getSingleProject(+project_id);
-    console.log(singlePorj);
-  }, [project_id]);
+
+
 
   const project_amount = Math.floor(+singlePorj?.project_amount);
   const requisition_amount = Math.floor(+singlePorj?.requition_amount);
@@ -84,6 +81,13 @@ export default function AddPaymentRequisition() {
       return await getProjectList(token);
     },
   });
+
+
+  useEffect(() => {
+    setSingleProj(projectById?.response?.project)
+  }, [projectById])
+
+
 
   const { data: vendorList = [], isLoading: isLoadingVendors } = useQuery({
     queryKey: ["vendor-list"],
@@ -164,215 +168,219 @@ export default function AddPaymentRequisition() {
         <AdminHead breadcrumb_name="Payment Requisition" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
           {isLoadingProjects ?
-          <FormSubmitLoader loading_msg="" />
-          :
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
-          >
-            <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
-              ADD PAYMENT REQUISITION
-            </h2>
-            <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
-              {/* Project ID Dropdown */}
-              <div className="form-group">
-                <label htmlFor="project_id">
-                  Project Name <span className="text-red-600">*</span>
-                </label>
-                <select
-                  id="project_id"
-                  {...register("project_id", {
-                    required: "Project ID is required",
-                  })}
-                  className="block w-full"
-                >
-                  <option value="">Select Project</option>
-                  {
-                  isLoadingProjects ? 
-                  <option value="">Loading Projects List , Please Wait....</option>:
-                  projectList?.response?.map((project) => (
-                    <option key={project.id} value={project.id}>
-                      {project.project_name}
-                    </option>
-                  ))
-                  }
-                </select>
-                {errors.project_id && (
-                  <span className="text-red-600 text-sm">
-                    {errors.project_id.message}
-                  </span>
-                )}
-              </div>
-
-              {/* Vendor ID Dropdown */}
-              <div className="form-group">
-                <label htmlFor="vendor_id">
-                  Vendor Name <span className="text-red-600">*</span>
-                </label>
-                <select
-                  id="vendor_id"
-                  {...register("vendor_id", {
-                    required: "Vendor ID is required",
-                  })}
-                  className="block w-full"
-                  onChange={handleVendorChange} // Handle vendor change
-                >
-                  <option value="">Select Vendor</option>
-                  {vendorList?.response?.map((vendor) => (
-                    <option key={vendor.id} value={vendor.id}>
-                      {vendor.vendor_name}
-                    </option>
-                  ))}
-                </select>
-                {errors.vendor_id && (
-                  <span className="text-red-600 text-sm">
-                    {errors.vendor_id.message}
-                  </span>
-                )}
-              </div>
-
-              {/* Bank Name Input */}
-              <div className="form-group">
-                <label htmlFor="bank_name">
-                  Bank Name <span className="text-red-600">*</span>
-                </label>
-                <input
-                  readOnly
-                  type="text"
-                  id="bank_name"
-                  {...register("bank_name")}
-                  className="block"
-                  placeholder="Enter Bank Name"
-                />
-                {errors.bank_name && (
-                  <span className="text-red-600 text-sm">
-                    {errors.bank_name.message}
-                  </span>
-                )}
-              </div>
-
-              {/* Bank Account Input */}
-              <div className="form-group">
-                <label htmlFor="bank_account">
-                  Bank Account No <span className="text-red-600">*</span>
-                </label>
-                <input
-                  readOnly
-                  type="text"
-                  id="bank_account"
-                  {...register("bank_account", {
-                    required: "Bank Account No is required",
-                  })}
-                  className="block"
-                  placeholder="Enter Bank Account No"
-                />
-                {errors.bank_account && (
-                  <span className="text-red-600 text-sm">
-                    {errors.bank_account.message}
-                  </span>
-                )}
-              </div>
-
-              {/* IFSC Code Input */}
-              <div className="form-group">
-                <label htmlFor="ifsc_code">
-                  IFSC Code <span className="text-red-600">*</span>
-                </label>
-                <input
-                  readOnly
-                  type="text"
-                  id="ifsc_code"
-                  {...register("ifsc_code", {
-                    required: "IFSC Code is required",
-                  })}
-                  className="block"
-                  placeholder="Enter IFSC Code"
-                />
-                {errors.ifsc_code && (
-                  <span className="text-red-600 text-sm">
-                    {errors.ifsc_code.message}
-                  </span>
-                )}
-              </div>
-
-              {/* Requisition Amount Input */}
-              {watch("project_id") !== "" && watch("project_id") !== undefined ? (
+            <FormSubmitLoader loading_msg="" />
+            :
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
+            >
+              <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
+                ADD PAYMENT REQUISITION
+              </h2>
+              <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
+                {/* Project ID Dropdown */}
                 <div className="form-group">
-                  <label htmlFor="requisition_amount">
-                    Requisition Amount <span className="text-red-600">*</span>
+                  <label htmlFor="project_id">
+                    Project Name <span className="text-red-600">*</span>
                   </label>
-                  <input
-                    type="number"
-                    id="requisition_amount"
-                    {...register("requisition_amount", {
-                      required: "Requisition Amount is required",
+                  <select
+                    id="project_id"
+                    {...register("project_id", {
+                      required: "Project ID is required",
                     })}
-                    className="block"
-                    placeholder="Enter Amount"
-                  />
-                  {errors.requisition_amount && (
+                    className="block w-full"
+                  >
+                    <option value="">Select Project</option>
+                    {
+                      isLoadingProjects ?
+                        <option value="">Loading Projects List , Please Wait....</option> :
+                        projectList?.response?.map((project) => (
+                          <option key={project.id} value={project.id}>
+                            {project.project_name}
+                          </option>
+                        ))
+                    }
+                  </select>
+                  {errors.project_id && (
                     <span className="text-red-600 text-sm">
-                      {errors.requisition_amount.message}
+                      {errors.project_id.message}
                     </span>
                   )}
                 </div>
-              ) : null}
 
-              {/* Requisition Image Input */}
-              <div className="form-group">
-                <label htmlFor="requisition_img">
-                  Requisition Image (Image/PDF){" "}
-                  <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="file"
-                  id="requisition_img"
-                  {...register("requisition_img")}
-                  accept=".jpg, .jpeg, .png, .pdf"
-                  className="block"
-                  onChange={handleFileChange}
-                />
-                {errors.requisition_img && (
-                  <span className="text-red-600 text-sm">
-                    {errors.requisition_img.message}
-                  </span>
-                )}
-              </div>
-              {/* Display Preview */}
-              <div className="form-group mt-3 lg:col-span-2 text-center">
-                {filePreview && (
-                  <>
-                    {filePreview.includes("data:image") ? (
-                      <img
-                        src={filePreview}
-                        alt="Image Preview"
-                        className="inline max-w-full h-[250px] object-contain"
-                      />
-                    ) : filePreview.includes("pdf") ? (
-                      <iframe
-                        src={filePreview}
-                        width="100%"
-                        height="500px"
-                        title="PDF Preview"
-                      />
-                    ) : null}
-                  </>
-                )}
-              </div>
+                {/* Vendor ID Dropdown */}
+                <div className="form-group">
+                  <label htmlFor="vendor_id">
+                    Vendor Name <span className="text-red-600">*</span>
+                  </label>
+                  <select
+                    id="vendor_id"
+                    {...register("vendor_id", {
+                      required: "Vendor ID is required",
+                    })}
+                    className="block w-full"
+                    onChange={handleVendorChange} // Handle vendor change
+                  >
+                    <option value="">Select Vendor</option>
+                    {vendorList?.response?.map((vendor) => (
+                      <option key={vendor.id} value={vendor.id}>
+                        {vendor.vendor_name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.vendor_id && (
+                    <span className="text-red-600 text-sm">
+                      {errors.vendor_id.message}
+                    </span>
+                  )}
+                </div>
 
-              {/* Requisition Remarks Input */}
-              <div className="form-group">
-                <label htmlFor="requisition_remarks">Requisition Remarks</label>
-                <input
-                  id="requisition_remarks"
-                  {...register("requisition_remarks")}
-                  className="block"
-                  placeholder="Enter remarks"
-                />
-              </div>
+                {/* Bank Name Input */}
+                <div className="form-group">
+                  <label htmlFor="bank_name">
+                    Bank Name <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    readOnly
+                    type="text"
+                    id="bank_name"
+                    {...register("bank_name")}
+                    className="block"
+                    placeholder="Enter Bank Name"
+                  />
+                  {errors.bank_name && (
+                    <span className="text-red-600 text-sm">
+                      {errors.bank_name.message}
+                    </span>
+                  )}
+                </div>
 
-              {/* Date of Payment Input */}
-              {/* <div className="form-group">
+                {/* Bank Account Input */}
+                <div className="form-group">
+                  <label htmlFor="bank_account">
+                    Bank Account No <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    readOnly
+                    type="text"
+                    id="bank_account"
+                    {...register("bank_account", {
+                      required: "Bank Account No is required",
+                    })}
+                    className="block"
+                    placeholder="Enter Bank Account No"
+                  />
+                  {errors.bank_account && (
+                    <span className="text-red-600 text-sm">
+                      {errors.bank_account.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* IFSC Code Input */}
+                <div className="form-group">
+                  <label htmlFor="ifsc_code">
+                    IFSC Code <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    readOnly
+                    type="text"
+                    id="ifsc_code"
+                    {...register("ifsc_code", {
+                      required: "IFSC Code is required",
+                    })}
+                    className="block"
+                    placeholder="Enter IFSC Code"
+                  />
+                  {errors.ifsc_code && (
+                    <span className="text-red-600 text-sm">
+                      {errors.ifsc_code.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* Requisition Amount Input */}
+                {watch("project_id") !== "" && watch("project_id") !== undefined ? (
+                  <div className="form-group">
+                    <label htmlFor="requisition_amount">
+                      Requisition Amount <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="requisition_amount"
+                      {...register("requisition_amount",
+                        {
+                          max: {
+                            value: +singlePorj?.branch_expenses_cash,
+                            message: `Requisition amount should not be greater than branch cost (Cash) amount ${singlePorj?.branch_expenses_cash}`,
+                          },
+                        })}
+                      className="block"
+                      placeholder="Enter Amount"
+                    />
+                    {errors.requisition_amount && (
+                      <span className="text-red-600 text-sm">
+                        {errors.requisition_amount.message}
+                      </span>
+                    )}
+                  </div>
+                ) : null}
+
+                {/* Requisition Image Input */}
+                <div className="form-group">
+                  <label htmlFor="requisition_img">
+                    Requisition Image (Image/PDF){" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="file"
+                    id="requisition_img"
+                    {...register("requisition_img")}
+                    accept=".jpg, .jpeg, .png, .pdf"
+                    className="block"
+                    onChange={handleFileChange}
+                  />
+                  {errors.requisition_img && (
+                    <span className="text-red-600 text-sm">
+                      {errors.requisition_img.message}
+                    </span>
+                  )}
+                </div>
+                {/* Display Preview */}
+                <div className="form-group mt-3 lg:col-span-2 text-center">
+                  {filePreview && (
+                    <>
+                      {filePreview.includes("data:image") ? (
+                        <img
+                          src={filePreview}
+                          alt="Image Preview"
+                          className="inline max-w-full h-[250px] object-contain"
+                        />
+                      ) : filePreview.includes("pdf") ? (
+                        <iframe
+                          src={filePreview}
+                          width="100%"
+                          height="500px"
+                          title="PDF Preview"
+                        />
+                      ) : null}
+                    </>
+                  )}
+                </div>
+
+                {/* Requisition Remarks Input */}
+                <div className="form-group">
+                  <label htmlFor="requisition_remarks">Requisition Remarks</label>
+                  <input
+                    id="requisition_remarks"
+                    {...register("requisition_remarks")}
+                    className="block"
+                    placeholder="Enter remarks"
+                  />
+                </div>
+
+                {/* Date of Payment Input */}
+                {/* <div className="form-group">
                 <label htmlFor="date_of_payments">
                   Date of Payment <span className="text-red-600">*</span>
                 </label>
@@ -390,45 +398,45 @@ export default function AddPaymentRequisition() {
                   </span>
                 )}
               </div> */}
-              {/* Date of Payment Input */}
-              <div className="form-group">
-                <label htmlFor="date_of_payments">
-                  Date of Payment <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="date"
-                  id="date_of_payments"
-                  {...register("date_of_payments", {
-                    required: "Date of Payment is required",
-                  })}
-                  className="block"
-                  min={minDate} // Set the minimum date based on the calculated minDate
-                />
-                {errors.date_of_payments && (
-                  <span className="text-red-600 text-sm">
-                    {errors.date_of_payments.message}
-                  </span>
-                )}
+                {/* Date of Payment Input */}
+                <div className="form-group">
+                  <label htmlFor="date_of_payments">
+                    Date of Payment <span className="text-red-600">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="date_of_payments"
+                    {...register("date_of_payments", {
+                      required: "Date of Payment is required",
+                    })}
+                    className="block"
+                    min={minDate} // Set the minimum date based on the calculated minDate
+                  />
+                  {errors.date_of_payments && (
+                    <span className="text-red-600 text-sm">
+                      {errors.date_of_payments.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* Submit Button */}
               </div>
 
-              {/* Submit Button */}
-            </div>
+              {/* LOADER */}
 
-            {/* LOADER */}
-
-            {addPaymentMutation.isPending ? (
-              <FormSubmitLoader loading_msg="Creating Payment Requisition..." />
-            ) : null}
-            <div className="card-footer text-center bg-gray-100 py-5">
-              <button
-                type="submit"
-                className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                disabled={addPaymentMutation.isPending}
-              >
-                {addPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
-              </button>
-            </div>
-          </form>
+              {addPaymentMutation.isPending ? (
+                <FormSubmitLoader loading_msg="Creating Payment Requisition..." />
+              ) : null}
+              <div className="card-footer text-center bg-gray-100 py-5">
+                <button
+                  type="submit"
+                  className="px-10 py-2 text-white bg-lightdark rounded-2xl"
+                  disabled={addPaymentMutation.isPending}
+                >
+                  {addPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
+                </button>
+              </div>
+            </form>
           }
         </div>
       </SidebarInset>

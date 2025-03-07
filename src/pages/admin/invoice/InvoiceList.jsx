@@ -280,45 +280,15 @@ export default function InvoiceList() {
                     ></Column>
                     {/* <Column field="invoice_amount_pre_gst" sortable header="Amount (pre GST)" body={(rowData) => `₹${rowData.invoice_amount_pre_gst}`}></Column> */}
                     <Column
-                      header="Project Amount (pre GST)"
+                      field="invoice_amount_pre_gst"
                       sortable
-                      body={(rowData) =>
-                        rowData.other_members_id
-                          ?.split(",")
-                          ?.map(Number)
-                          ?.includes(userId) ? (
-                          <span className="block text-center">-</span>
-                        ) : (
-                          <span className="block text-center">
-                            {rowData.invoice_amount_pre_gst}
-                          </span>
-                        )
-                      }
-                      style={{ textTransform: "capitalize" }}
-                    />
-                    {/* <Column
+                      header="Invoice Amount (pre GST)"
+                    ></Column>
+                    <Column
                       field="invoice_amount_with_gst"
                       sortable
-                      header="Amount (with GST)"
-                      body={(rowData) => `₹${rowData.invoice_amount_with_gst}`}
-                    ></Column> */}
-                    <Column
-                      header="Project Amount (with GST)"
-                      sortable
-                      body={(rowData) =>
-                        rowData.other_members_id
-                          ?.split(",")
-                          ?.map(Number)
-                          ?.includes(userId) ? (
-                          <span className="block text-center">-</span>
-                        ) : (
-                          <span className="block text-center">
-                            {rowData.invoice_amount_with_gst}
-                          </span>
-                        )
-                      }
-                      style={{ textTransform: "capitalize" }}
-                    />
+                      header="Invoice Amount (with GST)"
+                    ></Column>
                     <Column
                       field="invoice_date"
                       sortable

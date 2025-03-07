@@ -326,24 +326,31 @@ export default function ProjectList() {
                                 </Tooltip>
                               </TooltipProvider>
                               <CheckAccessEdit edit_access="Project">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger>
-                                      <button
-                                        className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                        onClick={() => {
-                                          singleProject(rowData.id);
-                                          setAddOrEdit("edit");
-                                        }}
-                                      >
-                                        <MdEditSquare />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>Edit Project</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
+                                {
+                                  +rowData.client_po_amount_with_gst === 0 &&
+                                    +rowData.requition_amount === 0 &&
+                                    +rowData.total_project_invoice_amount_with_gst === 0 ?
+                                    
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger>
+                                          <button
+                                            className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                            onClick={() => {
+                                              singleProject(rowData.id);
+                                              setAddOrEdit("edit");
+                                            }}
+                                          >
+                                            <MdEditSquare />
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Edit Project</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider> : null
+                                }
+
                               </CheckAccessEdit>
                             </>
                           )}
@@ -458,14 +465,14 @@ export default function ProjectList() {
                           header="Branch Expense (Cash)"
                           sortable
                           body={(rowData) =>
-                            rowData.branch_expenses_check
+                            rowData.branch_expenses_cash
                               ?.split(",")
                               ?.map(Number)
                               ?.includes(userId) ? (
                               <span className="block text-center">-</span>
                             ) : (
                               <span className="block text-center">
-                                {rowData.branch_expenses_check}
+                                {rowData.branch_expenses_cash}
                               </span>
                             )
                           }
@@ -488,6 +495,28 @@ export default function ProjectList() {
                             ) : (
                               <span className="block text-center">
                                 {rowData.branch_expenses_check}
+                              </span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+                    {
+                      roleId === 8 ?
+                        null
+                        :
+                        <Column
+                          header="Total Branch Expense"
+                          sortable
+                          body={(rowData) =>
+                            rowData.branch_expenses_check
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.total_branch_expenses}
                               </span>
                             )
                           }
