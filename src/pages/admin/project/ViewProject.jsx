@@ -220,6 +220,32 @@ const ViewProject = ({ project, add_or_edit }) => {
                             </TableCell>
                           </TableRow>
                         )}
+                        {project_by_id?.project?.other_members_id
+                          ?.split(",")
+                          ?.map(Number)
+                          ?.includes(userId) ? null : (
+                          <TableRow>
+                            <TableCell className="font-bold text-lg">
+                            Branch Expense (Cash) :
+                            </TableCell>
+                            <TableCell>
+                              {project_by_id?.project?.branch_expenses_cash}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                        {project_by_id?.project?.other_members_id
+                          ?.split(",")
+                          ?.map(Number)
+                          ?.includes(userId) ? null : (
+                          <TableRow>
+                            <TableCell className="font-bold text-lg">
+                            Branch Expense (Bill / Check) :
+                            </TableCell>
+                            <TableCell>
+                              {project_by_id?.project?.branch_expenses_check}
+                            </TableCell>
+                          </TableRow>
+                        )}
                         <TableRow>
                           <TableCell className="font-bold text-lg">
                             Start Date :

@@ -160,6 +160,8 @@ export default function ProjectList() {
       "Quotation No": item.quotation_no,
       "Project Amount pre GST": item.project_amount_pre_gst,
       "Project Amount with GST": item.project_amount_with_gst,
+      "Branch Expense (Cash)": item.branch_expenses_cash,
+      "Branch Expense (Bill / Check)": item.branch_expenses_check,
       "Start Date": item.project_start_date,
       "End Date": item.project_end_date,
       Status: item.status,
@@ -194,6 +196,8 @@ export default function ProjectList() {
           "End Date",
           "Project Amount pre GST",
           "Project Amount with GST",
+          "Branch Expense (Cash)",
+          "Branch Expense (Bill / Check)",
           "Status",
         ],
       ],
@@ -212,6 +216,8 @@ export default function ProjectList() {
         project.project_end_date,
         project.project_amount_pre_gst,
         project.project_amount_with_gst,
+        project.branch_expenses_cash,
+        project.branch_expenses_check,
         project.status === "1" ? "Active" : "Inactive", // Status check
       ]),
     });
@@ -232,7 +238,7 @@ export default function ProjectList() {
             <div className="card-body p-5 bg-white shadow overflow-hidden">
               {/* filtering Projects */}
 
-              
+
 
               {isLoading ? (
                 <TableSkeleton columns="5" />
@@ -366,7 +372,7 @@ export default function ProjectList() {
                       style={{ whiteSpace: "nowrap", width: "50px" }}
 
                     ></Column>
-                    
+
                     <Column
                       field="client_name"
                       sortable
@@ -403,50 +409,92 @@ export default function ProjectList() {
                       header="Project Amount"
                       style={{ textTransform: "capitalize" }}
                     ></Column> */}
-                    
-                          {
-                            roleId === 8 ? null :
-                            <Column
-                            header="Project Amount (pre GST)"
-                            sortable
-                            body={(rowData) =>
-                              rowData.other_members_id
-                                ?.split(",")
-                                ?.map(Number)
-                                ?.includes(userId) ? (
-                                <span className="block text-center">-</span>
-                              ) : (
-                                <span className="block text-center">
-                                  {rowData.project_amount_pre_gst}
-                                </span>
-                              )
-                            }
-                            style={{ textTransform: "capitalize" }}
-                          />
+
+                    {
+                      roleId === 8 ? null :
+                        <Column
+                          header="Project Amount (pre GST)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.other_members_id
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.project_amount_pre_gst}
+                              </span>
+                            )
                           }
-                          {
-                            roleId === 8 ?
-                            null 
-                            :
-                            <Column
-                            header="Project Amount (with GST)"
-                            sortable
-                            body={(rowData) =>
-                              rowData.other_members_id
-                                ?.split(",")
-                                ?.map(Number)
-                                ?.includes(userId) ? (
-                                <span className="block text-center">-</span>
-                              ) : (
-                                <span className="block text-center">
-                                  {rowData.project_amount_with_gst}
-                                </span>
-                              )
-                            }
-                            style={{ textTransform: "capitalize" }}
-                          />
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+                    {
+                      roleId === 8 ?
+                        null
+                        :
+                        <Column
+                          header="Project Amount (with GST)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.other_members_id
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.project_amount_with_gst}
+                              </span>
+                            )
                           }
-                        
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+                    {
+                      roleId === 8 ? null :
+                        <Column
+                          header="Branch Expense (Cash)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.branch_expenses_check
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.branch_expenses_check}
+                              </span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+                    {
+                      roleId === 8 ?
+                        null
+                        :
+                        <Column
+                          header="Branch Expense (Bill / Check)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.branch_expenses_check
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.branch_expenses_check}
+                              </span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+
 
                     <Column
                       header="Project Status"

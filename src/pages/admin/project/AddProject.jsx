@@ -165,6 +165,8 @@ export default function AddProject() {
         data.quotation_no,
         data.project_amount_pre_gst,
         data.project_amount_with_gst,
+        data.branch_expenses_cash,
+        data.branch_expenses_check,
         data.project_start_date,
         data.project_end_date,
         "1"
@@ -605,6 +607,49 @@ export default function AddProject() {
                 {errors.project_amount_with_gst && (
                   <span className="text-red-600 text-sm">
                     {errors.project_amount_with_gst.message}
+                  </span>
+                )}
+              </div>
+              {/* Branch Expenses in Cash */}
+              <div className="form-group">
+                <label htmlFor="branch_expenses_cash">
+                Branch Expense (Cash){" "}
+                  <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  className="block"
+                  id="branch_expenses_cash"
+                  placeholder="Branch Expense (Cash)"
+                  {...register("branch_expenses_cash", {
+                    required: "Branch Expense (Cash) is required",
+                  })}
+                />
+                {errors.branch_expenses_cash && (
+                  <span className="text-red-600 text-sm">
+                    {errors.branch_expenses_cash.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Branch Expenses in Billed */}
+              <div className="form-group">
+                <label htmlFor="branch_expenses_check">
+                  Branch Expense (Bill / Check){" "}
+                  <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  className="block"
+                  id="branch_expenses_check"
+                  placeholder="Branch Expense (Bill / Check)"
+                  {...register("branch_expenses_check", {
+                    required: "Branch Expense (Bill / Check) is required",
+                  })}
+                />
+                {errors.branch_expenses_check && (
+                  <span className="text-red-600 text-sm">
+                    {errors.branch_expenses_check.message}
                   </span>
                 )}
               </div>

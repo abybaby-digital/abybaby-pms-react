@@ -160,6 +160,8 @@ const EditProject = ({ project }) => {
       quotation_no: project?.quotation_no,
       project_amount_pre_gst: Math.floor(project?.project_amount_pre_gst),
       project_amount_with_gst: Math.floor(project?.project_amount_with_gst),
+      branch_expenses_cash: Math.floor(project?.branch_expenses_cash),
+      branch_expenses_check: Math.floor(project?.branch_expenses_check),
       project_start_date: project?.project_start_date,
       project_end_date: project?.project_end_date,
       client_id: { value: project?.client_id, label: project?.client_name },
@@ -175,25 +177,25 @@ const EditProject = ({ project }) => {
     },
   });
 
-     // Watch selected values
-     const selectedVerticalHead = watch("vertical_head_id");
-     const selectedBranchManager = watch("branch_manager_id")?.map((item) =>
-       item.value.toString()
-     );
-     const selectedClientService = watch("client_service_id")?.map(
-       (item) => item.value
-     );
-     const selectedMis = watch("activity_coordinator_id")?.map(
-       (item) => item.value
-     );
+  // Watch selected values
+  const selectedVerticalHead = watch("vertical_head_id");
+  const selectedBranchManager = watch("branch_manager_id")?.map((item) =>
+    item.value.toString()
+  );
+  const selectedClientService = watch("client_service_id")?.map(
+    (item) => item.value
+  );
+  const selectedMis = watch("activity_coordinator_id")?.map(
+    (item) => item.value
+  );
 
-     const cs_left = clientServiceList?.response?.filter(
-      (item) => !selectedClientService?.includes(item.id)
-    );
-    const mis_left = misList?.response?.filter(
-      (item) => !selectedMis?.includes(item.id)
-    );
-    console.log("cs left", cs_left);
+  const cs_left = clientServiceList?.response?.filter(
+    (item) => !selectedClientService?.includes(item.id)
+  );
+  const mis_left = misList?.response?.filter(
+    (item) => !selectedMis?.includes(item.id)
+  );
+  console.log("cs left", cs_left);
 
   // console.log(selectedBranchManager);
 
@@ -218,6 +220,8 @@ const EditProject = ({ project }) => {
         data.quotation_no,
         data.project_amount_pre_gst,
         data.project_amount_with_gst,
+        data.branch_expenses_cash,
+        data.branch_expenses_check,
         data.project_start_date,
         data.project_end_date,
         data.project_status
@@ -240,7 +244,7 @@ const EditProject = ({ project }) => {
   });
 
   const onSubmit = (data) => {
-    console.log("submitted data",data);
+    console.log("submitted data", data);
     editProjectMutation.mutate(data);
   };
 
@@ -483,7 +487,7 @@ const EditProject = ({ project }) => {
           <Controller
             name="other_members_id"
             control={control}
-            
+
             // rules={{ required: "At least one other member is required" }}
             render={({ field }) => (
               <Select
@@ -505,75 +509,75 @@ const EditProject = ({ project }) => {
           )}
         </div>
 
-         {/* Activity Co-ordinator Field */}
+        {/* Activity Co-ordinator Field */}
 
-         <div className="form-group">
-                <label htmlFor="activity_coordinator_id">
-                  Activity Co-ordinator <span className="text-red-600">*</span>
-                </label>
-                <Controller
-                  name="activity_coordinator_id"
-                  control={control}
-                  // rules={{ required: "At least one other member is required" }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={misList?.response?.map((item) => ({
-                        value: item.id,
-                        label: item.name,
-                      }))}
-                      components={animatedComponents}
-                      placeholder="Select Active Co-ordinator"
-                      isDisabled={
-                        watch("client_service_id") === undefined ||
-                        watch("client_service_id")?.length === 0
-                      }
-                      isMulti
-                    />
-                  )}
-                />
-                {errors.activity_coordinator_id && (
-                  <span className="text-red-600 text-sm">
-                    {errors.activity_coordinator_id.message}
-                  </span>
-                )}
-              </div>
-              
-              {/*Other  Activity Co-ordinator Field */}
+        <div className="form-group">
+          <label htmlFor="activity_coordinator_id">
+            Activity Co-ordinator <span className="text-red-600">*</span>
+          </label>
+          <Controller
+            name="activity_coordinator_id"
+            control={control}
+            // rules={{ required: "At least one other member is required" }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={misList?.response?.map((item) => ({
+                  value: item.id,
+                  label: item.name,
+                }))}
+                components={animatedComponents}
+                placeholder="Select Active Co-ordinator"
+                isDisabled={
+                  watch("client_service_id") === undefined ||
+                  watch("client_service_id")?.length === 0
+                }
+                isMulti
+              />
+            )}
+          />
+          {errors.activity_coordinator_id && (
+            <span className="text-red-600 text-sm">
+              {errors.activity_coordinator_id.message}
+            </span>
+          )}
+        </div>
 
-              <div className="form-group">
-                <label htmlFor="activity_coordinator_other_id">
-                  Others Activity Co-ordinator <span className="text-red-600">*</span>
-                </label>
-                <Controller
-                  name="activity_coordinator_other_id"
-                  control={control}
-                  // rules={{ required: "At least one other member is required" }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      options={mis_left?.map((item) => ({
-                        value: item.id,
-                        label: item.name,
-                      }))}
-                      components={animatedComponents}
-                      placeholder="Select Other Active Co-ordinator"
-                      isDisabled={
-                        watch("client_service_id") === undefined ||
-                        watch("client_service_id")?.length === 0
-                      }
-                      isMulti
-                    />
-                  )}
-                />
-                {errors.activity_coordinator_other_id && (
-                  <span className="text-red-600 text-sm">
-                    {errors.activity_coordinator_other_id.message}
-                  </span>
-                )}
-              </div>
+        {/*Other  Activity Co-ordinator Field */}
 
-        
+        <div className="form-group">
+          <label htmlFor="activity_coordinator_other_id">
+            Others Activity Co-ordinator <span className="text-red-600">*</span>
+          </label>
+          <Controller
+            name="activity_coordinator_other_id"
+            control={control}
+            // rules={{ required: "At least one other member is required" }}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={mis_left?.map((item) => ({
+                  value: item.id,
+                  label: item.name,
+                }))}
+                components={animatedComponents}
+                placeholder="Select Other Active Co-ordinator"
+                isDisabled={
+                  watch("client_service_id") === undefined ||
+                  watch("client_service_id")?.length === 0
+                }
+                isMulti
+              />
+            )}
+          />
+          {errors.activity_coordinator_other_id && (
+            <span className="text-red-600 text-sm">
+              {errors.activity_coordinator_other_id.message}
+            </span>
+          )}
+        </div>
+
+
 
         {/* Quotation No Field */}
         <div className="form-group">
@@ -633,6 +637,50 @@ const EditProject = ({ project }) => {
           {errors.project_amount_with_gst && (
             <span className="text-red-600 text-sm">
               {errors.project_amount_with_gst.message}
+            </span>
+          )}
+        </div>
+
+        {/* Branch Expenses in Cash */}
+        <div className="form-group">
+          <label htmlFor="branch_expenses_cash">
+            Branch Expense (Cash){" "}
+            <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="number"
+            className="block"
+            id="branch_expenses_cash"
+            placeholder="Branch Expense (Cash)"
+            {...register("branch_expenses_cash", {
+              required: "Branch Expense (Cash) is required",
+            })}
+          />
+          {errors.branch_expenses_cash && (
+            <span className="text-red-600 text-sm">
+              {errors.branch_expenses_cash.message}
+            </span>
+          )}
+        </div>
+
+        {/* Branch Expenses in Billed */}
+        <div className="form-group">
+          <label htmlFor="branch_expenses_check">
+            Branch Expense (Bill / Check){" "}
+            <span className="text-red-600">*</span>
+          </label>
+          <input
+            type="number"
+            className="block"
+            id="branch_expenses_check"
+            placeholder="Branch Expense (Bill / Check)"
+            {...register("branch_expenses_check", {
+              required: "Branch Expense (Bill / Check) is required",
+            })}
+          />
+          {errors.branch_expenses_check && (
+            <span className="text-red-600 text-sm">
+              {errors.branch_expenses_check.message}
             </span>
           )}
         </div>
