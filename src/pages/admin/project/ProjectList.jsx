@@ -331,10 +331,10 @@ export default function ProjectList() {
                               </TooltipProvider>
                               <CheckAccessEdit edit_access="Project">
                                 {
-                                  +rowData.client_po_amount_with_gst === 0 &&
-                                    +rowData.requition_amount === 0 &&
-                                    +rowData.total_project_invoice_amount_with_gst === 0 &&
-                                    +status === 1 ?
+                                  // +rowData.client_po_amount_with_gst === 0 &&
+                                  //   +rowData.requition_amount === 0 &&
+                                  //   +rowData.total_project_invoice_amount_with_gst === 0 &&
+                                  //   +status === 1 ?
 
                                     <TooltipProvider>
                                       <Tooltip>
@@ -353,7 +353,8 @@ export default function ProjectList() {
                                           <p>Edit Project</p>
                                         </TooltipContent>
                                       </Tooltip>
-                                    </TooltipProvider> : null
+                                    </TooltipProvider> 
+                                    // : null
                                 }
 
                               </CheckAccessEdit>
