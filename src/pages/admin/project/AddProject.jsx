@@ -376,7 +376,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="branch_manager_id">
-                  Branch Manager <span className="text-red-600">*</span>
+                  Branch Manager 
                 </label>
                 <Controller
                   name="branch_manager_id"
@@ -412,7 +412,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="client_service_id">
-                  Client Service <span className="text-red-600">*</span>
+                  Client Service 
                 </label>
                 <Controller
                   name="client_service_id"
@@ -448,7 +448,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="other_members_id">
-                  Others <span className="text-red-600">*</span>
+                  Others 
                 </label>
                 <Controller
                   name="other_members_id"
@@ -482,7 +482,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="activity_coordinator_id">
-                  Activity Co-ordinator <span className="text-red-600">*</span>
+                  Activity Co-ordinator 
                 </label>
                 <Controller
                   name="activity_coordinator_id"
@@ -516,7 +516,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="activity_coordinator_other_id">
-                  Others Activity Co-ordinator <span className="text-red-600">*</span>
+                  Others Activity Co-ordinator 
                 </label>
                 <Controller
                   name="activity_coordinator_other_id"
