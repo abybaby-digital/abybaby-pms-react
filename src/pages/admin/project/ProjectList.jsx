@@ -385,7 +385,7 @@ export default function ProjectList() {
 
                     ></Column>
                     {
-                      roleId === 8 ?
+                      roleId !== 1 ? 
                         null
                         :
                         <Column
@@ -402,10 +402,10 @@ export default function ProjectList() {
                               <span className="block text-center">
                                 {
                                  
-                                    rowData.total_project_invoice_amount_with_gst > rowData.project_amount_with_gst ||
-                                    rowData.total_project_invoice_amount_with_gst < rowData.project_amount_with_gst ?
+                                    +rowData.total_project_invoice_amount_with_gst > +rowData.project_amount_with_gst ||
+                                    +rowData.total_project_invoice_amount_with_gst < +rowData.project_amount_with_gst ?
                                     <span className="text-red-500 ">{rowData.total_project_invoice_amount_with_gst}<GoAlertFill className="text-red-500 animate-pulse inline text-lg ms-3 mb-2" /></span>
-                                    : `${rowData.total_project_invoice_amount_with_gst}`
+                                    : <span className="text-green-500 ">{rowData.total_project_invoice_amount_with_gst}</span>
 
 
                                 }
