@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { GoAlertFill } from "react-icons/go";
 import {
   Tooltip,
   TooltipContent,
@@ -289,6 +290,8 @@ export default function ProjectList() {
                     </div>
                   </div>
 
+
+
                   {/* DataTable */}
                   <DataTable
                     value={filteredProjects}
@@ -300,6 +303,7 @@ export default function ProjectList() {
                     paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
                   >
+
                     {
                       roleId === 8 ?
                         null :
@@ -329,8 +333,9 @@ export default function ProjectList() {
                                 {
                                   +rowData.client_po_amount_with_gst === 0 &&
                                     +rowData.requition_amount === 0 &&
-                                    +rowData.total_project_invoice_amount_with_gst === 0 ?
-                                    
+                                    +rowData.total_project_invoice_amount_with_gst === 0 &&
+                                    +status === 1 ?
+
                                     <TooltipProvider>
                                       <Tooltip>
                                         <TooltipTrigger>
@@ -379,6 +384,83 @@ export default function ProjectList() {
                       style={{ whiteSpace: "nowrap", width: "50px" }}
 
                     ></Column>
+                    {
+                      roleId === 8 ?
+                        null
+                        :
+                        <Column
+                          header="Total Invoice Amount (with GST)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.other_members_id
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              roleId === 1 ?
+                              <span className="block text-center">
+                                {
+                                 
+                                    rowData.total_project_invoice_amount_with_gst > rowData.project_amount_with_gst ||
+                                    rowData.total_project_invoice_amount_with_gst < rowData.project_amount_with_gst ?
+                                    <span className="text-red-500 ">{rowData.total_project_invoice_amount_with_gst}<GoAlertFill className="text-red-500 animate-pulse inline text-lg ms-3 mb-2" /></span>
+                                    : `${rowData.total_project_invoice_amount_with_gst}`
+
+
+                                }
+                              </span>
+                              :
+                              <span className="block text-center">{rowData.total_project_invoice_amount_with_gst}</span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+                    {
+                      roleId === 8 ?
+                        null
+                        :
+                        <Column
+                          header="Project Amount (with GST)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.other_members_id
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.project_amount_with_gst}
+                              </span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+
+                    {
+                      roleId === 8 ? null :
+                        <Column
+                          header="Project Amount (pre GST)"
+                          sortable
+                          body={(rowData) =>
+                            rowData.other_members_id
+                              ?.split(",")
+                              ?.map(Number)
+                              ?.includes(userId) ? (
+                              <span className="block text-center">-</span>
+                            ) : (
+                              <span className="block text-center">
+                                {rowData.project_amount_pre_gst}
+                              </span>
+                            )
+                          }
+                          style={{ textTransform: "capitalize" }}
+                        />
+                    }
+
 
                     <Column
                       field="client_name"
@@ -417,48 +499,7 @@ export default function ProjectList() {
                       style={{ textTransform: "capitalize" }}
                     ></Column> */}
 
-                    {
-                      roleId === 8 ? null :
-                        <Column
-                          header="Project Amount (pre GST)"
-                          sortable
-                          body={(rowData) =>
-                            rowData.other_members_id
-                              ?.split(",")
-                              ?.map(Number)
-                              ?.includes(userId) ? (
-                              <span className="block text-center">-</span>
-                            ) : (
-                              <span className="block text-center">
-                                {rowData.project_amount_pre_gst}
-                              </span>
-                            )
-                          }
-                          style={{ textTransform: "capitalize" }}
-                        />
-                    }
-                    {
-                      roleId === 8 ?
-                        null
-                        :
-                        <Column
-                          header="Project Amount (with GST)"
-                          sortable
-                          body={(rowData) =>
-                            rowData.other_members_id
-                              ?.split(",")
-                              ?.map(Number)
-                              ?.includes(userId) ? (
-                              <span className="block text-center">-</span>
-                            ) : (
-                              <span className="block text-center">
-                                {rowData.project_amount_with_gst}
-                              </span>
-                            )
-                          }
-                          style={{ textTransform: "capitalize" }}
-                        />
-                    }
+
                     {
                       roleId === 8 ? null :
                         <Column
