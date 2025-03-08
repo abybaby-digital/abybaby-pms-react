@@ -336,25 +336,25 @@ export default function ProjectList() {
                                   //   +rowData.total_project_invoice_amount_with_gst === 0 &&
                                   //   +status === 1 ?
 
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger>
-                                          <button
-                                            className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                            onClick={() => {
-                                              singleProject(rowData.id);
-                                              setAddOrEdit("edit");
-                                            }}
-                                          >
-                                            <MdEditSquare />
-                                          </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Edit Project</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider> 
-                                    // : null
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger>
+                                        <button
+                                          className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                          onClick={() => {
+                                            singleProject(rowData.id);
+                                            setAddOrEdit("edit");
+                                          }}
+                                        >
+                                          <MdEditSquare />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Edit Project</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                  // : null
                                 }
 
                               </CheckAccessEdit>
@@ -386,9 +386,7 @@ export default function ProjectList() {
 
                     ></Column>
                     {
-                      roleId !== 1 ? 
-                        null
-                        :
+                      [1, 4].includes(roleId) ?
                         <Column
                           header="Total Invoice Amount (with GST)"
                           sortable
@@ -399,25 +397,26 @@ export default function ProjectList() {
                               ?.includes(userId) ? (
                               <span className="block text-center">-</span>
                             ) : (
-                              roleId === 1 ?
-                              <span className="block text-center">
-                                {
-                                 
+                             
+                                <span className="block text-center">
+                                  {
+
                                     +rowData.total_project_invoice_amount_with_gst > +rowData.project_amount_with_gst ||
-                                    +rowData.total_project_invoice_amount_with_gst < +rowData.project_amount_with_gst ?
-                                    <span className="text-red-500 ">{rowData.total_project_invoice_amount_with_gst}<GoAlertFill className="text-red-500 animate-pulse inline text-lg ms-3 mb-2" /></span>
-                                    : <span className="text-green-500 ">{rowData.total_project_invoice_amount_with_gst}</span>
+                                      +rowData.total_project_invoice_amount_with_gst < +rowData.project_amount_with_gst ?
+                                      <span className="text-red-500 ">{rowData.total_project_invoice_amount_with_gst}<GoAlertFill className="text-red-500 animate-pulse inline text-lg ms-3 mb-2" /></span>
+                                      : <span className="text-green-500 ">{rowData.total_project_invoice_amount_with_gst}</span>
 
 
-                                }
-                              </span>
-                              :
-                              <span className="block text-center">{rowData.total_project_invoice_amount_with_gst}</span>
+                                  }
+                                </span>
+                               
                             )
                           }
                           style={{ textTransform: "capitalize" }}
-                        />
+                        /> : null
+
                     }
+
                     {
                       roleId === 8 ?
                         null
@@ -502,12 +501,12 @@ export default function ProjectList() {
 
 
                     {
-                      roleId === 8 ? null :
+                      [1, 4].includes(roleId) ?
                         <Column
                           header="Branch Expense (Cash)"
                           sortable
                           body={(rowData) =>
-                            rowData.branch_expenses_cash
+                            rowData.other_members_id
                               ?.split(",")
                               ?.map(Number)
                               ?.includes(userId) ? (
@@ -519,17 +518,18 @@ export default function ProjectList() {
                             )
                           }
                           style={{ textTransform: "capitalize" }}
-                        />
+                        /> : null
                     }
+
+
                     {
-                      roleId === 8 ?
-                        null
-                        :
+                      [1, 4].includes(roleId) ?
+
                         <Column
                           header="Branch Expense (Bill / Check)"
                           sortable
                           body={(rowData) =>
-                            rowData.branch_expenses_check
+                            rowData.other_members_id
                               ?.split(",")
                               ?.map(Number)
                               ?.includes(userId) ? (
@@ -541,20 +541,17 @@ export default function ProjectList() {
                             )
                           }
                           style={{ textTransform: "capitalize" }}
-                        />
+                        /> : null
                     }
+
+
                     {
-                      roleId === 8 ?
-                        null
-                        :
+                      [1, 4].includes(roleId) ? (
                         <Column
                           header="Total Branch Expense"
                           sortable
                           body={(rowData) =>
-                            rowData.branch_expenses_check
-                              ?.split(",")
-                              ?.map(Number)
-                              ?.includes(userId) ? (
+                            rowData.other_members_id?.split(",")?.map(Number)?.includes(userId) ? (
                               <span className="block text-center">-</span>
                             ) : (
                               <span className="block text-center">
@@ -564,6 +561,7 @@ export default function ProjectList() {
                           }
                           style={{ textTransform: "capitalize" }}
                         />
+                      ) : null
                     }
 
 

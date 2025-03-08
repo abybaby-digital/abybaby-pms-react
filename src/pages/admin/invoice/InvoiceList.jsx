@@ -303,7 +303,7 @@ export default function InvoiceList() {
                       sortable
                       header="Created By"
                       body={(rowData) =>
-                       rowData.created_by_name ? rowData.created_by_name : "....."
+                       rowData.created_by_name ? rowData.created_by_name : "..."
                       }
                     ></Column>
                     <Column
@@ -312,7 +312,7 @@ export default function InvoiceList() {
                       sortable
                       header="Updated By"
                       body={(rowData) =>
-                        rowData.updated_by_name ? rowData.updated_by_name : "....."
+                        rowData.updated_by_name ? rowData.updated_by_name : "..."
                       }
                     ></Column>
                     <Column
