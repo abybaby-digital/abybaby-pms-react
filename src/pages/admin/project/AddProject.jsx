@@ -49,6 +49,14 @@ export default function AddProject() {
     setValue,
   } = useForm();
 
+  // const project_amount_pre_gst = watch("project_amount_pre_gst");
+  // const project_re_amount_pre_gst = watch("re_project_amount_pre_gst");
+
+
+  // console.log(project_amount_pre_gst);
+  // console.log(project_re_amount_pre_gst);
+
+
   // Watch selected values
   const selectedVerticalHead = watch("vertical_head_id");
   const selectedBranchManager = watch("branch_manager_id")?.map((item) =>
@@ -376,7 +384,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="branch_manager_id">
-                  Branch Manager 
+                  Branch Manager
                 </label>
                 <Controller
                   name="branch_manager_id"
@@ -412,7 +420,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="client_service_id">
-                  Client Service 
+                  Client Service
                 </label>
                 <Controller
                   name="client_service_id"
@@ -428,11 +436,11 @@ export default function AddProject() {
                       components={animatedComponents}
                       placeholder="Select Client Service"
                       isMulti
-                      
+
                       onChange={(selectedOption) => {
                         setValue("client_service_id", selectedOption); // Update the vertical_head_id
                         setValue("other_members_id", []); // Reset branch_manager_id when VH changes
-                  
+
                       }}
                     />
                   )}
@@ -448,7 +456,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="other_members_id">
-                  Others 
+                  Others
                 </label>
                 <Controller
                   name="other_members_id"
@@ -482,7 +490,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="activity_coordinator_id">
-                  Activity Co-ordinator 
+                  Activity Co-ordinator
                 </label>
                 <Controller
                   name="activity_coordinator_id"
@@ -500,7 +508,7 @@ export default function AddProject() {
                       onChange={(selectedOption) => {
                         setValue("activity_coordinator_id", selectedOption); // Update the vertical_head_id
                         setValue("activity_coordinator_other_id", []); // Reset branch_manager_id when VH changes
-                  
+
                       }}
                       isMulti
                     />
@@ -516,7 +524,7 @@ export default function AddProject() {
 
               <div className="form-group">
                 <label htmlFor="activity_coordinator_other_id">
-                  Others Activity Co-ordinator 
+                  Others Activity Co-ordinator
                 </label>
                 <Controller
                   name="activity_coordinator_other_id"
@@ -589,6 +597,34 @@ export default function AddProject() {
                 )}
               </div>
 
+              {/* Project Re Amount Field pre gst */}
+              {/* <div className="form-group">
+                <label htmlFor="re_project_amount_pre_gst">
+                  Re-enter Project Amount (pre GST){" "}
+                  <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  className="block"
+                  id="re_project_amount_pre_gst"
+                  placeholder="Re-enter Project Amount (pre GST)"
+                  {...register("re_project_amount_pre_gst", {
+                    required: "Re-entered Project Amount(pre gst) is required",
+                  })}
+                />
+                {errors.re_project_amount_pre_gst && (
+                  <span className="text-red-600 text-sm">
+                    {errors.re_project_amount_pre_gst.message}
+                  </span>
+                )}
+                {
+                  +project_amount_pre_gst !== +project_re_amount_pre_gst ?
+                    (
+                      project_amount_pre_gst !== "" && project_re_amount_pre_gst !== "" ?  <p className="text-red-500 text-sm mt-2">Project Amount (pre GST) mismatch</p> : null
+                    ) : null
+                }
+              </div> */}
+
               {/* Project Amount Field with gst */}
               <div className="form-group">
                 <label htmlFor="project_amount_with_gst">
@@ -613,7 +649,7 @@ export default function AddProject() {
               {/* Branch Expenses in Cash */}
               <div className="form-group">
                 <label htmlFor="branch_expenses_cash">
-                Branch Expense (Cash){" "}
+                  Branch Expense (Cash){" "}
                   <span className="text-red-600">*</span>
                 </label>
                 <input
@@ -706,7 +742,7 @@ export default function AddProject() {
               <button
                 type="submit"
                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                disabled={addProjectMutation.isPending}
+                // disabled={+project_amount_pre_gst !== +project_re_amount_pre_gst}
               >
                 {addProjectMutation.isPending ? <ButtonLoader /> : "Submit"}
               </button>

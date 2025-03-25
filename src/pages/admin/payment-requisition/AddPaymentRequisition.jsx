@@ -28,6 +28,13 @@ export default function AddPaymentRequisition() {
     watch,
   } = useForm();
 
+  const requisitionAmount = watch("requisition_amount");
+  const requisitionAmountReEnter = watch("requisition_amount_re_enter");
+
+
+  console.log(requisitionAmount);
+  console.log(requisitionAmountReEnter);
+
   // console.log("pr", watch("project_id"));
 
   // State to hold vendor details
@@ -309,6 +316,7 @@ export default function AddPaymentRequisition() {
                       type="number"
                       id="requisition_amount"
                       {...register("requisition_amount",
+                        { required: "Amount is required" },
                         {
                           max: {
                             value: +singlePorj?.branch_expenses_cash,
@@ -326,11 +334,41 @@ export default function AddPaymentRequisition() {
                   </div>
                 ) : null}
 
+
+                {/*Re Enter Requisition Amount Input */}
+                {watch("project_id") !== "" && watch("project_id") !== undefined ? (
+                  <div className="form-group">
+                    <label htmlFor="requisition_amount_re_enter">
+                      Re-enter Requisition Amount <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      id="requisition_amount_re_enter"
+                      {...register("requisition_amount_re_enter",
+                        { required: "Amount (re entered) is required" })}
+                      className="block"
+                      placeholder="Enter Amount"
+                    />
+                    {errors.requisition_amount_re_enter && (
+                      <span className="text-red-600 text-sm">
+                        {errors.requisition_amount_re_enter.message}
+                      </span>
+                    )}
+
+                    {
+                      +requisitionAmount !== +requisitionAmountReEnter ?
+                        (
+                          requisitionAmount !== "" && requisitionAmountReEnter !== ""  ? <p className="text-red-500 text-sm mt-2">Requisition mismatch</p> : null
+                        ) : null
+                    }
+                  </div>
+                ) : null}
+
                 {/* Requisition Image Input */}
                 <div className="form-group">
                   <label htmlFor="requisition_img">
                     Requisition Image (Image/PDF){" "}
-                    <span className="text-red-600">*</span>
+
                   </label>
                   <input
                     type="file"
@@ -431,7 +469,7 @@ export default function AddPaymentRequisition() {
                 <button
                   type="submit"
                   className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                  disabled={addPaymentMutation.isPending}
+                  disabled={+requisitionAmount !== +requisitionAmountReEnter}
                 >
                   {addPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
                 </button>

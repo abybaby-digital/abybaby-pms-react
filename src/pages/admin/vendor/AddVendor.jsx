@@ -3,14 +3,28 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addBranch, addVendor, getBranchList, getStateList, getVendorCategoryList } from "../../../services/api";
+import { addBranch, addVendor, addVendorCategory, getBranchList, getStateList, getVendorCategoryList } from "../../../services/api";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
+import { RxCross2 } from "react-icons/rx";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { useContext, useState } from "react";
+import VendorCategoryCreateForm from "./VendorCategoryCreateForm";
+import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 
 export default function AddVendor() {
+    const { refetchList  } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -26,11 +40,14 @@ export default function AddVendor() {
     // VENDOR CATEGORY LIST
 
     const { data: vendorCategoryList } = useQuery({
-        queryKey: ["vendor-category-list"],
+        queryKey: ["vendor-category-list", refetchList],
         queryFn: async () => {
             return await getVendorCategoryList(token);
         }
     })
+
+
+
     // BRANCH LIST
 
     const { data: stateList } = useQuery({
@@ -66,7 +83,7 @@ export default function AddVendor() {
                 toast.success("Vendor added successfully!");
                 navigate("/vendor-list"); // Redirect to branch list after successful submission
             }
-            else{
+            else {
                 toast.error("Something went wrong !!")
             }
         },
@@ -79,6 +96,8 @@ export default function AddVendor() {
         console.log("Submitting data:", typeof (data.branch_id)); // Log the form data to verify
         addVendorMutation.mutate(data); // Call the mutation with the form data
     };
+
+    const [addCatModal, setCatModal] = useState(null);
 
     return (
         <SidebarProvider>
@@ -93,6 +112,10 @@ export default function AddVendor() {
                         <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
                             ADD VENDOR
                         </h2>
+                        <div className="flex justify-between border mx-5 p-3 items-center bg-whitesmoke rounded-3xl mt-5">
+                            <p>if vendor category doesn't exist in the list , create new vendor category</p>
+                            <button className="bg-lightdark py-1 px-2 text-white rounded-3xl animate-pulse" onClick={() => { setCatModal(true) }}>Click here</button>
+                        </div>
                         <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
 
                             {/* Vendor Category Select Field */}
@@ -381,6 +404,24 @@ export default function AddVendor() {
                             </button>
                         </div>
                     </form>
+
+                    {/* ADD VENDOR CATEGORY FORM */}
+                    <Dialog open={addCatModal}>
+
+                        <DialogContent className="w-[350px]">
+                            <DialogHeader>
+                                <DialogTitle>Add Vendor Category</DialogTitle>
+                                {/* <DialogDescription>
+                                    Make changes to your profile here. Click save when you're done.
+                                </DialogDescription> */}
+                            </DialogHeader>
+                            <VendorCategoryCreateForm setCatModal={setCatModal} addCatModal={addCatModal} />
+
+                            <button className="close absolute right-3 top-3 z-50 text-lightdark" onClick={()=> {setCatModal(false)}}><RxCross2 /></button>
+
+
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </SidebarInset>
         </SidebarProvider>

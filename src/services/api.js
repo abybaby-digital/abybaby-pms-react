@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // const baseURL = "https://krishivikas.com/api/v2";
-const baseURL = "https://test.abybabyoffice.com/api";
-// const baseURL = "https://development.abybabyoffice.com/api";
+// const baseURL = "https://test.abybabyoffice.com/api";
+const baseURL = "https://development.abybabyoffice.com/api";
 
 const api = axios.create({
   baseURL: baseURL,
@@ -229,6 +229,28 @@ export const addVendor = async (
   );
   return response.data.result;
 };
+
+
+// ADD VENDOR CATEGORY
+export const addVendorCategory = async (
+  token,
+  vendor_category_name,
+) => {
+  const response = await api.post(
+    `/add-vendor-category`,
+    {
+      vendor_category_name: vendor_category_name,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data.result;
+};
+
+
 
 // EDIT VENDOR
 

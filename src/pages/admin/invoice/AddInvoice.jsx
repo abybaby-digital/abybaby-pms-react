@@ -40,8 +40,6 @@ export default function AddInvoice() {
     }
   }, [watch("project_id")])
 
-
-
   console.log(selectedProject?.project_amount_with_gst)
   console.log(selectedProject?.total_project_invoice_amount_with_gst)
 
