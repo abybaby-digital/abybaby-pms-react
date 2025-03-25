@@ -142,7 +142,7 @@ export default function AddBillingSupportings() {
 
                       {!isLoadingProjects ?
                         (projectList?.response?.map((project) => (
-                          <option key={project.id} value={project.id}>{project.project_name}</option>
+                          <option key={project.id} value={project.id}>{`${project.project_number} - ${project.project_name}`}</option>
                         ))) :
                         (<option value="#" disabled>Loading...</option>)
                       }

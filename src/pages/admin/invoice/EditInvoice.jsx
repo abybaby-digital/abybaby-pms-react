@@ -131,7 +131,7 @@ const EditInvoice = ({ invoice }) => {
                             ) : (
                                 projectList?.response?.map((project) => (
                                     <option key={project.id} value={project.id} selected={project?.id === invoice?.project_id}>
-                                        {project.project_name}
+                                        {`${project.project_number} - ${project.project_name}`}
                                     </option>
                                 ))
                             )}

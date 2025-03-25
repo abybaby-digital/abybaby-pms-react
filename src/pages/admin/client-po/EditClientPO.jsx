@@ -171,7 +171,7 @@ const EditClientPO = ({ clientPO }) => {
                   value={project.id}
                   selected={project?.id === clientPO?.project_id}
                 >
-                  {project.project_name}
+                  {`${project.project_number} - ${project.project_name}`}
                 </option>
               ))
             )}

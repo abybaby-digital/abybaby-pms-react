@@ -126,7 +126,9 @@ export default function AddUser() {
                 data.state_id !== undefined ?
                     data.state_id?.map((item) => (item.value.toString())).join(",") : null,
                 data.company_id.value,
-                data.branch_id.value,
+                // data.branch_id.value,
+                data.branch_id !== undefined ?
+                    data.branch_id?.map((item) => (item.value.toString())).join(",") : null,
                 // vertical_head_id.vertical_head_id,
                 // data?.vertical_head_id !== undefined ? data.vertical_head_id.value?.toString() : null,
                 // data?.branch_manager_id !== undefined ? data?.branch_manager_id?.map((item) => (item.value.toString())).join(",") : "",
@@ -277,9 +279,30 @@ export default function AddUser() {
                                 {errors.state_id && <span className="text-red-600 text-sm">{errors.state_id.message}</span>}
                             </div>
 
-
                             {/* Branch Select Field */}
                             <div className="form-group">
+                                <label htmlFor="branch_id">Branch <span className="text-red-600">*</span></label>
+                                <Controller
+                                    name="branch_id"
+                                    control={control}
+                                    rules={{ required: "Branch is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={branchList?.response?.map(item => ({ value: item.id, label: item.branch_name }))}
+                                            components={animatedComponents}
+                                            isMulti // This makes the select a multiple selection field
+                                            placeholder="Select Branch"
+                                        />
+                                    )}
+                                />
+                                {errors.branch_id && <span className="text-red-600 text-sm">{errors.branch_id.message}</span>}
+                            </div>
+
+
+
+                            {/* Branch Select Field */}
+                            {/* <div className="form-group">
                                 <label htmlFor="branch_id">Branch <span className="text-red-600">*</span></label>
                                 <Controller
                                     name="branch_id"
@@ -295,7 +318,7 @@ export default function AddUser() {
                                     )}
                                 />
                                 {errors.branch_id && <span className="text-red-600 text-sm">{errors.branch_id.message}</span>}
-                            </div>
+                            </div> */}
 
                             {/* Company Select Field */}
                             <div className="form-group">

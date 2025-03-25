@@ -154,7 +154,7 @@ export default function EditUser({ user }) {
     // Set initial image preview if there is an existing image
     if (user.profile_img) {
       setImagePreview(user.profile_img); // Assuming invoice has invoice_img URL for preview
-  }
+    }
   }, [user, user.profile_img]);
 
 
@@ -208,7 +208,8 @@ export default function EditUser({ user }) {
         data.role_id.value,
         data.state_id?.map((item) => item.value).join(","),
         data.company_id.value,
-        +data.branch_id.value,
+        data.branch_id?.map((item) => item.value).join(","),
+        // +data.branch_id.value,
         // vertical_head_id.vertical_head_id,
         // data?.vertical_head_id?.value || null,
         // data?.branch_manager_id?.map((item) => item.value).join(",") || null,
@@ -249,10 +250,10 @@ export default function EditUser({ user }) {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-        const objectUrl = URL.createObjectURL(file);
-        setImagePreview(objectUrl); // Set the preview image URL
+      const objectUrl = URL.createObjectURL(file);
+      setImagePreview(objectUrl); // Set the preview image URL
     }
-};
+  };
 
   return (
     <div className="flex flex-1 flex-col gap-2 lg:justify-center">
@@ -352,7 +353,7 @@ export default function EditUser({ user }) {
           </div>
 
           {/* Branch */}
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>Branch</label>
             <Controller
               name="branch_id"
@@ -368,7 +369,33 @@ export default function EditUser({ user }) {
                 />
               )}
             />
+          </div> */}
+
+          {/* Branch */}
+          <div className="form-group">
+            <label>Branch</label>
+            <Controller
+              name="branch_id"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  isMulti // Enable multi-selection
+                  options={branchList?.response?.map((item) => ({
+                    value: item.id,
+                    label: item.branch_name,
+                  }))}
+                  components={animatedComponents}
+                  onChange={(selectedOptions) => {
+                    // Convert the selected options into an array of values (IDs)
+                    const selectedBranchIds = selectedOptions.map((option) => option.value);
+                    setValue("branch_id", selectedBranchIds); // Update form value
+                  }}
+                />
+              )}
+            />
           </div>
+
 
           {/* Company */}
           <div className="form-group">
@@ -422,23 +449,23 @@ export default function EditUser({ user }) {
             )}
           </div> */}
           <div className="form-group lg:col-span-2">
-                        <label htmlFor="profile_img">Profile Image</label>
-                        <input
-                            type="file"
-                            id="profile_img"
-                            accept="image/*"
-                            {...register("profile_img")}
-                            className="block border w-full rounded-lg p-3"
-                            onChange={handleImageChange} // Add this line
-                        />
-                        {errors.profile_img && <span className="text-red-600 text-sm">{errors.profile_img.message}</span>}
-                    </div>
-                    {/* Image Preview */}
-                    {imagePreview && (
-                        <div className="mt-2">
-                            <img src={imagePreview} alt="Preview" className="w-full h-[150px] object-contain rounded-lg" />
-                        </div>
-                    )}
+            <label htmlFor="profile_img">Profile Image</label>
+            <input
+              type="file"
+              id="profile_img"
+              accept="image/*"
+              {...register("profile_img")}
+              className="block border w-full rounded-lg p-3"
+              onChange={handleImageChange} // Add this line
+            />
+            {errors.profile_img && <span className="text-red-600 text-sm">{errors.profile_img.message}</span>}
+          </div>
+          {/* Image Preview */}
+          {imagePreview && (
+            <div className="mt-2">
+              <img src={imagePreview} alt="Preview" className="w-full h-[150px] object-contain rounded-lg" />
+            </div>
+          )}
 
           {/* User Details */}
           <div className="form-group">

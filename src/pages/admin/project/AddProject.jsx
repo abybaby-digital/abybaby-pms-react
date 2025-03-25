@@ -671,7 +671,7 @@ export default function AddProject() {
               {/* Branch Expenses in Billed */}
               <div className="form-group">
                 <label htmlFor="branch_expenses_check">
-                  Branch Expense (Bill / Check){" "}
+                  Branch Expense (Bill / Cheque){" "}
                   <span className="text-red-600">*</span>
                 </label>
                 <input
@@ -748,7 +748,7 @@ export default function AddProject() {
               </button>
             </div>
           </form>
-          {userId ? (
+          {/* {userId ? (
             <div className="import-project">
               <p className="text-center text-2xl">OR</p>
               <Dialog>
@@ -765,7 +765,7 @@ export default function AddProject() {
                 </DialogContent>
               </Dialog>
             </div>
-          ) : null}
+          ) : null} */}
         </div>
       </SidebarInset>
     </SidebarProvider>

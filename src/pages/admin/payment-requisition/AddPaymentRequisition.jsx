@@ -206,7 +206,7 @@ export default function AddPaymentRequisition() {
                         <option value="">Loading Projects List , Please Wait....</option> :
                         projectList?.response?.map((project) => (
                           <option key={project.id} value={project.id}>
-                            {project.project_name}
+                            {`${project.project_number} - ${project.project_name}`}
                           </option>
                         ))
                     }

@@ -182,7 +182,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
               <option value="" >Select Project</option>
               {projectList?.response?.map((project) => (
                 <option key={project.id} value={project.id} selected={project?.id === billingSupportings?.project_id}>
-                  {project.project_name}
+                  {`${project.project_number} - ${project.project_name}`}
                 </option>
               ))}
             </select>
