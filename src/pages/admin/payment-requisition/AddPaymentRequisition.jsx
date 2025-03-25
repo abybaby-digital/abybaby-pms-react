@@ -118,9 +118,12 @@ export default function AddPaymentRequisition() {
       );
     },
     onSuccess: (response) => {
-      if (response.status === 200 || response.status === 201) {
+      if (response.success === 1) {
         toast.success("Payment Requisition added successfully!");
         navigate("/payment-requisition-list");
+      }
+      else{
+        toast.error(response.message);
       }
     },
     onError: (error) => {
