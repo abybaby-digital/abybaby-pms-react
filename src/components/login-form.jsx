@@ -19,6 +19,9 @@ import toast from "react-hot-toast";
 import ButtonLoader from "./common/ButtonLoader";
 import CryptoJS from "crypto-js";
 import { loginSuccess, setUsers } from "../redux/features/Auth/AuthSlice";
+import { useState } from "react";
+import { RiEyeCloseFill } from "react-icons/ri";
+import { BsFillEyeFill } from "react-icons/bs";
 
 export function LoginForm({ className, ...props }) {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -71,6 +74,8 @@ export function LoginForm({ className, ...props }) {
     });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -109,12 +114,22 @@ export function LoginForm({ className, ...props }) {
 
               {/* Password Input */}
               <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                <div className="flex justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                    className="pe-3 -mb-[75px] relative z-5"
+                  >{showPassword ? <RiEyeCloseFill className="text-gray-300" /> : <BsFillEyeFill className="text-gray-300"/>}</button>
+                </div>
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   {...register("password", { required: "Password is required" })}
                 />
+                <div className="text-end">
+
+                </div>
                 {errors.password && (
                   <p className="text-sm text-red-600">{errors.password.message}</p>
                 )}

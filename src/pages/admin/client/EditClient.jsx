@@ -162,7 +162,7 @@ const EditClient = ({ client }) => {
                 {/* Client GST Field */}
                 <div className="form-group">
                     <label htmlFor="client_gst">
-                        Client GST <span className="text-red-600">*</span>
+                        Client GST
                     </label>
                     <input
                         type="text"
@@ -170,7 +170,6 @@ const EditClient = ({ client }) => {
                         id="client_gst"
                         placeholder="Client GST"
                         {...register("client_gst", {
-                            required: "Client GST is required",
                             pattern: {
                                 value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, // Indian GST regex
                                 message: "Please enter a valid GST number",

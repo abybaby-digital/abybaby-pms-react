@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
+
 export default function AddClient() {
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
@@ -29,9 +30,15 @@ export default function AddClient() {
                 "1"                    // Assuming status is always "1" (active)
             );
         },
-        onSuccess: () => {
-            toast.success("Client added successfully!");
-            navigate("/client-list"); // Redirect to client list after successful submission
+        onSuccess: (response) => {
+            if (response.success === 1) {
+                toast.success("Client added successfully!");
+                navigate("/client-list"); // Redirect to client list after successful submission
+            }
+            else {
+                toast.error(response.message);
+            }
+
         },
         onError: (error) => {
             toast.error("Failed to add client: " + error.message);
@@ -86,7 +93,7 @@ export default function AddClient() {
                                     className="block"
                                     id="contact_person"
                                     placeholder="Contact Person"
-                                    {...register("contact_person")}
+                                    {...register("contact_person", { required: "Contact person is required" })}
                                 />
                                 {errors.contact_person && (
                                     <span className="text-red-600 text-sm">
@@ -105,7 +112,7 @@ export default function AddClient() {
                                     className="block"
                                     id="office_address"
                                     placeholder="Office Address"
-                                    {...register("office_address")}
+                                    {...register("office_address", { required: "Office address is required" })}
                                 />
                                 {errors.office_address && (
                                     <span className="text-red-600 text-sm">
@@ -124,12 +131,14 @@ export default function AddClient() {
                                     className="block"
                                     id="contact_number"
                                     placeholder="Contact Number"
-                                    {...register("contact_number", {
-                                        pattern: {
-                                            value: /^[0-9]{10}$/, // Ensures the input is exactly 10 digits
-                                            message: "Please enter a valid 10-digit phone number",
-                                        },
-                                    })}
+                                    {...register("contact_number",
+                                        { required: "Contact Number is required" },
+                                        {
+                                            pattern: {
+                                                value: /^[0-9]{10}$/, // Ensures the input is exactly 10 digits
+                                                message: "Please enter a valid 10-digit phone number",
+                                            },
+                                        })}
                                 />
                                 {errors.contact_number && (
                                     <span className="text-red-600 text-sm">
@@ -146,7 +155,8 @@ export default function AddClient() {
                                     className="block"
                                     id="client_email"
                                     placeholder="Client Email"
-                                    {...register("client_email", {
+                                    {...register("client_email", { required: "Email is required" }, 
+                                        {
                                         pattern: {
                                             value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                                             message: "Please enter a valid email address",
@@ -163,7 +173,7 @@ export default function AddClient() {
                             {/* Client GST Field */}
                             <div className="form-group">
                                 <label htmlFor="client_gst">
-                                    Client GST <span className="text-red-600">*</span>
+                                    Client GST
                                 </label>
                                 <input
                                     type="text"
@@ -171,7 +181,7 @@ export default function AddClient() {
                                     id="client_gst"
                                     placeholder="Client GST"
                                     {...register("client_gst", {
-                                        
+
                                         pattern: {
                                             value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, // Indian GST regex
                                             message: "Please enter a valid GST number",
@@ -187,7 +197,7 @@ export default function AddClient() {
                         </div>
 
                         {/* LOADER */}
-                        
+
                         {
                             addClientMutation.isPending ?
                                 <FormSubmitLoader loading_msg="Creating Client..." /> : null

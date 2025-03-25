@@ -307,7 +307,6 @@ export default function AddVendor() {
                                     id="gst_no"
                                     placeholder="Enter GST Number"
                                     {...register("gst_no", {
-                                        required: "GST Number is required",  // Makes it a required field
                                         pattern: {
                                             value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[A-Z]{1}[0-9]{1}$/,  // GST number pattern
                                             message: "Invalid GST Number , All letters will be capital"  // Error message for invalid GST number
