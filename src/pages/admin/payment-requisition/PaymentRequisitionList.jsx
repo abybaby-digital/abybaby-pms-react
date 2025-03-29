@@ -167,6 +167,7 @@ export default function PaymentRequisitionList() {
 
     // Prepare the data for export with the updated fields
     const formattedRows = selectedRows.map((payment) => ({
+      "Project No.": payment.project_number,
       "Project Name": payment.project_name,
       "Vendor Name": payment.vendor_name,
       "Vendor Bank Name": payment.bank_name,
@@ -198,6 +199,7 @@ export default function PaymentRequisitionList() {
     doc.autoTable({
       head: [
         [
+          "Project No",
           "Project Name",
           "Vendor Name",
           "Vendor Bank Name",
@@ -212,7 +214,7 @@ export default function PaymentRequisitionList() {
         ],
       ],
       body: selectedRows.map((payment) => [
-        payment.project_name,
+        payment.project_number,
         payment.vendor_name,
         payment.bank_name,
         payment.bank_account,
@@ -378,7 +380,7 @@ export default function PaymentRequisitionList() {
                     />
 
                     }
-                    <Column
+                    {/* <Column
                       header="S.No"
                       body={(rowData, { rowIndex }) => (
                         <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
@@ -386,7 +388,12 @@ export default function PaymentRequisitionList() {
                         </span>
                       )}
                       style={{ width: "5rem", textAlign: "center" }}
-                    />
+                    /> */}
+                    <Column
+                      field="project_number"
+                      sortable
+                      header="Project Number"
+                    ></Column>
                     <Column
                       field="project_name"
                       sortable
