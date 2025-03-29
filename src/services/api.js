@@ -949,7 +949,7 @@ export const editUser = async (
   company_id,
   branch_id,
   contact_number,
-  password,
+  // password,
   profile_img, // This will be a file object (image)
   user_details
 ) => {
@@ -965,7 +965,7 @@ export const editUser = async (
     formData.append("company_id", company_id);
     formData.append("branch_id", branch_id);
     formData.append("contact_number", contact_number);
-    formData.append("password", password);
+    // formData.append("password", password);
     formData.append("user_details", user_details);
 
     // Append the profile image if it exists

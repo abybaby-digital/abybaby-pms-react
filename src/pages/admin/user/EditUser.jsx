@@ -138,9 +138,9 @@ export default function EditUser({ user }) {
       role_id: { value: user.role_id, label: user.role_name },
       state_id: user.selected_state,
       company_id: { value: user.company_id, label: user.company_name },
-      branch_id: { value: user.branch_id, label: user.branch_name },
+      branch_id: user.selected_branch,
       contact_number: user.contact_number,
-      password: "",
+      // password: "",
       user_details: user.user_details || "",
       status: user.status === "1" ? "active" : "inactive",
       profile_img: null,
@@ -206,9 +206,13 @@ export default function EditUser({ user }) {
         data.name,
         data.email,
         data.role_id.value,
-        data.state_id?.map((item) => item.value).join(","),
+        // data.state_id?.map((item) => item.value).join(","),
+        data.state_id !== undefined ?
+          data.state_id?.map((item) => (item.value.toString())).join(",") : null,
         data.company_id.value,
-        data.branch_id?.map((item) => item.value).join(","),
+        // data.branch_id?.map((item) => item.value).join(","),
+        data.branch_id !== undefined ?
+          data.branch_id?.map((item) => (item.value.toString())).join(",") : null,
         // +data.branch_id.value,
         // vertical_head_id.vertical_head_id,
         // data?.vertical_head_id?.value || null,
@@ -216,7 +220,7 @@ export default function EditUser({ user }) {
         // data?.client_service_id?.map((item) => item.value).join(",") || null,
         // data?.other_service_id?.map((item) => item.value).join(",") || null,
         data.contact_number,
-        data.password || null,
+        // data.password || null,
         data.profile_img,
         data.user_details,
         data.status === "active" ? "1" : "0"
@@ -373,27 +377,22 @@ export default function EditUser({ user }) {
 
           {/* Branch */}
           <div className="form-group">
-            <label>Branch</label>
+            <label htmlFor="branch_id">Branch <span className="text-red-600">*</span></label>
             <Controller
               name="branch_id"
               control={control}
+              rules={{ required: "Branch is required" }}
               render={({ field }) => (
                 <Select
                   {...field}
-                  isMulti // Enable multi-selection
-                  options={branchList?.response?.map((item) => ({
-                    value: item.id,
-                    label: item.branch_name,
-                  }))}
+                  options={branchList?.response?.map(item => ({ value: item.id, label: item.branch_name }))}
                   components={animatedComponents}
-                  onChange={(selectedOptions) => {
-                    // Convert the selected options into an array of values (IDs)
-                    const selectedBranchIds = selectedOptions.map((option) => option.value);
-                    setValue("branch_id", selectedBranchIds); // Update form value
-                  }}
+                  isMulti // This makes the select a multiple selection field
+                  placeholder="Select Branch"
                 />
               )}
             />
+            {errors.branch_id && <span className="text-red-600 text-sm">{errors.branch_id.message}</span>}
           </div>
 
 
@@ -428,10 +427,10 @@ export default function EditUser({ user }) {
           </div>
 
           {/* Password */}
-          <div className="form-group">
+          {/* <div className="form-group">
             <label>Password</label>
             <input type="password" {...register("password")} />
-          </div>
+          </div> */}
 
           {/* Profile Image */}
           {/* <div className="form-group">
@@ -448,7 +447,7 @@ export default function EditUser({ user }) {
               />
             )}
           </div> */}
-          <div className="form-group lg:col-span-2">
+          <div className="form-group">
             <label htmlFor="profile_img">Profile Image</label>
             <input
               type="file"
