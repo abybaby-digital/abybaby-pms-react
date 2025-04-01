@@ -77,6 +77,7 @@ export default function Dashboard() {
       return await getReport(token, fincYear);
     },
   });
+  
   //   console.log(projectList);
 
   const projectListByCategory = (title, navigate_url, status, billed, paid, partial) => {

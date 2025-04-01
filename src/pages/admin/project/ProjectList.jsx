@@ -53,6 +53,16 @@ export default function ProjectList() {
   const [billing, setBilled] = useState(null);
   const [payment, setPayment] = useState(null);
 
+
+  // FY LIST CALL
+  const { data: fincYearList } = useQuery({
+    queryKey: ["finc-year-list", token],
+    queryFn: async () => {
+      return await getFYList(token);
+    },
+  });
+  // const [fincYear, setFincYear] = useState(fincYearList?.response[0].id);
+
   const { data: projectList = [], isLoading } = useQuery({
     queryKey: [
       "project-list",
@@ -140,6 +150,8 @@ export default function ProjectList() {
     );
   });
 
+
+
   const exportToExcel = () => {
     if (!projectList?.response || projectList.response.length === 0) {
       alert("No data available to export!");
@@ -225,7 +237,6 @@ export default function ProjectList() {
     doc.save("project_list.pdf");
   };
 
-
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -233,14 +244,32 @@ export default function ProjectList() {
         <AdminHead breadcrumb_name="project" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
           <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-            <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
-              PROJECT LIST
-            </h2>
+            <div className="flex bg-gray-200 items-center justify-between px-10">
+              <h2 className="font-merri font-semibold p-5 text-center text-2xl">
+                PROJECT LIST
+              </h2>
+              <div className="finance-year-filter">
+                <form action="#" className="flex items-center gap-3">
+                  <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                  <select
+                    name="financeYear"
+                    id="financeYear"
+                    className="block"
+                    onChange={(e) => {
+                      setFincYear(e.target.value);
+                    }}
+                  >
+                    {fincYearList?.response?.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.financial_year}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              </div>
+            </div>
             <div className="card-body p-5 bg-white shadow overflow-hidden">
               {/* filtering Projects */}
-
-
-
               {isLoading ? (
                 <TableSkeleton columns="5" />
               ) : (
@@ -255,6 +284,8 @@ export default function ProjectList() {
                       value={searchKeyword}
                       onChange={(e) => setSearchKeyword(e.target.value)}
                     />
+
+
 
                     <div className="export-btns flex gap-2">
                       <TooltipProvider>
@@ -397,19 +428,19 @@ export default function ProjectList() {
                               ?.includes(userId) ? (
                               <span className="block text-center">-</span>
                             ) : (
-                             
-                                <span className="block text-center">
-                                  {
 
-                                    +rowData.total_project_invoice_amount_with_gst > +rowData.project_amount_with_gst ||
-                                      +rowData.total_project_invoice_amount_with_gst < +rowData.project_amount_with_gst ?
-                                      <span className="text-red-500 ">{rowData.total_project_invoice_amount_with_gst}<GoAlertFill className="text-red-500 animate-pulse inline text-lg ms-3 mb-2" /></span>
-                                      : <span className="text-green-500 ">{rowData.total_project_invoice_amount_with_gst}</span>
+                              <span className="block text-center">
+                                {
+
+                                  +rowData.total_project_invoice_amount_with_gst > +rowData.project_amount_with_gst ||
+                                    +rowData.total_project_invoice_amount_with_gst < +rowData.project_amount_with_gst ?
+                                    <span className="text-red-500 ">{rowData.total_project_invoice_amount_with_gst}<GoAlertFill className="text-red-500 animate-pulse inline text-lg ms-3 mb-2" /></span>
+                                    : <span className="text-green-500 ">{rowData.total_project_invoice_amount_with_gst}</span>
 
 
-                                  }
-                                </span>
-                               
+                                }
+                              </span>
+
                             )
                           }
                           style={{ textTransform: "capitalize" }}
