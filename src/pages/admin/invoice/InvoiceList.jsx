@@ -10,7 +10,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
-import { getInvoiceList } from "../../../services/api"; // Add API for fetching invoices
+import { getFYList, getInvoiceList } from "../../../services/api"; // Add API for fetching invoices
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -30,12 +30,21 @@ export default function InvoiceList() {
   const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.id);
+  const [fincYear, setFincYear] = useState(null);
+
+  // FY LIST CALL
+  const { data: fincYearList } = useQuery({
+    queryKey: ["finc-year-list", token],
+    queryFn: async () => {
+      return await getFYList(token);
+    },
+  });
 
   // Fetch invoice list data
   const { data: invoiceList = [], isLoading } = useQuery({
-    queryKey: ["invoice-list", refetchList, modal],
+    queryKey: ["invoice-list", refetchList, modal, fincYear],
     queryFn: async () => {
-      return await getInvoiceList(token); // Add the function for fetching invoices
+      return await getInvoiceList(token, fincYear); // Add the function for fetching invoices
     },
   });
 
@@ -83,26 +92,26 @@ export default function InvoiceList() {
       alert("No data available to export!");
       return;
     }
-        // Define custom column headers
-        const formattedData = invoiceList?.response?.map((item, index) => ({
-          sl_no: index + 1,
-          "Project Name": item.project_name,
-          "Project Number": item.project_no,
-          "Invoice No": item.invoice_no,
-          "Invoice amount pre gst": item.invoice_amount_pre_gst,
-          "Invoice amount with gst": item.invoice_amount_with_gst,
-          "Received Amount": item.received_amount,
-          "Invoice date": new Date(item.invoice_date).toLocaleDateString(),
-        }));
-    
-        // Convert JSON to Excel sheet
-        const ws = XLSX.utils.json_to_sheet(formattedData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Project List");
-    
-        // Save file
-        XLSX.writeFile(wb, "invoice_list.xlsx");
-      };
+    // Define custom column headers
+    const formattedData = invoiceList?.response?.map((item, index) => ({
+      sl_no: index + 1,
+      "Project Name": item.project_name,
+      "Project Number": item.project_no,
+      "Invoice No": item.invoice_no,
+      "Invoice amount pre gst": item.invoice_amount_pre_gst,
+      "Invoice amount with gst": item.invoice_amount_with_gst,
+      "Received Amount": item.received_amount,
+      "Invoice date": new Date(item.invoice_date).toLocaleDateString(),
+    }));
+
+    // Convert JSON to Excel sheet
+    const ws = XLSX.utils.json_to_sheet(formattedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Project List");
+
+    // Save file
+    XLSX.writeFile(wb, "invoice_list.xlsx");
+  };
 
   // Export to PDF
   const exportToPDF = () => {
@@ -145,9 +154,33 @@ export default function InvoiceList() {
         <AdminHead breadcrumb_name="invoice" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
           <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-            <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
+            {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
               INVOICE LIST
-            </h2>
+            </h2> */}
+            <div className="flex bg-gray-200 items-center justify-between px-10">
+              <h2 className="font-merri font-semibold p-5 text-center text-2xl">
+                PAYMENT RECEIVED LIST
+              </h2>
+              <div className="finance-year-filter">
+                <form action="#" className="flex items-center gap-3">
+                  <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                  <select
+                    name="financeYear"
+                    id="financeYear"
+                    className="block"
+                    onChange={(e) => {
+                      setFincYear(e.target.value);
+                    }}
+                  >
+                    {fincYearList?.response?.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.financial_year}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              </div>
+            </div>
             <div className="card-body p-5 bg-white shadow overflow-hidden">
               {isLoading ? (
                 <TableSkeleton columns="6" />
@@ -298,16 +331,16 @@ export default function InvoiceList() {
                       }
                     ></Column>
                     <Column
-                    className="text-center"
+                      className="text-center"
                       field="created_by_name"
                       sortable
                       header="Created By"
                       body={(rowData) =>
-                       rowData.created_by_name ? rowData.created_by_name : "..."
+                        rowData.created_by_name ? rowData.created_by_name : "..."
                       }
                     ></Column>
                     <Column
-                    className="text-center"
+                      className="text-center"
                       field="updated_by_name"
                       sortable
                       header="Updated By"
@@ -334,7 +367,7 @@ export default function InvoiceList() {
                         </span>
                       )}
                     ></Column> */}
-                    
+
                   </DataTable>
                 </div>
               )}

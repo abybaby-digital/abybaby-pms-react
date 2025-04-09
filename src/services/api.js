@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // const baseURL = "https://krishivikas.com/api/v2";
-const baseURL = "https://test.abybabyoffice.com/api";
-// const baseURL = "https://development.abybabyoffice.com/api";
+// const baseURL = "https://test.abybabyoffice.com/api";
+const baseURL = "https://development.abybabyoffice.com/api";
 
 const api = axios.create({
   baseURL: baseURL,
@@ -230,12 +230,8 @@ export const addVendor = async (
   return response.data.result;
 };
 
-
 // ADD VENDOR CATEGORY
-export const addVendorCategory = async (
-  token,
-  vendor_category_name,
-) => {
+export const addVendorCategory = async (token, vendor_category_name) => {
   const response = await api.post(
     `/add-vendor-category`,
     {
@@ -249,8 +245,6 @@ export const addVendorCategory = async (
   );
   return response.data.result;
 };
-
-
 
 // EDIT VENDOR
 
@@ -890,6 +884,153 @@ export const getRoleList = async (token) => {
   }
 };
 
+// ADD TEAM
+export const addTeam = async (
+  token,
+  project_id,
+  team_name,
+  fo_main_id,
+  fo_junior_id
+) => {
+  try {
+    const response = await api.post(
+      "/add-team",
+      {
+        project_id: project_id,
+        team_name: team_name,
+        fo_main_id: fo_main_id,
+        fo_junior_id: fo_junior_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+
+// EDIT TEAM
+export const editTeam = async (
+  token,
+  team_id,
+  team_name,
+  fo_main_id,
+  fo_junior_id
+) => {
+  try {
+    const response = await api.post(
+      "/edit-team",
+      {
+        team_id: team_id,
+        team_name: team_name,
+        fo_main_id: fo_main_id,
+        fo_junior_id: fo_junior_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+
+// TEAM LIST
+export const getTeamList = async (token) => {
+  try {
+    const response = await api.post(
+      "/team-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching team list:", error);
+    throw error;
+  }
+};
+
+// FO LIST
+export const FOList = async (token) => {
+  try {
+    const response = await api.post(
+      "/field-officer-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching team details:", error);
+    throw error;
+  }
+};
+
+// VIEW BY TEAM ID
+export const viewTeamById = async (token, team_id) => {
+  try {
+    const response = await api.post(
+      "/view-by-team-id",
+      {
+        team_id: team_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching team details:", error);
+    throw error;
+  }
+};
+
+// FO REMOVE FROM PROJECT
+export const FoRemove = async (
+  token,
+  project_number,
+  financial_year_id,
+  fo_id
+) => {
+  try {
+    const response = await api.post(
+      "/fo-remove-from-project",
+      {
+        project_number: project_number,
+        financial_year_id: financial_year_id,
+        fo_id: fo_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching team details:", error);
+    throw error;
+  }
+};
+
 // ADD USER
 export const addUser = async (
   token,
@@ -1022,6 +1163,7 @@ export const addPaymentReceived = async (
   received_date,
   received_img,
   received_details,
+  financial_year_id,
   status
 ) => {
   try {
@@ -1033,6 +1175,7 @@ export const addPaymentReceived = async (
     formData.append("received_amount", received_amount);
     formData.append("received_date", received_date);
     formData.append("received_details", received_details);
+    formData.append("financial_year_id", financial_year_id);
     formData.append("status", status);
 
     // Append the received image if it exists
@@ -1145,11 +1288,11 @@ export const editPaymentReceived = async (
 };
 
 // PAYMENT RECEIVED LIST
-export const getPaymentReceivedList = async (token) => {
+export const getPaymentReceivedList = async (token, financial_year_id) => {
   try {
     const response = await api.post(
       "/payment-received-list",
-      {},
+      { financial_year_id: financial_year_id },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1173,7 +1316,8 @@ export const addInvoice = async (
   invoice_date,
   invoice_img,
   invoice_details,
-  invoice_billing_status
+  invoice_billing_status,
+  financial_year_id
 ) => {
   try {
     const formData = new FormData();
@@ -1186,6 +1330,7 @@ export const addInvoice = async (
     formData.append("invoice_date", invoice_date);
     formData.append("invoice_details", invoice_details);
     formData.append("invoice_billing_status", invoice_billing_status);
+    formData.append("financial_year_id", financial_year_id);
 
     // Append the invoice image if it exists
     if (invoice_img && invoice_img[0]) {
@@ -1228,6 +1373,7 @@ export const getInvoiceNumberByProjectId = async (token, project_id) => {
     throw error;
   }
 };
+
 // EDIT INVOICE
 // export const editInvoice = async (
 //   token,
@@ -1321,11 +1467,13 @@ export const editInvoice = async (
 };
 
 // INVOICE LIST
-export const getInvoiceList = async (token) => {
+export const getInvoiceList = async (token, financial_year_id) => {
   try {
     const response = await api.post(
       "/invoice-list",
-      {},
+      {
+        financial_year_id: financial_year_id,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1386,7 +1534,7 @@ export const addPO = async (
   }
 };
 
-// ADD PO
+// ADD CLIENT PO
 export const addClientPO = async (
   token,
   project_id,
@@ -1397,6 +1545,7 @@ export const addClientPO = async (
   po_img, // Image or PDF file
   payment_schedule_days,
   project_order_details,
+  financial_year_id,
   status
 ) => {
   try {
@@ -1410,6 +1559,7 @@ export const addClientPO = async (
     formData.append("po_date", po_date);
     formData.append("payment_schedule_days", payment_schedule_days);
     formData.append("project_order_details", project_order_details);
+    formData.append("financial_year_id", financial_year_id);
     formData.append("status", status);
 
     // Append the PO image (either image or PDF) if it exists
@@ -1433,7 +1583,7 @@ export const addClientPO = async (
   }
 };
 
-// EDIT PO
+// EDIT CLIENT PO
 export const editClientPO = async (
   token,
   id, // PO ID (to edit an existing PO)
@@ -1484,12 +1634,14 @@ export const editClientPO = async (
   }
 };
 
-// PO LIST
-export const getClientPOList = async (token) => {
+//CLIENT PO LIST
+export const getClientPOList = async (token, financial_year_id) => {
   try {
     const response = await api.post(
       "/client-po-list",
-      {},
+      {
+        financial_year_id: financial_year_id,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1511,7 +1663,8 @@ export const addPaymentRequisition = async (
   requisition_amount,
   requisition_img, // Image or PDF file
   requisition_remarks,
-  date_of_payments
+  date_of_payments,
+  financial_year_id
 ) => {
   try {
     const formData = new FormData();
@@ -1522,6 +1675,7 @@ export const addPaymentRequisition = async (
     formData.append("requisition_amount", requisition_amount);
     formData.append("requisition_remarks", requisition_remarks);
     formData.append("date_of_payments", date_of_payments);
+    formData.append("financial_year_id", financial_year_id);
 
     // Append the requisition image (either image or PDF) if it exists
     if (requisition_img && requisition_img[0]) {
@@ -1590,11 +1744,13 @@ export const editPaymentRequisition = async (
 };
 
 // PAYMENT REQUISITION LIST
-export const getPaymentRequisitionList = async (token) => {
+export const getPaymentRequisitionList = async (token, financial_year_id) => {
   try {
     const response = await api.post(
       "/payment-requition-list",
-      {},
+      {
+        financial_year_id: financial_year_id,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1979,11 +2135,13 @@ export const editBillingSupportings = async (
 };
 
 // PAYMENT REQUISITION LIST
-export const getBillingSupportList = async (token) => {
+export const getBillingSupportList = async (token, financial_year_id) => {
   try {
     const response = await api.post(
       "/billing-support-list",
-      {},
+      {
+        financial_year_id: financial_year_id,
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,

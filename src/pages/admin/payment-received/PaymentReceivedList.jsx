@@ -5,7 +5,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
-import { getPaymentReceivedList } from "../../../services/api";
+import { getFYList, getPaymentReceivedList } from "../../../services/api";
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -24,11 +24,20 @@ import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 export default function PaymentReceivedList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
+    const [fincYear, setFincYear] = useState(null);
+
+    // FY LIST CALL
+    const { data: fincYearList } = useQuery({
+        queryKey: ["finc-year-list", token],
+        queryFn: async () => {
+            return await getFYList(token);
+        },
+    });
 
     const { data: paymentList = [], isLoading } = useQuery({
-        queryKey: ["payment-received-list", refetchList, modal],
+        queryKey: ["payment-received-list", refetchList, modal, fincYear],
         queryFn: async () => {
-            return await getPaymentReceivedList(token);
+            return await getPaymentReceivedList(token, fincYear);
         }
     });
 
@@ -70,37 +79,37 @@ export default function PaymentReceivedList() {
 
     const exportToExcel = () => {
         if (!paymentList?.response || paymentList.response.length === 0) {
-          alert("No data available to export!");
-          return;
+            alert("No data available to export!");
+            return;
         }
-            // Define custom column headers
-            const formattedData = paymentList?.response?.map((item, index) => ({
-              sl_no: index + 1,
-              "Project Name": item.project_name,
-              "Project Number": item.project_no,
-              "Receipt No": item.received_no,
-              "Received amount": item.received_amount,
-              "Receipt date": new Date(item.received_date).toLocaleDateString(),
-            }));
-        
-            // Convert JSON to Excel sheet
-            const ws = XLSX.utils.json_to_sheet(formattedData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
-        
-            // Save file
-            XLSX.writeFile(wb, "payment_received_list.xlsx");
-          };
+        // Define custom column headers
+        const formattedData = paymentList?.response?.map((item, index) => ({
+            sl_no: index + 1,
+            "Project Name": item.project_name,
+            "Project Number": item.project_no,
+            "Receipt No": item.received_no,
+            "Received amount": item.received_amount,
+            "Receipt date": new Date(item.received_date).toLocaleDateString(),
+        }));
+
+        // Convert JSON to Excel sheet
+        const ws = XLSX.utils.json_to_sheet(formattedData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Payment Received List");
+
+        // Save file
+        XLSX.writeFile(wb, "payment_received_list.xlsx");
+    };
 
     // Export to PDF
     const exportToPDF = () => {
         if (!paymentList?.response || paymentList.response.length === 0) {
             alert("No data available to export!");
             return;
-          }
+        }
         const doc = new jsPDF('l', 'mm', 'a4');
         doc.autoTable({
-            head: [["Project Name","Project No", "Received No", "Amount", "Received Date", "Details"]],
+            head: [["Project Name", "Project No", "Received No", "Amount", "Received Date", "Details"]],
             body: paymentList?.response.map(payment => [
                 payment.project_name,
                 payment.project_no,
@@ -120,7 +129,31 @@ export default function PaymentReceivedList() {
                 <AdminHead breadcrumb_name="Payment Received" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">PAYMENT RECEIVED LIST</h2>
+                        {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">PAYMENT RECEIVED LIST</h2> */}
+                        <div className="flex bg-gray-200 items-center justify-between px-10">
+                            <h2 className="font-merri font-semibold p-5 text-center text-2xl">
+                                PAYMENT RECEIVED LIST
+                            </h2>
+                            <div className="finance-year-filter">
+                                <form action="#" className="flex items-center gap-3">
+                                    <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                                    <select
+                                        name="financeYear"
+                                        id="financeYear"
+                                        className="block"
+                                        onChange={(e) => {
+                                            setFincYear(e.target.value);
+                                        }}
+                                    >
+                                        {fincYearList?.response?.map((option) => (
+                                            <option key={option.id} value={option.id}>
+                                                {option.financial_year}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
                         <div className="card-body p-5 bg-white shadow overflow-hidden">
                             {isLoading ? (
                                 <TableSkeleton columns="5" />
@@ -228,10 +261,10 @@ export default function PaymentReceivedList() {
                                             sortable
                                             header="Created By"
                                             body={(rowData) =>
-                                            rowData.created_by_name ? rowData.created_by_name : "....."
+                                                rowData.created_by_name ? rowData.created_by_name : "....."
                                             }
-                                            ></Column>
-                                            <Column
+                                        ></Column>
+                                        <Column
                                             className="text-center"
                                             field="updated_by_name"
                                             sortable
@@ -239,14 +272,14 @@ export default function PaymentReceivedList() {
                                             body={(rowData) =>
                                                 rowData.updated_by_name ? rowData.updated_by_name : "....."
                                             }
-                                            ></Column>
+                                        ></Column>
                                         <Column field="invoice_details" sortable header="Details"></Column>
                                         <Column header="Payemnt Status" body={(rowData) => (
                                             <span className={`px-3 py-1 rounded-xl text-white shadow ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"}`}>
                                                 {rowData.status === "1" ? "Received" : "Not Received"}
                                             </span>
                                         )}></Column>
-                                        
+
                                     </DataTable>
                                 </div>
                             )}

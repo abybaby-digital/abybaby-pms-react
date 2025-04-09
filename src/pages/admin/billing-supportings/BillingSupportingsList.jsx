@@ -10,7 +10,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
-import { getBillingSupportList, getClientPOList } from "../../../services/api"; // Add API for fetching client POs
+import { getBillingSupportList, getClientPOList, getFYList } from "../../../services/api"; // Add API for fetching client POs
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
@@ -26,13 +26,23 @@ export default function BillingSupportingList() {
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.id);
   console.log(userId);
-  
+
+  const [fincYear, setFincYear] = useState(null);
+
+  // FY LIST CALL
+  const { data: fincYearList } = useQuery({
+    queryKey: ["finc-year-list", token],
+    queryFn: async () => {
+      return await getFYList(token);
+    },
+  });
+
 
   // Fetch billing supporting data (replacing PO data)
   const { data: billingSupportingList = [], isLoading } = useQuery({
-    queryKey: ["billing-supporting-list", refetchList],
+    queryKey: ["billing-supporting-list", refetchList, fincYear],
     queryFn: async () => {
-      return await getBillingSupportList(token); // Use the API for fetching the list (replace with your actual data API)
+      return await getBillingSupportList(token, fincYear); // Use the API for fetching the list (replace with your actual data API)
     },
   });
 
@@ -65,19 +75,19 @@ export default function BillingSupportingList() {
       return projectName.includes(keyword);
     }
   );
-  
+
 
 
   function formatDate(createdAt) {
     // Split the createdAt string into date and time parts
     const [date, time] = createdAt.split(' ');
-  
+
     // Split the time into hours, minutes, and seconds
     let [hours, minutes, seconds] = time.split(':').map(Number);
-  
+
     // Determine AM or PM based on hours
     let ampm = 'AM';
-    
+
     if (hours === 0) {
       hours = 12; // Treat 00:XX:XX as 12:XX:XX PM (Noon)
       ampm = 'PM';
@@ -87,17 +97,17 @@ export default function BillingSupportingList() {
     } else {
       ampm = 'AM'; // Any hour < 12 is AM
     }
-  
+
     // Format the time to ensure two digits for minutes and seconds
     const formattedTime = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} ${ampm}`;
-  
+
     // Return the formatted date with time and AM/PM
     return `${date} at ${formattedTime}`;
   }
-  
 
-  
-  
+
+
+
 
   return (
     <SidebarProvider>
@@ -106,9 +116,33 @@ export default function BillingSupportingList() {
         <AdminHead breadcrumb_name="Billing Supporting List" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
           <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-            <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
+            {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
               BILLING SUPPORTING LIST
-            </h2>
+            </h2> */}
+            <div className="flex bg-gray-200 items-center justify-between px-10">
+              <h2 className="font-merri font-semibold p-5 text-center text-2xl">
+                BILLING SUPPORTING LIST
+              </h2>
+              <div className="finance-year-filter">
+                <form action="#" className="flex items-center gap-3">
+                  <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                  <select
+                    name="financeYear"
+                    id="financeYear"
+                    className="block"
+                    onChange={(e) => {
+                      setFincYear(e.target.value);
+                    }}
+                  >
+                    {fincYearList?.response?.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.financial_year}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              </div>
+            </div>
             <div className="card-body p-5 bg-white shadow overflow-hidden">
               {isLoading ? (
                 <TableSkeleton columns="2" />
@@ -200,9 +234,8 @@ export default function BillingSupportingList() {
                       header="Created By"
                       body={(rowData) =>
                         rowData.created_by_name
-                          ? `${
-                              rowData.created_by_name
-                            } (${formatDate(rowData.created_at)})`
+                          ? `${rowData.created_by_name
+                          } (${formatDate(rowData.created_at)})`
                           : "..."
                       }
                     ></Column>
@@ -210,13 +243,12 @@ export default function BillingSupportingList() {
                       header="Updated By"
                       body={(rowData) =>
                         rowData.updated_by_name
-                          ? `${
-                              rowData.updated_by_name
-                            } (${formatDate(rowData.created_at)})`
+                          ? `${rowData.updated_by_name
+                          } (${formatDate(rowData.created_at)})`
                           : "..."
                       }
                     ></Column>
-                    
+
                   </DataTable>
                 </div>
               )}

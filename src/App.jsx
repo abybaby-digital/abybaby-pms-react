@@ -38,6 +38,8 @@ import { useDispatch } from "react-redux";
 import { setToken, setUsers } from "./redux/features/Auth/AuthSlice";
 import ChangePassword from "./pages/admin/ChangePassword";
 import Dashboard from "./pages/admin/Dashboard";
+import AddTeam from "./pages/admin/teams/AddTeam";
+import TeamList from "./pages/admin/teams/TeamList";
 // Lazy-loaded components
 // const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 // const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
@@ -62,7 +64,7 @@ const App = () => {
 
   // console.log(encryptedToken);
   useEffect(() => {
-    if(user){
+    if (user) {
       // console.log(JSON.parse(user));
       dispatch(setUsers(JSON.parse(user)));
     }
@@ -74,7 +76,7 @@ const App = () => {
       dispatch(setToken(decryptedToken));
     }
   }, [encryptedToken, dispatch, navigate]);
-  
+
 
 
   const queryClient = new QueryClient()
@@ -92,6 +94,7 @@ const App = () => {
                 <Route path="/change-password" element={<ChangePassword />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="/" element={<Dashboard />} />
+
                   <Route path="/company-add" element={<AddCompany />} />
                   <Route path="/company-list" element={<CompanyList />} />
                   <Route path="/vendor-add" element={<AddVendor />} />
@@ -104,6 +107,8 @@ const App = () => {
                   <Route path="/project-list" element={<ProjectList />} />
                   <Route path="/user-add" element={<AddUser />} />
                   <Route path="/user-list" element={<UserList />} />
+                  <Route path="/team-add" element={<AddTeam />} />
+                  <Route path="/team-list" element={<TeamList />} />
                   <Route path="/role-add" element={<AddRole />} />
                   <Route path="/role-list" element={<RoleList />} />
                   <Route path="/payment-receipt-add" element={<AddPaymentReceived />} />

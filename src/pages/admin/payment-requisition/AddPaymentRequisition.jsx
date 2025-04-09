@@ -13,6 +13,7 @@ import {
   getBranchList,
   getVendorList,
   getProjectById,
+  getFYList,
 } from "../../../services/api";
 import { useState, useEffect } from "react";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
@@ -27,6 +28,16 @@ export default function AddPaymentRequisition() {
     setValue,
     watch,
   } = useForm();
+
+  const [fincYear, setFincYear] = useState(null);
+
+  // FY LIST CALL
+  const { data: fincYearList } = useQuery({
+    queryKey: ["finc-year-list", token],
+    queryFn: async () => {
+      return await getFYList(token);
+    },
+  });
 
   const requisitionAmount = watch("requisition_amount");
   const requisitionAmountReEnter = watch("requisition_amount_re_enter");
@@ -81,11 +92,13 @@ export default function AddPaymentRequisition() {
     setMinDate(formattedDate); // Set the minimum date to the next day (or today if before 4 PM)
   }, []);
 
+
+
   // Fetch projects, branches, and vendors from APIs
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
-    queryKey: ["project-list"],
+    queryKey: ["project-list", fincYear],
     queryFn: async () => {
-      return await getProjectList(token);
+      return await getProjectList(token, null, null, null, fincYear, null, null, null, null, null);
     },
   });
 
@@ -114,6 +127,7 @@ export default function AddPaymentRequisition() {
         data.requisition_img,
         data.requisition_remarks,
         data.date_of_payments,
+        +fincYear,
         "1"
       );
     },
@@ -122,7 +136,7 @@ export default function AddPaymentRequisition() {
         toast.success("Payment Requisition added successfully!");
         navigate("/payment-requisition-list");
       }
-      else{
+      else {
         toast.error(response.message);
       }
     },
@@ -171,22 +185,55 @@ export default function AddPaymentRequisition() {
     }
   };
 
+  const checkFinancialYear = () => {
+    if (fincYear === null || fincYear === "NA") {
+      toast.error("Choose Financial Year First !!");
+    }
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
         <AdminHead breadcrumb_name="Payment Requisition" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
-          {isLoadingProjects ?
-            <FormSubmitLoader loading_msg="" />
-            :
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
-            >
-              <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
+          >
+            {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
+                ADD PAYMENT REQUISITION
+              </h2> */}
+            <div className="flex bg-gray-200 items-center justify-between px-10">
+              <h2 className="font-merri font-semibold p-5 text-center text-2xl">
                 ADD PAYMENT REQUISITION
               </h2>
+              <div className="finance-year-filter">
+                <form action="#" className="flex items-center gap-3">
+                  <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                  <select
+                    name="financeYear"
+                    id="financeYear"
+                    className="block"
+                    onChange={(e) => {
+                      setFincYear(e.target.value);
+                    }}
+                    
+                  >
+                    <option value="NA">--Select--</option>
+                    {fincYearList?.response?.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.financial_year}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              </div>
+            </div>
+            {isLoadingProjects ?
+              <FormSubmitLoader loading_msg="" />
+              :
               <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
                 {/* Project ID Dropdown */}
                 <div className="form-group">
@@ -199,6 +246,7 @@ export default function AddPaymentRequisition() {
                       required: "Project ID is required",
                     })}
                     className="block w-full"
+                    disabled={fincYear === null || fincYear === "NA"}
                   >
                     <option value="">Select Project</option>
                     {
@@ -361,7 +409,7 @@ export default function AddPaymentRequisition() {
                     {
                       +requisitionAmount !== +requisitionAmountReEnter ?
                         (
-                          requisitionAmount !== "" && requisitionAmountReEnter !== ""  ? <p className="text-red-500 text-sm mt-2">Requisition mismatch</p> : null
+                          requisitionAmount !== "" && requisitionAmountReEnter !== "" ? <p className="text-red-500 text-sm mt-2">Requisition mismatch</p> : null
                         ) : null
                     }
                   </div>
@@ -462,23 +510,25 @@ export default function AddPaymentRequisition() {
 
                 {/* Submit Button */}
               </div>
+            }
 
-              {/* LOADER */}
+            {/* LOADER */}
 
-              {addPaymentMutation.isPending ? (
-                <FormSubmitLoader loading_msg="Creating Payment Requisition..." />
-              ) : null}
-              <div className="card-footer text-center bg-gray-100 py-5">
-                <button
-                  type="submit"
-                  className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-                  disabled={+requisitionAmount !== +requisitionAmountReEnter}
-                >
-                  {addPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
-                </button>
-              </div>
-            </form>
-          }
+            {addPaymentMutation.isPending ? (
+              <FormSubmitLoader loading_msg="Creating Payment Requisition..." />
+            ) : null}
+            <div className="card-footer text-center bg-gray-100 py-5">
+              <button
+                onClick={() => { checkFinancialYear() }}
+                type="submit"
+                className="px-10 py-2 text-white bg-lightdark rounded-2xl"
+                disabled={+requisitionAmount !== +requisitionAmountReEnter}
+              >
+                {addPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
+              </button>
+            </div>
+          </form>
+
         </div>
       </SidebarInset>
     </SidebarProvider>

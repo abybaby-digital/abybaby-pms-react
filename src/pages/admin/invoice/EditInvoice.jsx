@@ -16,9 +16,7 @@ const EditInvoice = ({ invoice }) => {
     // Initialize image preview state
     const [imagePreview, setImagePreview] = useState(null);
     const [selectedProject, setProject] = useState(null);
-
-
-
+    
     // Fetch projects for the project dropdown
     const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
         queryKey: ["project-list"],

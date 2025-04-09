@@ -209,11 +209,26 @@ const data = {
           url: "/user-list",
           access: "Users",
         },
-        // {
-        //   title: "Change User Password",
-        //   url: "/change-user-password",
-        //   access: "Users",
-        // },
+      ],
+    },
+    {
+      title: "Teams",
+      url: "#",
+      icon: FaUsers,
+      hasSubMenu: true,
+      isActive: false,
+      access: "Team",
+      items: [
+        {
+          title: "Add Team",
+          url: "/team-add",
+          access: "Team",
+        },
+        {
+          title: "Team List",
+          url: "/team-list",
+          access: "Team",
+        },
       ],
     },
     {

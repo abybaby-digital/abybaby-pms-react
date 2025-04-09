@@ -12,6 +12,7 @@ import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
 import { MdOutlineFileDownloadOff } from "react-icons/md";
 import {
+  getFYList,
   getPaymentReceivedList,
   getPaymentRequisitionList,
   getRequisitionDownloadStatus,
@@ -35,13 +36,21 @@ export default function PaymentRequisitionList() {
   const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
   const role_id = useSelector((state) => state.auth.user?.role_id);
-  console.log("role",role_id);
-  
+  console.log("role", role_id);
+  const [fincYear, setFincYear] = useState(null);
+
+  // FY LIST CALL
+  const { data: fincYearList } = useQuery({
+    queryKey: ["finc-year-list", token],
+    queryFn: async () => {
+      return await getFYList(token);
+    },
+  });
 
   const { data: paymentList = [], isLoading } = useQuery({
-    queryKey: ["payment-requisition-list", refetchList, modal],
+    queryKey: ["payment-requisition-list", refetchList, modal, fincYear],
     queryFn: async () => {
-      return await getPaymentRequisitionList(token);
+      return await getPaymentRequisitionList(token, fincYear);
     },
   });
 
@@ -57,10 +66,10 @@ export default function PaymentRequisitionList() {
   //   }
   // };
 
-  const changeDownloadStatus = async(pr_id) => {
+  const changeDownloadStatus = async (pr_id) => {
     const response = await getRequisitionDownloadStatus(token, pr_id);
     console.log(response);
-    
+
     if (response.status === 200 || response.status === 201) {
       toast.success("Data Exported Succesfully !!");
       setRefetchList(!refetchList);
@@ -238,9 +247,33 @@ export default function PaymentRequisitionList() {
         <AdminHead breadcrumb_name="Payment Requisition" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
           <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-            <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
+            {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
               PAYMENT REQUISITION LIST
-            </h2>
+            </h2> */}
+            <div className="flex bg-gray-200 items-center justify-between px-10">
+              <h2 className="font-merri font-semibold p-5 text-center text-2xl">
+                PAYMENT REQUISITION LIST
+              </h2>
+              <div className="finance-year-filter">
+                <form action="#" className="flex items-center gap-3">
+                  <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                  <select
+                    name="financeYear"
+                    id="financeYear"
+                    className="block"
+                    onChange={(e) => {
+                      setFincYear(e.target.value);
+                    }}
+                  >
+                    {fincYearList?.response?.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.financial_year}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              </div>
+            </div>
             <div className="card-body p-5 bg-white shadow overflow-hidden">
               {isLoading ? (
                 <TableSkeleton columns="5" />
@@ -361,23 +394,23 @@ export default function PaymentRequisitionList() {
                     {
                       role_id === 4 &&
                       <Column
-                      body={(rowData) => (
-                        rowData.admin_approve_status === "0" ||
+                        body={(rowData) => (
+                          rowData.admin_approve_status === "0" ||
                             rowData.finance_approve_status === "0" ||
                             rowData.purchase_approve_status === "0" ||
                             rowData.accountent_approve_status === "0" ||
                             rowData.download_status === "1" ?
-                        <MdOutlineFileDownloadOff className="text-red-500" />:
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.some(
-                            (row) => row.id === rowData.id
-                          )}
-                          onChange={(e) => handleCheckboxChange(e, rowData)}
-                        />
-                      )}
-                      style={{ width: "3rem", textAlign: "center" }}
-                    />
+                            <MdOutlineFileDownloadOff className="text-red-500" /> :
+                            <input
+                              type="checkbox"
+                              checked={selectedRows.some(
+                                (row) => row.id === rowData.id
+                              )}
+                              onChange={(e) => handleCheckboxChange(e, rowData)}
+                            />
+                        )}
+                        style={{ width: "3rem", textAlign: "center" }}
+                      />
 
                     }
                     {/* <Column
@@ -415,10 +448,9 @@ export default function PaymentRequisitionList() {
                       sortable
                       header="Approved Amount"
                       body={(rowData) =>
-                        `₹${
-                          rowData.approved_amount === null
-                            ? 0
-                            : rowData.approved_amount
+                        `₹${rowData.approved_amount === null
+                          ? 0
+                          : rowData.approved_amount
                         }`
                       }
                     ></Column>
@@ -449,19 +481,18 @@ export default function PaymentRequisitionList() {
                       header="Admin Approval"
                       body={(rowData) => (
                         <span
-                          className={`px-3 py-1 rounded-xl text-white shadow ${
-                            rowData.admin_approve_status === "1"
-                              ? "bg-green-500"
-                              : rowData.admin_approve_status === "0"
+                          className={`px-3 py-1 rounded-xl text-white shadow ${rowData.admin_approve_status === "1"
+                            ? "bg-green-500"
+                            : rowData.admin_approve_status === "0"
                               ? "bg-orange-400"
                               : "bg-red-500"
-                          }`}
+                            }`}
                         >
                           {rowData.admin_approve_status === "0"
                             ? "Pending"
                             : rowData.admin_approve_status === "1"
-                            ? "Approved"
-                            : "Rejected"}
+                              ? "Approved"
+                              : "Rejected"}
                         </span>
                       )}
                     ></Column>
@@ -469,19 +500,18 @@ export default function PaymentRequisitionList() {
                       header="Finance Approval"
                       body={(rowData) => (
                         <span
-                          className={`px-3 py-1 rounded-xl text-white shadow ${
-                            rowData.finance_approve_status === "1"
-                              ? "bg-green-500"
-                              : rowData.finance_approve_status === "0"
+                          className={`px-3 py-1 rounded-xl text-white shadow ${rowData.finance_approve_status === "1"
+                            ? "bg-green-500"
+                            : rowData.finance_approve_status === "0"
                               ? "bg-orange-400"
                               : "bg-red-500"
-                          }`}
+                            }`}
                         >
                           {rowData.finance_approve_status === "0"
                             ? "Pending"
                             : rowData.finance_approve_status === "1"
-                            ? "Approved"
-                            : "Rejected"}
+                              ? "Approved"
+                              : "Rejected"}
                         </span>
                       )}
                     ></Column>
@@ -489,19 +519,18 @@ export default function PaymentRequisitionList() {
                       header="Purchase Approval"
                       body={(rowData) => (
                         <span
-                          className={`px-3 py-1 rounded-xl text-white shadow ${
-                            rowData.purchase_approve_status === "1"
-                              ? "bg-green-500"
-                              : rowData.purchase_approve_status === "0"
+                          className={`px-3 py-1 rounded-xl text-white shadow ${rowData.purchase_approve_status === "1"
+                            ? "bg-green-500"
+                            : rowData.purchase_approve_status === "0"
                               ? "bg-orange-400"
                               : "bg-red-500"
-                          }`}
+                            }`}
                         >
                           {rowData.purchase_approve_status === "0"
                             ? "Pending"
                             : rowData.purchase_approve_status === "1"
-                            ? "Approved"
-                            : "Rejected"}
+                              ? "Approved"
+                              : "Rejected"}
                         </span>
                       )}
                     ></Column>
@@ -509,19 +538,18 @@ export default function PaymentRequisitionList() {
                       header="Accountant Approval"
                       body={(rowData) => (
                         <span
-                          className={`px-3 py-1 rounded-xl text-white shadow ${
-                            rowData.accountent_approve_status === "1"
-                              ? "bg-green-500"
-                              : rowData.accountent_approve_status === "0"
+                          className={`px-3 py-1 rounded-xl text-white shadow ${rowData.accountent_approve_status === "1"
+                            ? "bg-green-500"
+                            : rowData.accountent_approve_status === "0"
                               ? "bg-black"
                               : "bg-red-500"
-                          }`}
+                            }`}
                         >
                           {rowData.accountent_approve_status === "1"
                             ? "Paid"
                             : rowData.accountent_approve_status === "0"
-                            ? "Unpaid"
-                            : "Rejected"}
+                              ? "Unpaid"
+                              : "Rejected"}
                         </span>
                       )}
                     ></Column>
