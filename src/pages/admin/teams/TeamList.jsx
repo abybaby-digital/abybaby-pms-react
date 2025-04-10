@@ -5,7 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
 import { useQuery } from "@tanstack/react-query";
-import { getTeamList, getUserList } from "../../../services/api";  // Updated to fetch user list
+import { getFYList, getTeamList, getUserList } from "../../../services/api";  // Updated to fetch user list
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -25,10 +25,21 @@ export default function TeamList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
 
-    const { data: teamList = [], isLoading } = useQuery({
-        queryKey: ["team-list", refetchList],
+    const [fincYear, setFincYear] = useState(null);
+
+    // FY LIST CALL
+    const { data: fincYearList } = useQuery({
+        queryKey: ["finc-year-list", token],
         queryFn: async () => {
-            return await getTeamList(token);
+            return await getFYList(token);
+        },
+    });
+
+
+    const { data: teamList = [], isLoading } = useQuery({
+        queryKey: ["team-list", refetchList, fincYear],
+        queryFn: async () => {
+            return await getTeamList(token, fincYear);
         }
     });
 
@@ -40,13 +51,13 @@ export default function TeamList() {
 
     const singleTeam = (id) => {
         const team = teamList?.response?.find(user => user.id === id);
-        
+
         setSingleTeamData(team);
         setModal(true);
     };
 
     // console.log(singleTeamData);
-    
+
 
     const filteredTeams = teamList?.response?.filter(team => {
         const keyword = searchKeyword.toLowerCase();
@@ -108,7 +119,31 @@ export default function TeamList() {
                 <AdminHead breadcrumb_name="team" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-                        <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">TEAM LIST</h2>
+                        {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">TEAM LIST</h2> */}
+                        <div className="flex bg-gray-200 items-center justify-between px-10">
+                            <h2 className="font-merri font-semibold p-5 text-center text-2xl">
+                                TEAM LIST
+                            </h2>
+                            <div className="finance-year-filter">
+                                <form action="#" className="flex items-center gap-3">
+                                    <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                                    <select
+                                        name="financeYear"
+                                        id="financeYear"
+                                        className="block"
+                                        onChange={(e) => {
+                                            setFincYear(e.target.value);
+                                        }}
+                                    >
+                                        {fincYearList?.response?.map((option) => (
+                                            <option key={option.id} value={option.id}>
+                                                {option.financial_year}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
                         <div className="card-body p-5 bg-white shadow overflow-hidden">
                             {
                                 isLoading ? (

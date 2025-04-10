@@ -12,7 +12,7 @@ import {
     TableCell,
     TableRow
 } from "@/components/ui/table";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
 import EditTeam from "./EditTeam";
@@ -34,7 +34,9 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
         },
     })
 
-    console.log(teamActivityDetails);
+    // console.log(teamActivityDetails);
+
+    const [searchKeyword, setSearchKeyword] = useState("");
 
 
     return (
@@ -52,11 +54,20 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                 <DialogDescription>
                     {
                         add_or_edit === "view" ? (
-                            <div className="grid grid-cols-3 items-center gap-4 max-h-[80vh] overflow-y-auto p-3">
-                                <h2 className="col-span-3 text-center text-black text-xl border-b pb-3 uppercase">{team.project_name}</h2>
-
-                                {/* User Details Table */}
-                                {/* <Table className="text-black w-[90%] mx-auto">
+                            <>
+                                <div className="flex w-full justify-between border-b px-3 py-2 items-center" >
+                                    <h2 className="text-center text-black text-xl  uppercase">{team.project_name}</h2>
+                                    <input
+                                        type="text"
+                                        placeholder="Search by FO name..."
+                                        className="p-2 w-full border rounded-md shadow lg:w-[300px]"
+                                        value={searchKeyword}
+                                        onChange={(e) => setSearchKeyword(e.target.value)}
+                                    />
+                                </div>
+                                <div className="grid xl:grid-cols-4 lg:grid-cols-3 items-center gap-4 max-h-[80vh] overflow-y-auto p-3">
+                                    {/* User Details Table */}
+                                    {/* <Table className="text-black w-[90%] mx-auto">
                                     <TableBody className="grid gap-5 lg:grid-cols-3 grid-cols-1">
                                         <TableRow>
                                             <TableCell className="font-bold text-lg">Project Name :</TableCell>
@@ -81,23 +92,36 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                         
                                     </TableBody>
                                 </Table> */}
-                                {
-                                    teamActivityDetails?.response?.length === 0 ?
-                                        "No Activity Found" :
-                                        teamActivityDetails?.response?.map((item) =>
-                                        (
-                                            <div key={item.id}>
-                                                <div className="team-activity border border-dashed cursor-pointer shadow rounded-2xl transition-all p-2 hover:scale-95">
-                                                    <img src={item?.activity_photo} alt="activity_photo" className="h-[250px] object-cover rounded-2xl" />
-                                                    <p className="text-center py-2">{item.activity_description}</p>
-                                                    <p className="bg-black text-center text-white py-2 rounded-2xl">uploaded by : {item.team_created_by}</p>
-                                                </div>
-                                            </div>
-                                        ))
-                                }
+                                    {
+                                        teamActivityDetails?.response?.length === 0 ? (
+                                            "No Activity Found"
+                                        ) : (
+                                            teamActivityDetails?.response
+                                                ?.filter(item =>
+                                                    item.team_created_by?.toLowerCase().includes(searchKeyword.toLowerCase())
+                                                )
+                                                .map((item) => (
+                                                    <div key={item.id}>
+                                                        <div className="team-activity border border-dashed cursor-pointer shadow rounded-2xl transition-all p-2 hover:scale-95">
+                                                            <img
+                                                                src={item?.activity_photo}
+                                                                alt="activity_photo"
+                                                                className="h-[250px] w-full object-cover rounded-2xl"
+                                                                data-fancybox={item.team_created_by}
+                                                                data-caption={`uploaded by : ${item.team_created_by}`}
+                                                            />
+                                                            <p className="text-center py-2">{item.activity_description}</p>
+                                                            <p className="bg-black text-center text-white py-2 rounded-2xl">
+                                                                uploaded by : {item.team_created_by}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                        )
+                                    }
 
-
-                            </div>
+                                </div>
+                            </>
                         ) : (
                             <EditTeam team={team} roleList={roleList}
                                 branchList={branchList}

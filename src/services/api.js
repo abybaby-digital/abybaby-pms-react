@@ -1374,6 +1374,29 @@ export const getInvoiceNumberByProjectId = async (token, project_id) => {
   }
 };
 
+// DELETE INVOICE
+
+export const deleteInvoice = async (token, invoice_id) => {
+  try {
+    const response = await api.post(
+      "/invoice-delete",
+      {
+        invoice_id: invoice_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error deleting invoice:", error);
+    throw error;
+  }
+};
+
+
 // EDIT INVOICE
 // export const editInvoice = async (
 //   token,

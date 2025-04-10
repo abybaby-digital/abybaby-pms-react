@@ -17,14 +17,19 @@ import { Provider, useSelector } from "react-redux";
 import { store } from "./redux/store.jsx";
 import CryptoJS from "crypto-js";
 
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
+Fancybox.bind("[data-fancybox]", {
+  // Your custom options
+});
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </Provider>
 );

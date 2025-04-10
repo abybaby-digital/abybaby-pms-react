@@ -9,8 +9,8 @@ import {
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
-import { useQuery } from "@tanstack/react-query";
-import { getFYList, getInvoiceList } from "../../../services/api"; // Add API for fetching invoices
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteInvoice, getFYList, getInvoiceList } from "../../../services/api"; // Add API for fetching invoices
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -25,12 +25,21 @@ import "jspdf-autotable";
 import ViewInvoice from "./ViewInvoice"; // Add ViewInvoice component
 import EditInvoice from "./EditInvoice"; // Add EditInvoice component
 import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
+import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function InvoiceList() {
-  const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
+  const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
-  const userId = useSelector((state) => state.auth.user?.id);
+  const userId = useSelector((state) => state.auth.user?.role_id);
   const [fincYear, setFincYear] = useState(null);
+
+  // console.log(typeof(userId));
+  
+
+  const navigate = useNavigate();
 
   // FY LIST CALL
   const { data: fincYearList } = useQuery({
@@ -147,6 +156,34 @@ export default function InvoiceList() {
     doc.save("invoice_list.pdf");
   };
 
+  // DELETE INVOICE
+
+  // Mutation for updating the invoice
+  const deleteInvoiceMutation = useMutation({
+    mutationFn: async (data) => {
+      return await deleteInvoice(
+        token,
+        data, // Invoice ID
+      );
+    },
+    onSuccess: (response) => {
+      if (response.success === 1) {
+        toast.success("Invoice details deleted successfully!");
+        setRefetchList((prev) => !prev); // Triggers data refetch
+      } else {
+        toast.error(response.message);
+      }
+    },
+    onError: (error) => {
+      toast.error("Failed to update invoice: " + error.message);
+    },
+  });
+
+
+  const deleteInvoiceById = (id) => {
+    deleteInvoiceMutation.mutate(id);
+  };
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -154,12 +191,9 @@ export default function InvoiceList() {
         <AdminHead breadcrumb_name="invoice" />
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
           <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
-            {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
-              INVOICE LIST
-            </h2> */}
             <div className="flex bg-gray-200 items-center justify-between px-10">
               <h2 className="font-merri font-semibold p-5 text-center text-2xl">
-                PAYMENT RECEIVED LIST
+                INVOICE LIST
               </h2>
               <div className="finance-year-filter">
                 <form action="#" className="flex items-center gap-3">
@@ -245,45 +279,75 @@ export default function InvoiceList() {
                       header="Actions"
                       body={(rowData) => (
                         <>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    openModal(rowData.id);
-                                    setAddOrEdit("view");
-                                  }}
-                                >
-                                  <FaEye />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>View Invoice</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
 
-                          <CheckAccessEdit edit_access="Invoice">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <button
-                                    className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                    onClick={() => {
-                                      openModal(rowData.id);
-                                      setAddOrEdit("edit");
-                                    }}
-                                  >
-                                    <MdEditSquare />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Edit Invoice</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </CheckAccessEdit>
+                          {
+                            rowData.status === "0" ?
+                              <span className="bg-red-500 text-white p-2 rounded-3xl">Deleted</span>
+                              :
+                              <div className="flex justify-center">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <button
+                                        className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                        onClick={() => {
+                                          openModal(rowData.id);
+                                          setAddOrEdit("view");
+                                        }}
+                                      >
+                                        <FaEye />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>View Invoice</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+
+                                <CheckAccessEdit edit_access="Invoice">
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger>
+                                        <button
+                                          className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                          onClick={() => {
+                                            openModal(rowData.id);
+                                            setAddOrEdit("edit");
+                                          }}
+                                        >
+                                          <MdEditSquare />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Edit Invoice</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                </CheckAccessEdit>
+                                {
+                                  userId === 4 || userId === 1 ?
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger>
+                                          <button
+                                            className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                            onClick={() => {
+                                              if (window.confirm("Are you sure you want to delete this invoice?")) {
+                                                deleteInvoiceById(rowData.id);
+                                              }
+                                            }}
+                                          >
+                                            <FaTrash />
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Delete Invoice</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider> : null
+                                }
+                              </div>
+                          }
                         </>
                       )}
                     ></Column>
@@ -371,6 +435,10 @@ export default function InvoiceList() {
                   </DataTable>
                 </div>
               )}
+
+              {deleteInvoiceMutation.isPending ? (
+                <FormSubmitLoader loading_msg="Deleting Invoice..." />
+              ) : null}
 
               {/* View/Edit Invoice Popup */}
               <ViewInvoice

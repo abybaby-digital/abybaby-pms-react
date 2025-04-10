@@ -175,25 +175,7 @@ export default function BillingSupportingList() {
                       header="Actions"
                       body={(rowData) => (
                         <>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <button
-                                  className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                  onClick={() => {
-                                    openModal(rowData.id);
-                                    setAddOrEdit("view");
-                                  }}
-                                >
-                                  <FaEye />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>View Details</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <CheckAccessEdit edit_access="Billing Supportings">
+                          <div className="flex justify-center">
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger>
@@ -201,18 +183,38 @@ export default function BillingSupportingList() {
                                     className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
                                     onClick={() => {
                                       openModal(rowData.id);
-                                      setAddOrEdit("edit");
+                                      setAddOrEdit("view");
                                     }}
                                   >
-                                    <MdEditSquare />
+                                    <FaEye />
                                   </button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Edit User</p>
+                                  <p>View Details</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                          </CheckAccessEdit>
+                            <CheckAccessEdit edit_access="Billing Supportings">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <button
+                                      className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                      onClick={() => {
+                                        openModal(rowData.id);
+                                        setAddOrEdit("edit");
+                                      }}
+                                    >
+                                      <MdEditSquare />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Edit User</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </CheckAccessEdit>
+                          </div>
                         </>
                       )}
                     ></Column>

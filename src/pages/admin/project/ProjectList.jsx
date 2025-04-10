@@ -61,7 +61,7 @@ export default function ProjectList() {
       return await getFYList(token);
     },
   });
-  
+
   // const [fincYear, setFincYear] = useState(fincYearList?.response[0].id);
 
   const { data: projectList = [], isLoading } = useQuery({
@@ -343,53 +343,55 @@ export default function ProjectList() {
                           header="Actions"
                           body={(rowData) => (
                             <>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <button
-                                      className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                      onClick={() => {
-                                        singleProject(rowData.id);
-                                        setAddOrEdit("view");
-                                      }}
-                                    >
-                                      <FaEye />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>View Project</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <CheckAccessEdit edit_access="Project">
-                                {
-                                  // +rowData.client_po_amount_with_gst === 0 &&
-                                  //   +rowData.requition_amount === 0 &&
-                                  //   +rowData.total_project_invoice_amount_with_gst === 0 &&
-                                  //   +status === 1 ?
+                              <div className="flex justify-center">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <button
+                                        className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                        onClick={() => {
+                                          singleProject(rowData.id);
+                                          setAddOrEdit("view");
+                                        }}
+                                      >
+                                        <FaEye />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>View Project</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <CheckAccessEdit edit_access="Project">
+                                  {
+                                    // +rowData.client_po_amount_with_gst === 0 &&
+                                    //   +rowData.requition_amount === 0 &&
+                                    //   +rowData.total_project_invoice_amount_with_gst === 0 &&
+                                    //   +status === 1 ?
 
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger>
-                                        <button
-                                          className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                          onClick={() => {
-                                            singleProject(rowData.id);
-                                            setAddOrEdit("edit");
-                                          }}
-                                        >
-                                          <MdEditSquare />
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Edit Project</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                  // : null
-                                }
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger>
+                                          <button
+                                            className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
+                                            onClick={() => {
+                                              singleProject(rowData.id);
+                                              setAddOrEdit("edit");
+                                            }}
+                                          >
+                                            <MdEditSquare />
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Edit Project</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                    // : null
+                                  }
 
-                              </CheckAccessEdit>
+                                </CheckAccessEdit>
+                              </div>
                             </>
                           )}
                         ></Column>
