@@ -151,7 +151,7 @@ export default function AddTeam() {
                                         }}
 
                                     >
-                                        <option value="NA">--Select--</option>
+                                        {/* <option value="NA">--Select--</option> */}
                                         {fincYearList?.response?.map((option) => (
                                             <option key={option.id} value={option.id}>
                                                 {option.financial_year}
@@ -176,7 +176,7 @@ export default function AddTeam() {
                                             required: "Project ID is required",
                                         })}
                                         className="block w-full"
-                                        disabled={fincYear === null || fincYear === "NA"}
+                                        // disabled={fincYear === null || fincYear === "NA"}
                                     >
                                         <option value="">Select Project</option>
                                         {
@@ -278,7 +278,7 @@ export default function AddTeam() {
                         ) : null}
                         <div className="card-footer text-center bg-gray-100 py-5">
                             <button
-                                onClick={() => { checkFinancialYear() }}
+                                // onClick={() => { checkFinancialYear() }}
                                 type="submit"
                                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
                             >
