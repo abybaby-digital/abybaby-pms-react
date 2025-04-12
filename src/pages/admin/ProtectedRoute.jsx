@@ -6,7 +6,8 @@ import Login from "./Login";
 const ProtectedRoute = () => {
 
     const { isAuthenticated } = useSelector((state) => state.auth)
-    console.log(isAuthenticated);
+    // console.log(isAuthenticated);
+
     // const location = useLocation();
     // console.log(location.pathname);
 

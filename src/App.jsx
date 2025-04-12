@@ -34,12 +34,13 @@ import AddBillingSupportings from "./pages/admin/billing-supportings/AddBillingS
 import BillingSupportingList from "./pages/admin/billing-supportings/BillingSupportingsList";
 import ProjectListByCategory from "./pages/admin/project/ProjectListByCategory";
 import CryptoJS from "crypto-js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUsers } from "./redux/features/Auth/AuthSlice";
 import ChangePassword from "./pages/admin/ChangePassword";
 import Dashboard from "./pages/admin/Dashboard";
 import AddTeam from "./pages/admin/teams/AddTeam";
 import TeamList from "./pages/admin/teams/TeamList";
+import FODash from "./pages/admin/FODash";
 // Lazy-loaded components
 // const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 // const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
@@ -77,6 +78,10 @@ const App = () => {
     }
   }, [encryptedToken, dispatch, navigate]);
 
+  const userInfo = useSelector(state => state.auth);
+  console.log("user info", userInfo?.user?.role_id);
+
+
 
 
   const queryClient = new QueryClient()
@@ -93,7 +98,12 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/change-password" element={<ChangePassword />} />
                 <Route element={<ProtectedRoute />}>
-                  <Route path="/" element={<Dashboard />} />
+                  {
+                    userInfo?.user?.role_id === 9 ?
+                      <Route path="/" element={<FODash />} />
+                      :
+                      <Route path="/" element={<Dashboard />} />
+                  }
 
                   <Route path="/company-add" element={<AddCompany />} />
                   <Route path="/company-list" element={<CompanyList />} />

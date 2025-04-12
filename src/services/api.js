@@ -982,11 +982,11 @@ export const FOList = async (token) => {
   }
 };
 
-// VIEW BY TEAM ID
+// ACTIVITY BY  ID
 export const viewTeamById = async (token, team_id) => {
   try {
     const response = await api.post(
-      "/view-by-team-id",
+      "/fo-activity-photo-by-team-id",
       {
         team_id: team_id,
       },
@@ -1395,7 +1395,6 @@ export const deleteInvoice = async (token, invoice_id) => {
     throw error;
   }
 };
-
 
 // EDIT INVOICE
 // export const editInvoice = async (
@@ -2248,6 +2247,26 @@ export const changePassword = async (
         new_password: new_password,
         confirm_password: confirm_password,
       },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Failed to change password:", error);
+    throw error;
+  }
+};
+
+// FO REPORT
+
+export const foReportData = async (token) => {
+  try {
+    const response = await api.post(
+      "/fo-report",
+      {},
       {
         headers: {
           Authorization: `Bearer ${token}`,

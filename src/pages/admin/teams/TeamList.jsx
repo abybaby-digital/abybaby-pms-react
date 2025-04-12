@@ -24,6 +24,8 @@ import ViewTeam from "./ViewTeam";
 export default function TeamList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
+    const userId = useSelector(state => state.auth.user.role_id);
+    // console.log(userId);
 
     const [fincYear, setFincYear] = useState(null);
 
@@ -122,7 +124,7 @@ export default function TeamList() {
                         {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">TEAM LIST</h2> */}
                         <div className="flex bg-gray-200 items-center justify-between px-10">
                             <h2 className="font-merri font-semibold p-5 text-center text-2xl">
-                                TEAM LIST
+                                TEAM ACTIVITY LIST
                             </h2>
                             <div className="finance-year-filter">
                                 <form action="#" className="flex items-center gap-3">
@@ -160,39 +162,43 @@ export default function TeamList() {
                                                 onChange={(e) => setSearchKeyword(e.target.value)}
                                             />
 
-                                            <div className="export-btns flex gap-2">
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <button
-                                                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
-                                                                onClick={exportToExcel}
-                                                            >
-                                                                <BsFiletypeXlsx />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Export to XLSX</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
+                                            {
+                                                userId === 9 ?
+                                                    null :
+                                                    <div className="export-btns flex gap-2">
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <button
+                                                                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
+                                                                        onClick={exportToExcel}
+                                                                    >
+                                                                        <BsFiletypeXlsx />
+                                                                    </button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Export to XLSX</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
 
-                                                <TooltipProvider>
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <button
-                                                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
-                                                                onClick={exportToPDF}
-                                                            >
-                                                                <FaFilePdf />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent>
-                                                            <p>Export to PDF</p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
-                                                </TooltipProvider>
-                                            </div>
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <button
+                                                                        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
+                                                                        onClick={exportToPDF}
+                                                                    >
+                                                                        <FaFilePdf />
+                                                                    </button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Export to PDF</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+                                                    </div>
+                                            }
                                         </div>
 
                                         {/* DataTable */}
@@ -204,25 +210,10 @@ export default function TeamList() {
                                             paginator
                                             paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                                             currentPageReportTemplate="{first} to {last} of {totalRecords}"
+                                            rowClassName={(rowData, rowIndex) => {
+                                                return rowIndex === 0 ? 'highlight-first-row' : '';
+                                            }}
                                         >
-                                            <Column
-                                                header="S.No"
-                                                body={(rowData, { rowIndex }) => (
-                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                                                        {rowIndex + 1}
-                                                    </span>
-                                                )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
-                                            />
-                                            <Column field="project_number" sortable header="Project No" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="project_name" sortable header="Project Name"></Column>
-                                            <Column field="team_name" sortable header="Team Name"></Column>
-
-                                            <Column header="Main FO" field="fo_main_name"></Column>
-                                            <Column header="Other FO" field="fo_junior_name"></Column>
-
-
-                                            {/* Actions Column */}
                                             <Column
                                                 header="Actions"
                                                 body={(rowData) => (
@@ -234,16 +225,16 @@ export default function TeamList() {
                                                                         singleTeam(rowData.id);
                                                                         setAddOrEdit("view");
                                                                     }}>
-                                                                        <FaEye />
+                                                                        {userId === 9 ? <span className="bg-black rounded-2xl text-white p-2">View Activity Photos</span> : <FaEye />}
                                                                     </button>
                                                                 </TooltipTrigger>
                                                                 <TooltipContent>
-                                                                    <p>View Team</p>
+                                                                    <p>View Team Activity</p>
                                                                 </TooltipContent>
                                                             </Tooltip>
                                                         </TooltipProvider>
 
-                                                        <CheckAccessEdit edit_access="Users">
+                                                        <CheckAccessEdit edit_access="Team">
                                                             <TooltipProvider>
                                                                 <Tooltip>
                                                                     <TooltipTrigger>
@@ -263,6 +254,22 @@ export default function TeamList() {
                                                     </>
                                                 )}
                                             />
+                                            <Column
+                                                header="S.No"
+                                                body={(rowData, { rowIndex }) => (
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowIndex + 1}
+                                                    </span>
+                                                )}
+                                                style={{ width: '5rem', textAlign: 'center' }}
+                                            />
+                                            <Column field="project_number" sortable header="Project No" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="project_name" sortable header="Project Name"></Column>
+                                            <Column field="team_name" sortable header="Team Name"></Column>
+
+                                            <Column header="Main FO" field="fo_main_name"></Column>
+                                            <Column header="Other FO" field="fo_junior_name"></Column>
+
                                         </DataTable>
                                     </div>
                                 )

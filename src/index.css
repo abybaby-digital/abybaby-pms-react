@@ -8,7 +8,10 @@ body {
   font-family: "DM Sans", serif;
   background-color: #f6f7f9;
 }
-
+.highlight-first-row {
+  background-color: #e0f7fa !important;
+  font-weight: bold;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
