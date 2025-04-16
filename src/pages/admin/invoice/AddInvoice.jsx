@@ -147,7 +147,7 @@ export default function AddInvoice() {
                       setFincYear(e.target.value);
                     }}
                   >
-                    <option value="NA">--Select--</option>
+                    {/* <option value="NA">--Select--</option> */}
                     {fincYearList?.response?.map((option) => (
                       <option key={option.id} value={option.id}>
                         {option.financial_year}
@@ -174,7 +174,7 @@ export default function AddInvoice() {
                         required: "Project ID is required",
                       })}
                       className="block w-full"
-                      disabled={fincYear === null || fincYear === "NA"}
+                      // disabled={fincYear === null || fincYear === "NA"}
                     >
                       <option value="">Select Project</option>
                       {

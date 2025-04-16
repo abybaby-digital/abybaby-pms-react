@@ -160,7 +160,7 @@ export default function AddPaymentReceived() {
                       // console.log(e.target.value); 
                     }}
                   >
-                    <option value="NA">--Select--</option>
+                    {/* <option value="NA">--Select--</option> */}
                     {fincYearList?.response?.map((option) => (
                       <option key={option.id} value={option.id}>
                         {option.financial_year}
@@ -188,7 +188,7 @@ export default function AddPaymentReceived() {
                       })}
                       className="block w-full"
                       onChange={(e) => setProjectId(e.target.value)}
-                      disabled={fincYear === null || fincYear === "NA"}
+                      // disabled={fincYear === null || fincYear === "NA"}
                     >
                       <option value="">Select Project</option>
                       {isLoadingProjects ? (
