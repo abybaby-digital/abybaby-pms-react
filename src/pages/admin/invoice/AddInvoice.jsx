@@ -38,7 +38,7 @@ export default function AddInvoice() {
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list", fincYear],
     queryFn: async () => {
-      return await getProjectList(token, "", "", "", fincYear, "", "", 2, 0, "", ""); // Assume this function fetches the list of projects
+      return await getProjectList(token, null, null, null, fincYear, null, null, 2, 0, null, null); // Assume this function fetches the list of projects
     },
   });
 
@@ -127,7 +127,7 @@ export default function AddInvoice() {
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
+            className="bg-white rounded-2xl shadow mx-auto 2xl:w-[80%] w-full overflow-hidden"
           >
             {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
               ADD INVOICE

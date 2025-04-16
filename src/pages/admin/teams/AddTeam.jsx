@@ -130,7 +130,7 @@ export default function AddTeam() {
 
                     <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
+                        className="bg-white rounded-2xl shadow mx-auto 2xl:w-[80%] w-full overflow-hidden"
                     >
                         {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
                 ADD PAYMENT REQUISITION

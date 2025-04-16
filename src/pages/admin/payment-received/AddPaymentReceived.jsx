@@ -139,7 +139,7 @@ export default function AddPaymentReceived() {
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-2xl shadow mx-auto 2xl:w-[50%] w-full overflow-hidden"
+            className="bg-white rounded-2xl shadow mx-auto 2xl:w-[80%] w-full overflow-hidden"
           >
             {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
               ADD PAYMENT RECEIVED
@@ -376,7 +376,7 @@ export default function AddPaymentReceived() {
             <div className="card-footer text-center bg-gray-100 py-5">
               <button
                 type="submit"
-                onClick={() => { checkFinancialYear() }}
+                // onClick={() => { checkFinancialYear() }}
                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
                 disabled={addPaymentMutation.isPending}
               >

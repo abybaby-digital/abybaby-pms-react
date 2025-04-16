@@ -143,7 +143,7 @@ export default function AddBillingSupportings() {
         <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke lg:justify-center">
 
 
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl shadow mx-auto xl:w-[80%] w-full overflow-hidden">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-2xl shadow mx-auto 2xl:w-[80%] w-full overflow-hidden">
             {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl">ADD BILLING SUPPORTINGS</h2> */}
             <div className="flex bg-gray-200 items-center justify-between px-10">
               <h2 className="font-merri font-semibold p-5 text-center text-2xl">
@@ -160,7 +160,7 @@ export default function AddBillingSupportings() {
                       setFincYear(e.target.value);
                     }}
                   >
-                    <option value="NA">--Select--</option>
+                    {/* <option value="NA">--Select--</option> */}
                     {fincYearList?.response?.map((option) => (
                       <option key={option.id} value={option.id}>
                         {option.financial_year}
@@ -180,7 +180,8 @@ export default function AddBillingSupportings() {
                 <div className="form-group col-span-2">
                   <label htmlFor="project_id">Project ID <span className="text-red-600">*</span></label>
                   <select id="project_id" {...register("project_id", { required: "Project is required" })} className="block w-full"
-                    disabled={fincYear === null || fincYear === "NA"}>
+                    // disabled={fincYear === null || fincYear === "NA"}
+                    >
                     <option value="">Select Project</option>
 
                     {!isLoadingProjects ?
@@ -714,7 +715,8 @@ export default function AddBillingSupportings() {
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button type="submit" className="px-10 py-2 text-white bg-lightdark rounded-2xl" disabled={addBillingMutation.isPending}
-                onClick={() => { checkFinancialYear() }}>
+                // onClick={() => { checkFinancialYear() }}
+                >
                 {addBillingMutation.isPending ? <ButtonLoader /> : "Submit"}
               </button>
             </div>
