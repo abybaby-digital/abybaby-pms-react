@@ -98,7 +98,7 @@ export function LoginForm({ className, ...props }) {
                 <Input
                   id="username"
                   type="text"
-                  placeholder="user123"
+                  placeholder="Enter Username"
                   {...register("username", {
                     required: "Username is required",
                     minLength: {
@@ -124,6 +124,7 @@ export function LoginForm({ className, ...props }) {
                 </div>
                 <Input
                   id="password"
+                  placeholder="Enter Password"
                   type={showPassword ? "text" : "password"}
                   {...register("password", { required: "Password is required" })}
                 />

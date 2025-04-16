@@ -202,6 +202,7 @@ export default function TeamList() {
                                         </div>
 
                                         {/* DataTable */}
+                                        
                                         <DataTable
                                             value={filteredTeams}
                                             stripedRows

@@ -249,7 +249,7 @@ export default function AddTeam() {
                                     <select
                                         id="other_fo_name"
                                         {...register("other_fo_name", {
-                                            required: "Other FO name is required",
+                                            // required: "Other FO name is required",
                                         })}
                                         className="block w-full"
                                         disabled={selectedMainFO === null || selectedMainFO === "NA"}
