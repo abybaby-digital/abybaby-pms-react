@@ -231,6 +231,26 @@ const data = {
         },
       ],
     },
+    // {
+    //   title: "Activity Coordinator",
+    //   url: "#",
+    //   icon: FaUsers,
+    //   hasSubMenu: true,
+    //   isActive: false,
+    //   access: "Team",
+    //   items: [
+    //     {
+    //       title: "Add Activity Coordinator",
+    //       url: "/activity-co-ordinator-add",
+    //       access: "Team",
+    //     },
+    //     {
+    //       title: "Activity Coordinators List",
+    //       url: "/activity-co-ordinator-info",
+    //       access: "Team",
+    //     },
+    //   ],
+    // },
     {
       title: "Project",
       url: "#",

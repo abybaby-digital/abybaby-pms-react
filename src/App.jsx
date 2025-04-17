@@ -41,6 +41,8 @@ import Dashboard from "./pages/admin/Dashboard";
 import AddTeam from "./pages/admin/teams/AddTeam";
 import TeamList from "./pages/admin/teams/TeamList";
 import FODash from "./pages/admin/FODash";
+import ActivityCoOrdinatorList from "./pages/admin/activity-co-ordinator/ActivityCoOrdinatorList";
+import AddActivityCoOrdinator from "./pages/admin/activity-co-ordinator/AddActivityCoOrdinator";
 // Lazy-loaded components
 // const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 // const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
@@ -119,6 +121,8 @@ const App = () => {
                   <Route path="/user-list" element={<UserList />} />
                   <Route path="/team-add" element={<AddTeam />} />
                   <Route path="/team-list" element={<TeamList />} />
+                  <Route path="/activity-co-ordinator-add" element={<AddActivityCoOrdinator />} />
+                  <Route path="/activity-co-ordinator-info" element={<ActivityCoOrdinatorList />} />
                   <Route path="/role-add" element={<AddRole />} />
                   <Route path="/role-list" element={<RoleList />} />
                   <Route path="/payment-receipt-add" element={<AddPaymentReceived />} />

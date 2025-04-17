@@ -1,6 +1,10 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { GoAlertFill } from "react-icons/go";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+const animatedComponents = makeAnimated();
 import {
   Tooltip,
   TooltipContent,
@@ -10,17 +14,21 @@ import {
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  addActivityCoOrdinator,
+  getActiveCoOrdinatorList,
   getBranchList,
   getClientList,
+  getClientServiceList,
   getCompanyList,
   getFYList,
+  getProjectById,
   getProjectList,
 } from "../../../services/api"; // Updated API function to fetch project list
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
-import { MdEditSquare } from "react-icons/md";
+import { MdEditSquare, MdOutlineClose } from "react-icons/md";
 import ViewProject from "./ViewProject"; // Assuming ViewProject component exists
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import TableSkeleton from "../../../components/common/TableSkeleton";
@@ -34,9 +42,12 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import ButtonLoader from "../../../components/common/ButtonLoader";
 
 export default function ProjectList() {
-  const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
+  const { modal, setModal, refetchList, modal_ac, setModalAC, setRefetchList } = useContext(dialogOpenCloseContext);
   const token = useSelector((state) => state.auth.token);
   const userId = useSelector((state) => state.auth.user?.id);
   const roleId = useSelector((state) => state.auth.user?.role_id);
@@ -94,41 +105,85 @@ export default function ProjectList() {
     },
   });
 
-  // const { data: FYList = [] } = useQuery({
-  //   queryKey: ["finance-year-list"],
-  //   queryFn: async () => {
-  //     return await getFYList(token);
-  //   },
-  // });
+  // Fetch Mis List
 
-  // const { data: companyList = [] } = useQuery({
-  //   queryKey: ["company-filter-list"],
-  //   queryFn: async () => {
-  //     return await getCompanyList(token);
-  //   },
-  // });
+  const [projectIdAc, setProjectIdAc] = useState(null);
 
-  // const { data: branchList = [] } = useQuery({
-  //   queryKey: ["branch-filter-list"],
-  //   queryFn: async () => {
-  //     return await getBranchList(token);
-  //   },
-  // });
+  // PROJECT VIEW BY ID
+  const { data: projectById, isLoading: projectByIdLoading } = useQuery({
+    queryKey: ["project-view-by-id", projectIdAc, refetchList , modal_ac],
+    queryFn: async () => {
+      return await getProjectById(token, projectIdAc);
+    },
+  });
 
-  // const { data: clientList = [] } = useQuery({
-  //   queryKey: ["client-filter-list"],
-  //   queryFn: async () => {
-  //     return await getClientList(token);
-  //   },
-  // });
+  console.log("pr", projectById?.response);
+  
 
-  // console.log(FYList);
+  // ACTIVTY COORDINATOR FORM HANDLE
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+    watch,
+    setValue,
+  } = useForm();
+  const { data: misList } = useQuery({
+    queryKey: ["mis-list"],
+    queryFn: async () => {
+      return await getActiveCoOrdinatorList(token);
+    },
+  });
 
-  // useEffect(() => {
-  //     if (projectList) {
-  //         console.log(projectList);
-  //     }
-  // }, [projectList]);
+  const selectedMis = watch("activity_coordinator_id")?.map(
+    (item) => item.value
+  );
+
+  const mis_left = misList?.response?.filter(
+    (item) => !selectedMis?.includes(item.id)
+  );
+
+ 
+
+
+  useEffect(() => {
+    setValue("activity_coordinator_id", projectById?.response?.project?.selected_activity_coordinator);
+    setValue("activity_coordinator_other_id", projectById?.response?.project?.selected_activity_coordinator_other);
+  }, [modal_ac, projectIdAc])
+
+
+  const addProjectMutation = useMutation({
+    mutationFn: async (data) => {
+      return await addActivityCoOrdinator(
+        token,
+        projectIdAc,
+        data.activity_coordinator_id?.map((item) => item.value.toString()).join(","),
+        data.activity_coordinator_other_id?.map((item) => item.value.toString()).join(","),
+      );
+    },
+    onSuccess: (response) => {
+      if (response.status === 200 || response.status === 201) {
+        toast.success("AC added to project successfully!");
+        setModalAC(false);
+        setRefetchList(!refetchList);
+      } else {
+        toast.error(response.message);
+        toast.error(response.response.project_end_date[0]);
+      }
+    },
+    onError: (error) => {
+      toast.error("Failed to add project: " + error.message);
+    },
+  });
+
+  const onSubmit = (data) => {
+    console.log("Submitting data:", data);
+    addProjectMutation.mutate(data);
+  };
+
+  // ACTIVTY COORDINATOR FORM HANDLE
+
 
   const [singleProjectData, setSingleProjectData] = useState({});
   const [addOrEdit, setAddOrEdit] = useState(null);
@@ -396,15 +451,21 @@ export default function ProjectList() {
                           )}
                         ></Column>
                     }
-                    {/* <Column
-                      header="S.No"
+
+
+                    {roleId === 7 && <Column
+                      header="Activity Coordinator"
                       body={(rowData, { rowIndex }) => (
-                        <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                          {rowIndex + 1}
-                        </span>
+                        <button type="button" onClick={() => {
+                          setModalAC(true);
+                          setProjectIdAc(rowData.id);
+                          // setValue("activity_coordinator_other_id", rowData.selected_activity_coordinator);
+                          // setValue("activity_coordinator_other_id", rowData.selected_activity_coordinator_other);
+                        }
+                        } className="bg-black px-3 py-1 rounded text-white">Assign AC</button>
                       )}
                       style={{ width: "1rem", textAlign: "center" }}
-                    /> */}
+                    />}
                     {/* <Column field="project_number" sortable header="Project Number" style={{ textTransform: "capitalize" }}></Column> */}
                     <Column
                       field="project_number"
@@ -658,6 +719,104 @@ export default function ProjectList() {
                 add_or_edit={addOrEdit}
               />
               {/* <EditProject project={singleProjectData} /> */}
+
+              {/* ACTIVITY COORDINATOR ADD / EDIT */}
+              <Dialog open={modal_ac}>
+                <DialogContent className="pb-5">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-xl font-bold font-merri">
+                      ACTIVITY COORDINATOR ASSIGN
+                    </DialogTitle>
+                    <DialogClose asChild onClick={() => setModalAC(false)} className="text-black text-2xl cursor-pointer">
+                      <MdOutlineClose />
+                    </DialogClose>
+                  </DialogHeader>
+
+                  <DialogDescription>
+
+                    <form
+                      onSubmit={handleSubmit(onSubmit)}
+                      className="bg-white grid grid-cols-2 p-5 gap-5"
+                    >
+                      {/* Activity Co-ordinator Field */}
+
+                      <div className="form-group">
+                        <label htmlFor="activity_coordinator_id">
+                          Activity Co-ordinator
+                        </label>
+                        <Controller
+                          name="activity_coordinator_id"
+                          control={control}
+                          // rules={{ required: "At least one other member is required" }}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={misList?.response?.map((item) => ({
+                                value: item.id,
+                                label: item.name,
+                              }))}
+                              components={animatedComponents}
+                              placeholder="Select Active Co-ordinator"
+                              onChange={(selectedOption) => {
+                                setValue("activity_coordinator_id", selectedOption); // Update the vertical_head_id
+                                setValue("activity_coordinator_other_id", []); // Reset branch_manager_id when VH changes
+
+                              }}
+                              isMulti
+                            />
+                          )}
+                        />
+                        {errors.activity_coordinator_id && (
+                          <span className="text-red-600 text-sm">
+                            {errors.activity_coordinator_id.message}
+                          </span>
+                        )}
+                      </div>
+                      {/*Other  Activity Co-ordinator Field */}
+
+                      <div className="form-group">
+                        <label htmlFor="activity_coordinator_other_id">
+                          Others Activity Co-ordinator
+                        </label>
+                        <Controller
+                          name="activity_coordinator_other_id"
+                          control={control}
+                          // rules={{ required: "At least one other member is required" }}
+                          render={({ field }) => (
+                            <Select
+                              {...field}
+                              options={mis_left?.map((item) => ({
+                                value: item.id,
+                                label: item.name,
+                              }))}
+                              components={animatedComponents}
+                              placeholder="Select Other Active Co-ordinator"
+                              isMulti
+                            />
+                          )}
+                        />
+                        {errors.activity_coordinator_other_id && (
+                          <span className="text-red-600 text-sm">
+                            {errors.activity_coordinator_other_id.message}
+                          </span>
+                        )}
+                      </div>
+                      {/* Submit Button */}
+                      <div className="card-footer text-center bg-gray-100 py-5 col-span-2">
+                        <button
+                          type="submit"
+                          className="px-10 py-2 text-white bg-lightdark rounded-2xl"
+                        // disabled={+project_amount_pre_gst !== +project_re_amount_pre_gst}
+                        >
+                          {addProjectMutation.isPending ? <ButtonLoader /> : "Submit"}
+                        </button>
+                      </div>
+                    </form>
+
+                  </DialogDescription>
+                </DialogContent>
+              </Dialog>
+              {/* ACTIVITY COORDINATOR ADD / EDIT */}
             </div>
           </div>
         </div>

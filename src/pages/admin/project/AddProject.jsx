@@ -748,24 +748,7 @@ export default function AddProject() {
               </button>
             </div>
           </form>
-          {/* {userId ? (
-            <div className="import-project">
-              <p className="text-center text-2xl">OR</p>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <div className="text-center">
-                    <button className="bg-green-500 px-5 py-2 rounded-xl text-white">
-                      <FaFileImport className="inline-block me-2" />
-                      Import Projects
-                    </button>
-                  </div>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <ImportProjectCSV />
-                </DialogContent>
-              </Dialog>
-            </div>
-          ) : null} */}
+         
         </div>
       </SidebarInset>
     </SidebarProvider>

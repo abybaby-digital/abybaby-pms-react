@@ -285,10 +285,11 @@ export default function AddVendor() {
                                     id="pan_no"
                                     placeholder="Enter PAN Number"
                                     {...register("pan_no", {
-                                        required: "PAN Number is required", pattern: {
-                                            value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
-                                            message: "Invalid PAN Number, All letter will be capital"
-                                        }
+                                        required: "PAN Number is required", 
+                                        // pattern: {
+                                        //     value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+                                        //     message: "Invalid PAN Number, All letter will be capital"
+                                        // }
                                     })}
                                 />
                                 {errors.pan_no && (
@@ -370,10 +371,11 @@ export default function AddVendor() {
                                     id="ifsc_code"
                                     placeholder="Enter IFSC Code"
                                     {...register("ifsc_code", {
-                                        required: "IFSC Code is required", pattern: {
-                                            value: /^[A-Z]{4}[0-9]{7}$/,
-                                            message: "Invalid IFSC Code , All letters will be capital"
-                                        }
+                                        required: "IFSC Code is required", 
+                                        // pattern: {
+                                        //     value: /^[A-Z]{4}[0-9]{7}$/,
+                                        //     message: "Invalid IFSC Code , All letters will be capital"
+                                        // }
                                     })}
                                 />
                                 {errors.ifsc_code && (

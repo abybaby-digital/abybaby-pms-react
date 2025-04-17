@@ -963,6 +963,57 @@ export const getTeamList = async (token) => {
   }
 };
 
+// FO REMOVE
+export const removeFO = async (token, team_id, fo_id, fo_type) => {
+  try {
+    const response = await api.post(
+      "/fo-remove-from-project",
+      {
+        team_id: team_id,
+        fo_id: fo_id,
+        fo_type: fo_type,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+
+// ASSIGN ACTIVITY COORDINATOR
+export const addActivityCoOrdinator = async (
+  token,
+  project_id,
+  activity_coordinator_id,
+  activity_coordinator_other_id
+) => {
+  try {
+    const response = await api.post(
+      "/assign-ac-by-project",
+      {
+        project_id: project_id,
+        activity_coordinator_id: activity_coordinator_id,
+        activity_coordinator_other_id: activity_coordinator_other_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+
 // FO LIST
 export const FOList = async (token) => {
   try {

@@ -1,61 +1,62 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogClose
+} from "@/components/ui/dialog";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableRow
+} from "@/components/ui/table";
 import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import { MdOutlineClose } from "react-icons/md";
-import EditTeam from "./EditTeam";
 import { useQuery } from "@tanstack/react-query";
 import { viewTeamById } from "../../../services/api";
 import { useSelector } from "react-redux";
 import { MdOutlineDownloading } from "react-icons/md";
-import JSZip from "jszip";
-import { saveAs } from "file-saver";  // To trigger a file download
+import EditActivityCoOrdinator from "./EditActivityCoOrdinator";
 
-const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleList }) => {
+const ViewActivityCoOrdinator = ({ team, add_or_edit, stateList, companyList, branchList, roleList }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
-    const [selectedPhotos, setSelectedPhotos] = useState([]); // State for selected photos
-    const [searchKeyword, setSearchKeyword] = useState("");
+
+    console.log("team", team);
+
 
     const { data: teamActivityDetails, isLoading } = useQuery({
         queryKey: ["team-activity-details", team],
         queryFn: async () => {
             return await viewTeamById(token, team?.id);
         },
-    });
+    })
 
-    // Function to handle photo selection
-    const handleSelectPhoto = (id, url) => {
-        setSelectedPhotos((prevSelectedPhotos) => {
-            if (prevSelectedPhotos.some(photo => photo.id === id)) {
-                return prevSelectedPhotos.filter(photo => photo.id !== id);  // Remove photo if already selected
-            } else {
-                return [...prevSelectedPhotos, { id, url }];  // Add photo to selection
-            }
-        });
+    const downloadImage = async (url, filename) => {
+        try {
+            const response = await fetch(url, { mode: 'cors' });
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Download failed:', error);
+        }
     };
 
-    // Function to download all selected images as a ZIP
-    const handleBulkDownload = async () => {
-        const zip = new JSZip();
+    // console.log(teamActivityDetails);
 
-        selectedPhotos.forEach((photo, index) => {
-            // Fetch the image as a blob
-            fetch(photo.url, { mode: 'cors' })
-                .then(response => response.blob())
-                .then(blob => {
-                    zip.file(`activity-${photo.id}.jpg`, blob); // Add image to ZIP with a unique name
-                    if (index === selectedPhotos.length - 1) {
-                        // Once all files are added, generate and download the ZIP
-                        zip.generateAsync({ type: "blob" })
-                            .then(content => {
-                                saveAs(content, "team-activities.zip"); // Trigger download
-                            });
-                    }
-                })
-                .catch(err => console.error("Error downloading image:", err));
-        });
-    };
+    const [searchKeyword, setSearchKeyword] = useState("");
+
 
     return (
         <Dialog open={modal}>
@@ -75,26 +76,41 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                             <>
                                 <div className="flex w-full justify-between border-b px-3 py-2 items-center" >
                                     <h2 className="text-center text-black text-xl  uppercase">{team.project_name}</h2>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-full text-center text-nowrap">
-                                            <button
-                                                onClick={handleBulkDownload}
-                                                disabled={selectedPhotos.length === 0}
-                                                className="px-4 w-full py-2 bg-black text-white rounded-md hover:bg-lightdark disabled:bg-gray-400"
-                                            >
-                                                Download Selected Photos
-                                            </button>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            placeholder="Search by FO name..."
-                                            className="p-2 w-full border rounded-md shadow "
-                                            value={searchKeyword}
-                                            onChange={(e) => setSearchKeyword(e.target.value)}
-                                        />
-                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Search by FO name..."
+                                        className="p-2 w-full border rounded-md shadow lg:w-[300px]"
+                                        value={searchKeyword}
+                                        onChange={(e) => setSearchKeyword(e.target.value)}
+                                    />
                                 </div>
                                 <div className="grid xl:grid-cols-4 lg:grid-cols-3 items-center gap-4 max-h-[80vh] overflow-y-auto p-3">
+                                    {/* User Details Table */}
+                                    {/* <Table className="text-black w-[90%] mx-auto">
+                                    <TableBody className="grid gap-5 lg:grid-cols-3 grid-cols-1">
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Project Name :</TableCell>
+                                            <TableCell>{user?.name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Team Name :</TableCell>
+                                            <TableCell>{user?.email}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Financial Year :</TableCell>
+                                            <TableCell>{user?.role_name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Main Field Officer :</TableCell>
+                                            <TableCell>{user?.company_name}</TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell className="font-bold text-lg">Other Field Officer :</TableCell>
+                                            <TableCell>{user?.branch_name}</TableCell>
+                                        </TableRow>
+                                        
+                                    </TableBody>
+                                </Table> */}
                                     {
                                         teamActivityDetails?.response?.length === 0 ? (
                                             "No Activity Found"
@@ -113,24 +129,19 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                                                 data-fancybox={item.team_created_by}
                                                                 data-caption={`uploaded by : ${item.team_created_by}`}
                                                             />
+
                                                             <p className="text-center py-2">{item.activity_description}</p>
                                                             <p className="bg-black text-center text-white py-2 rounded-2xl">
                                                                 uploaded by : {item.team_created_by}
                                                             </p>
-                                                            <div className="text-center my-4 absolute top-2 left-3">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    onChange={() => handleSelectPhoto(item.id, item.activity_photo)}
-                                                                    checked={selectedPhotos.some(photo => photo.id === item.id)}
-                                                                    className="mr-2"
-                                                                />
-                                                                {/* <button type="button"
+                                                            {/* <div className="text-center my-4 absolute top-2 left-3">
+                                                                <button type="button"
                                                                     onClick={() => downloadImage(item?.activity_photo, `activity-by-${item.team_created_by}-${item.id}`)}
                                                                     className="ml-4 px-1 rounded-full py-1 bg-lightdark text-white text-sm hover:bg-black transition"
                                                                 >
                                                                     <MdOutlineDownloading className="text-xl " />
-                                                                </button> */}
-                                                            </div>
+                                                                </button>
+                                                            </div> */}
                                                         </div>
                                                     </div>
                                                 ))
@@ -140,7 +151,7 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                 </div>
                             </>
                         ) : (
-                            <EditTeam team={team} roleList={roleList}
+                            <EditActivityCoOrdinator team={team} roleList={roleList}
                                 branchList={branchList}
                                 companyList={companyList}
                                 stateList={stateList} />
@@ -152,4 +163,4 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
     );
 };
 
-export default ViewTeam;
+export default ViewActivityCoOrdinator;

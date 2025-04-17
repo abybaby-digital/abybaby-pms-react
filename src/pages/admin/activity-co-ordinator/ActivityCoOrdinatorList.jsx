@@ -4,8 +4,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getFYList, getTeamList, getUserList, removeFO } from "../../../services/api";  // Updated to fetch user list
+import { useQuery } from "@tanstack/react-query";
+import { getFYList, getTeamList, getUserList } from "../../../services/api";  // Updated to fetch user list
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -19,13 +19,11 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 import { CiImageOff } from "react-icons/ci";
-import ViewTeam from "./ViewTeam";
-import { RiDeleteBack2Fill } from "react-icons/ri";
-import toast from "react-hot-toast";
-import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
+import ViewTeam from "./ViewActivityCoOrdinator";
+import ViewActivityCoOrdinator from "./ViewActivityCoOrdinator";
 
-export default function TeamList() {
-    const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
+export default function ActivityCoOrdinatorList() {
+    const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
     const userId = useSelector(state => state.auth.user.role_id);
     // console.log(userId);
@@ -117,46 +115,17 @@ export default function TeamList() {
         doc.save("team_list.pdf");
     };
 
-    // DELETE INVOICE
-
-    // Mutation for updating the invoice
-    const removeFOMutation = useMutation({
-        mutationFn: async (data) => {
-            return await removeFO(
-                token,
-                data.team_id,
-                data.fo_id,
-                data.fo_type
-            );
-        },
-        onSuccess: (response) => {
-            if (response.success === 1) {
-                toast.success("FO removed successfully!");
-                setRefetchList((prev) => !prev); // Triggers data refetch
-            } else {
-                toast.error(response.message);
-            }
-        },
-        onError: (error) => {
-            toast.error("Failed to remove: " + error.message);
-        },
-    });
-
-    const removeFOById = (team_id, fo_id, fo_type) => {
-        removeFOMutation.mutate({ team_id: team_id, fo_id: fo_id, fo_type: fo_type })
-    }
-
     return (
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <AdminHead breadcrumb_name="team" />
+                <AdminHead breadcrumb_name="Activity Coordinator" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
                         {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">TEAM LIST</h2> */}
                         <div className="flex bg-gray-200 items-center justify-between px-10">
                             <h2 className="font-merri font-semibold p-5 text-center text-2xl">
-                                TEAM ACTIVITY LIST
+                                ACTIVITY COORDINATORS INFO
                             </h2>
                             <div className="finance-year-filter">
                                 <form action="#" className="flex items-center gap-3">
@@ -234,7 +203,7 @@ export default function TeamList() {
                                         </div>
 
                                         {/* DataTable */}
-
+                                        
                                         <DataTable
                                             value={filteredTeams}
                                             stripedRows
@@ -300,79 +269,16 @@ export default function TeamList() {
                                             <Column field="project_name" sortable header="Project Name"></Column>
                                             <Column field="team_name" sortable header="Team Name"></Column>
 
-                                            <Column
-                                                header="Main FO"
-                                                body={(rowData) => (
-                                                    <div className="flex gap-5">
-                                                        <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_main_name}
-                                                        </span>
-                                                        {rowData.fo_main_name &&
-                                                            <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger>
-                                                                        <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                                                            onClick={() => {
-                                                                                if (window.confirm("Are you sure you want to remove FO?")) {
-                                                                                    removeFOById(rowData.id, rowData.fo_main_id, 1);
-                                                                                }
-                                                                            }}>
-                                                                            <RiDeleteBack2Fill />
-                                                                        </button>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent>
-                                                                        <p>Remove FO</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
-                                                        }
-                                                    </div>
-                                                )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
-                                            />
-                                            <Column
-                                                header="Other FO"
-                                                body={(rowData) => (
-                                                    <div className="flex gap-5">
-                                                        <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_junior_name}
-                                                        </span>
-                                                        {
-                                                            rowData.fo_junior_name &&
-                                                            <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger>
-                                                                        <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                            if (window.confirm("Are you sure you want to remove FO?")) {
-                                                                                removeFOById(rowData.id, rowData.fo_junior_id, 0);
-                                                                            }
-                                                                        }}>
-                                                                            <RiDeleteBack2Fill />
-                                                                        </button>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent>
-                                                                        <p>Remove FO</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
-                                                        }
-                                                    </div>
-                                                )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
-                                            />
-
+                                            <Column header="Main FO" field="fo_main_name"></Column>
+                                            <Column header="Other FO" field="fo_junior_name"></Column>
 
                                         </DataTable>
                                     </div>
                                 )
                             }
 
-                            {removeFOMutation.isPending ? (
-                                <FormSubmitLoader loading_msg="Removing FO..." />
-                            ) : null}
-
                             {/* View User Popup */}
-                            <ViewTeam team={singleTeamData} add_or_edit={addOrEdit} />
+                            <ViewActivityCoOrdinator team={singleTeamData} add_or_edit={addOrEdit} />
                         </div>
                     </div>
                 </div>
