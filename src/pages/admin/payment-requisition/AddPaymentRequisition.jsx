@@ -29,7 +29,7 @@ export default function AddPaymentRequisition() {
     watch,
   } = useForm();
 
-  const [fincYear, setFincYear] = useState(null);
+
 
   // FY LIST CALL
   const { data: fincYearList } = useQuery({
@@ -38,6 +38,11 @@ export default function AddPaymentRequisition() {
       return await getFYList(token);
     },
   });
+
+  console.log(fincYearList?.response[0].id);
+
+  const [fincYear, setFincYear] = useState(null);
+
 
   const requisitionAmount = watch("requisition_amount");
   const requisitionAmountReEnter = watch("requisition_amount_re_enter");
@@ -127,7 +132,7 @@ export default function AddPaymentRequisition() {
         data.requisition_img,
         data.requisition_remarks,
         data.date_of_payments,
-        +fincYear,
+        fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
         "1"
       );
     },
@@ -146,7 +151,8 @@ export default function AddPaymentRequisition() {
   });
 
   const onSubmit = (data) => {
-    console.log(+data.vendor_id);
+    console.log(data);
+    console.log("finc", fincYear);
     addPaymentMutation.mutate(data);
   };
 
@@ -216,18 +222,18 @@ export default function AddPaymentRequisition() {
                     name="financeYear"
                     id="financeYear"
                     className="block"
+                    value={fincYear || ""} // 👈 controlled component
                     onChange={(e) => {
                       setFincYear(e.target.value);
                     }}
-                    
                   >
-                    {/* <option value="NA">--Select--</option> */}
                     {fincYearList?.response?.map((option) => (
                       <option key={option.id} value={option.id}>
                         {option.financial_year}
                       </option>
                     ))}
                   </select>
+
                 </form>
               </div>
             </div>
@@ -246,7 +252,7 @@ export default function AddPaymentRequisition() {
                       required: "Project ID is required",
                     })}
                     className="block w-full"
-                    // disabled={fincYear === null || fincYear === "NA"}
+                  // disabled={fincYear === null || fincYear === "NA"}
                   >
                     <option value="">Select Project</option>
                     {

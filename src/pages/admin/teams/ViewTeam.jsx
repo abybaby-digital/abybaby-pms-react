@@ -19,6 +19,7 @@ import EditTeam from "./EditTeam";
 import { useQuery } from "@tanstack/react-query";
 import { viewTeamById } from "../../../services/api";
 import { useSelector } from "react-redux";
+import { MdOutlineDownloading } from "react-icons/md";
 
 const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleList }) => {
     const { modal, setModal } = useContext(dialogOpenCloseContext);
@@ -33,6 +34,24 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
             return await viewTeamById(token, team?.id);
         },
     })
+
+    const downloadImage = async (url, filename) => {
+        try {
+            const response = await fetch(url, { mode: 'cors' });
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Download failed:', error);
+        }
+    };
 
     // console.log(teamActivityDetails);
 
@@ -102,7 +121,7 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                                 )
                                                 .map((item) => (
                                                     <div key={item.id}>
-                                                        <div className="team-activity border border-dashed cursor-pointer shadow rounded-2xl transition-all p-2 hover:scale-95">
+                                                        <div className="team-activity relative border border-dashed cursor-pointer shadow rounded-2xl transition-all p-2 hover:scale-95">
                                                             <img
                                                                 src={item?.activity_photo}
                                                                 alt="activity_photo"
@@ -110,10 +129,19 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                                                 data-fancybox={item.team_created_by}
                                                                 data-caption={`uploaded by : ${item.team_created_by}`}
                                                             />
+
                                                             <p className="text-center py-2">{item.activity_description}</p>
                                                             <p className="bg-black text-center text-white py-2 rounded-2xl">
                                                                 uploaded by : {item.team_created_by}
                                                             </p>
+                                                            {/* <div className="text-center my-4 absolute top-2 left-3">
+                                                                <button type="button"
+                                                                    onClick={() => downloadImage(item?.activity_photo, `activity-by-${item.team_created_by}-${item.id}`)}
+                                                                    className="ml-4 px-1 rounded-full py-1 bg-lightdark text-white text-sm hover:bg-black transition"
+                                                                >
+                                                                    <MdOutlineDownloading className="text-xl " />
+                                                                </button>
+                                                            </div> */}
                                                         </div>
                                                     </div>
                                                 ))

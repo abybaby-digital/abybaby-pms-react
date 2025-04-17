@@ -100,7 +100,7 @@ export default function AddBillingSupportings() {
       data.any_other_supporting,
       (data.any_other_supporting_img?.length === 0) ? null : data.any_other_supporting_img,
       data.any_other_supporting_comment,
-      +fincYear,
+      fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
       "1",
 
     ),

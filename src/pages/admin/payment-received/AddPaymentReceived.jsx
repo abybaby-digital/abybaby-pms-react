@@ -91,7 +91,7 @@ export default function AddPaymentReceived() {
         data.received_date,
         data.received_img, // File input
         data.received_details,
-        +fincYear,
+        fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
         1
       );
     },

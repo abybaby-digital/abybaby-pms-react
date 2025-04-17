@@ -67,7 +67,7 @@ export default function AddInvoice() {
         data.invoice_img, // File input
         data.invoice_details,
         data.invoice_billing_status,
-        +fincYear
+        fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
       );
     },
     onSuccess: (response) => {
@@ -372,7 +372,7 @@ export default function AddInvoice() {
                 type="submit"
                 className="px-10 py-2 text-white bg-lightdark rounded-2xl"
                 disabled={addInvoiceMutation.isPending}
-                onClick={() => { checkFinancialYear() }}
+                // onClick={() => { checkFinancialYear() }}
               >
                 {addInvoiceMutation.isPending ? <ButtonLoader /> : "Submit"}
               </button>

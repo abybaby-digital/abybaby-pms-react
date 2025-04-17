@@ -72,7 +72,7 @@ export default function AddClientPO() {
         data.po_img, // File input
         data.payment_schedule_days,
         data.project_order_details,
-        +fincYear,
+        fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
         "1" // Default status
       );
     },
