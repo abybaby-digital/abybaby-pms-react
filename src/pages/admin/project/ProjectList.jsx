@@ -111,14 +111,14 @@ export default function ProjectList() {
 
   // PROJECT VIEW BY ID
   const { data: projectById, isLoading: projectByIdLoading } = useQuery({
-    queryKey: ["project-view-by-id", projectIdAc, refetchList , modal_ac],
+    queryKey: ["project-view-by-id", projectIdAc, refetchList, modal_ac],
     queryFn: async () => {
       return await getProjectById(token, projectIdAc);
     },
   });
 
   console.log("pr", projectById?.response);
-  
+
 
   // ACTIVTY COORDINATOR FORM HANDLE
   const {
@@ -144,13 +144,13 @@ export default function ProjectList() {
     (item) => !selectedMis?.includes(item.id)
   );
 
- 
+
 
 
   useEffect(() => {
     setValue("activity_coordinator_id", projectById?.response?.project?.selected_activity_coordinator);
     setValue("activity_coordinator_other_id", projectById?.response?.project?.selected_activity_coordinator_other);
-  }, [modal_ac, projectIdAc])
+  }, [projectByIdLoading, projectIdAc, modal_ac])
 
 
   const addProjectMutation = useMutation({
