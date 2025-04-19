@@ -77,13 +77,13 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                     <h2 className="text-center text-black text-xl  uppercase">{team.project_name}</h2>
                                     <div className="flex items-center gap-2">
                                         <div className="w-full text-center text-nowrap">
-                                            <button
+                                            {/* <button
                                                 onClick={handleBulkDownload}
                                                 disabled={selectedPhotos.length === 0}
                                                 className="px-4 w-full py-2 bg-black text-white rounded-md hover:bg-lightdark disabled:bg-gray-400"
                                             >
                                                 Download Selected Photos
-                                            </button>
+                                            </button> */}
                                         </div>
                                         <input
                                             type="text"
@@ -118,12 +118,12 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                                                 uploaded by : {item.team_created_by}
                                                             </p>
                                                             <div className="text-center my-4 absolute top-2 left-3">
-                                                                <input
+                                                                {/* <input
                                                                     type="checkbox"
                                                                     onChange={() => handleSelectPhoto(item.id, item.activity_photo)}
                                                                     checked={selectedPhotos.some(photo => photo.id === item.id)}
                                                                     className="mr-2"
-                                                                />
+                                                                /> */}
                                                                 {/* <button type="button"
                                                                     onClick={() => downloadImage(item?.activity_photo, `activity-by-${item.team_created_by}-${item.id}`)}
                                                                     className="ml-4 px-1 rounded-full py-1 bg-lightdark text-white text-sm hover:bg-black transition"
