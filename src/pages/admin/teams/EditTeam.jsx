@@ -169,7 +169,7 @@ const EditTeam = ({ team }) => {
                             className="block w-full"
                             onChange={handleMainFOChange}
                         >
-                            <option value="NA">Select Main FO</option>
+                            <option value="">Select Main FO</option>
                             {FoList?.response?.map((fo) => (
                                 <option key={fo.id} value={fo.id}>
                                     {fo.name}

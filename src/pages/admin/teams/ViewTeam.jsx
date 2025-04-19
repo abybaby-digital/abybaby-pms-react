@@ -76,15 +76,15 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                 <div className="flex w-full justify-between border-b px-3 py-2 items-center" >
                                     <h2 className="text-center text-black text-xl  uppercase">{team.project_name}</h2>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-full text-center text-nowrap">
-                                            {/* <button
+                                        {/* <div className="w-full text-center text-nowrap">
+                                            <button
                                                 onClick={handleBulkDownload}
                                                 disabled={selectedPhotos.length === 0}
                                                 className="px-4 w-full py-2 bg-black text-white rounded-md hover:bg-lightdark disabled:bg-gray-400"
                                             >
                                                 Download Selected Photos
-                                            </button> */}
-                                        </div>
+                                            </button>
+                                        </div> */}
                                         <input
                                             type="text"
                                             placeholder="Search by FO name..."
