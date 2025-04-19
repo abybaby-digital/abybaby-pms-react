@@ -146,6 +146,28 @@ export default function TeamList() {
         removeFOMutation.mutate({ team_id: team_id, fo_id: fo_id, fo_type: fo_type })
     }
 
+    const EditBtn = ({id}) => {
+        return (
+            <CheckAccessEdit edit_access="Team">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                singleTeam(id);
+                                setAddOrEdit("edit");
+                            }}>
+                                <MdEditSquare />
+                            </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Edit Team</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </CheckAccessEdit>
+        )
+    }
+
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -267,23 +289,7 @@ export default function TeamList() {
                                                             </Tooltip>
                                                         </TooltipProvider>
 
-                                                        <CheckAccessEdit edit_access="Team">
-                                                            <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger>
-                                                                        <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                            singleTeam(rowData.id);
-                                                                            setAddOrEdit("edit");
-                                                                        }}>
-                                                                            <MdEditSquare />
-                                                                        </button>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent>
-                                                                        <p>Edit Team</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
-                                                        </CheckAccessEdit>
+                                                        <EditBtn id={rowData.id}  />
                                                     </>
                                                 )}
                                             />
@@ -305,7 +311,7 @@ export default function TeamList() {
                                                 body={(rowData) => (
                                                     <div className="flex gap-5">
                                                         <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_main_name}
+                                                            {rowData.fo_main_name ? rowData.fo_main_name : <div className="flex items-center gap-3" ><span className="text-red-500">"asign someone as main fo"</span> <EditBtn id={rowData.id} /></div>}
                                                         </span>
                                                         {rowData.fo_main_name &&
                                                             <TooltipProvider>
@@ -331,11 +337,11 @@ export default function TeamList() {
                                                 style={{ width: '5rem', textAlign: 'center' }}
                                             />
                                             <Column
-                                                header="Other FO"
+                                                header="Junior FO"
                                                 body={(rowData) => (
                                                     <div className="flex gap-5">
                                                         <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_junior_name}
+                                                            {rowData.fo_junior_name ? rowData.fo_junior_name : <div className="flex items-center gap-3" ><span className="text-red-500">"assign someone as junior fo"</span> <EditBtn id={rowData.id}  /></div>}
                                                         </span>
                                                         {
                                                             rowData.fo_junior_name &&

@@ -244,7 +244,7 @@ export default function AddTeam() {
                                 {/* Other Field Office Dropdown */}
                                 <div className="form-group">
                                     <label htmlFor="other_fo_name">
-                                        Other Field Officer <span className="text-red-600">*</span>
+                                        Junior Field Officer
                                     </label>
                                     <select
                                         id="other_fo_name"

@@ -159,7 +159,7 @@ const EditTeam = ({ team }) => {
                     {/* Main Field Officer Dropdown */}
                     <div className="form-group">
                         <label htmlFor="main_fo_name">
-                            Main Field Officer <span className="text-red-600">*</span>
+                            Main Field Officer
                         </label>
                         <select
                             id="main_fo_name"
@@ -186,7 +186,7 @@ const EditTeam = ({ team }) => {
                     {/* Other Field Officer Dropdown */}
                     <div className="form-group">
                         <label htmlFor="other_fo_name">
-                            Other Field Officer <span className="text-red-600">*</span>
+                            Junior Field Officer
                         </label>
                         <select
                             id="other_fo_name"
