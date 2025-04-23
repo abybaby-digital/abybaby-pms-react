@@ -24,7 +24,7 @@ import VendorCategoryCreateForm from "./VendorCategoryCreateForm";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 
 export default function AddVendor() {
-    const { refetchList  } = useContext(dialogOpenCloseContext);
+    const { refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -285,7 +285,7 @@ export default function AddVendor() {
                                     id="pan_no"
                                     placeholder="Enter PAN Number"
                                     {...register("pan_no", {
-                                        required: "PAN Number is required", 
+                                        required: "PAN Number is required",
                                         // pattern: {
                                         //     value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
                                         //     message: "Invalid PAN Number, All letter will be capital"
@@ -307,12 +307,14 @@ export default function AddVendor() {
                                     className="block"
                                     id="gst_no"
                                     placeholder="Enter GST Number"
-                                    {...register("gst_no", {
-                                        pattern: {
-                                            value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[A-Z]{1}[0-9]{1}$/,  // GST number pattern
-                                            message: "Invalid GST Number , All letters will be capital"  // Error message for invalid GST number
-                                        }
-                                    })}
+                                    {...register("gst_no",
+                                        // {
+                                        //     pattern: {
+                                        //         value: /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[A-Z]{1}[0-9]{1}$/,  // GST number pattern
+                                        //         message: "Invalid GST Number , All letters will be capital"  // Error message for invalid GST number
+                                        //     }
+                                        // }
+                                    )}
                                 />
                                 {errors.gst_no && (
                                     <span className="text-red-600 text-sm">
@@ -371,7 +373,7 @@ export default function AddVendor() {
                                     id="ifsc_code"
                                     placeholder="Enter IFSC Code"
                                     {...register("ifsc_code", {
-                                        required: "IFSC Code is required", 
+                                        required: "IFSC Code is required",
                                         // pattern: {
                                         //     value: /^[A-Z]{4}[0-9]{7}$/,
                                         //     message: "Invalid IFSC Code , All letters will be capital"
@@ -418,7 +420,7 @@ export default function AddVendor() {
                             </DialogHeader>
                             <VendorCategoryCreateForm setCatModal={setCatModal} addCatModal={addCatModal} />
 
-                            <button className="close absolute right-3 top-3 z-50 text-lightdark" onClick={()=> {setCatModal(false)}}><RxCross2 /></button>
+                            <button className="close absolute right-3 top-3 z-50 text-lightdark" onClick={() => { setCatModal(false) }}><RxCross2 /></button>
 
 
                         </DialogContent>
