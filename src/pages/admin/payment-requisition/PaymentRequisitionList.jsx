@@ -212,6 +212,9 @@ export default function PaymentRequisitionList() {
     setSelectedRows([]);
   };
 
+  console.log("selectedROws", selectedRows?.length);
+  console.log("filter", filteredPayments?.length);
+
   // Export to PDF
   const exportToPDF = () => {
     if (selectedRows.length === 0) {
@@ -451,7 +454,7 @@ export default function PaymentRequisitionList() {
                             <input
                               className="accent-black"
                               type="checkbox"
-                              checked={selectAllChecked}
+                              checked={selectAllChecked || (selectedRows?.length === filteredPayments?.length)}
                               onChange={(e) => handleSelectAllChange(e.target.checked)}
                             />
                           </div>
