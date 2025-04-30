@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // const baseURL = "https://krishivikas.com/api/v2";
-const baseURL = "https://test.abybabyoffice.com/api";
-// const baseURL = "https://development.abybabyoffice.com/api";
+// const baseURL = "https://test.abybabyoffice.com/api";
+const baseURL = "https://development.abybabyoffice.com/api";
 
 const api = axios.create({
   baseURL: baseURL,

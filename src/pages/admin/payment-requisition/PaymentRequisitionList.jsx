@@ -57,6 +57,8 @@ export default function PaymentRequisitionList() {
   // State to store selected rows
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedPaymentIds, setSelectedPaymentIds] = useState([]); // State to store selected payment requisition IDs
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("");
 
   // const handleCheckboxChange = (e, rowData) => {
   //   if (e.target.checked) {
@@ -126,12 +128,21 @@ export default function PaymentRequisitionList() {
 
   const filteredPayments = paymentList?.response?.filter((payment) => {
     const keyword = debouncedSearchKeyword.toLowerCase();
-    return (
+    const matchesKeyword =
       payment.project_name?.toLowerCase()?.includes(keyword) ||
       payment.received_no?.toLowerCase()?.includes(keyword) ||
-      payment.received_details?.toLowerCase()?.includes(keyword)
-    );
+      payment.received_details?.toLowerCase()?.includes(keyword);
+
+    const matchesDate = selectedDate
+      ? payment.date_of_payments.slice(0, 10) === selectedDate
+      : true;
+    console.log("selctedDate ", selectedDate);
+    console.log("payment Date ", payment.date_of_payments.slice(0, 10));
+
+    return matchesKeyword && matchesDate;
   });
+
+
 
   // Export to Excel
   //   const exportToExcel = () => {
@@ -188,13 +199,17 @@ export default function PaymentRequisitionList() {
       "Requisition Amount": payment.requisition_amount,
       "Approved Amount": payment.approved_amount,
       "Received Date": new Date(payment.date_of_payments).toLocaleDateString(),
-      Status: payment.status === "1" ? "Paid" : "Unpaid",
+      "Status": payment.accountent_approve_status === "1" ? "Paid" : "Unpaid",
     }));
 
     const ws = XLSX.utils.json_to_sheet(formattedRows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Payment Requisition List");
     XLSX.writeFile(wb, "payment_requisition_list.xlsx");
+
+    setRefetchList(!refetchList);
+    // setSelectedPaymentIds([]);
+    setSelectedRows([]);
   };
 
   // Export to PDF
@@ -218,7 +233,7 @@ export default function PaymentRequisitionList() {
           "Vendor GST No",
           "Requisition Amount",
           "Approved Amount",
-          "Received Date",
+          "Payment Date",
           "Status",
         ],
       ],
@@ -238,6 +253,29 @@ export default function PaymentRequisitionList() {
     });
 
     doc.save("payment_requisition_list.pdf");
+  };
+
+  const handleSelectAllChange = (checked) => {
+    setSelectAllChecked(checked);
+
+    if (checked) {
+      const eligibleRows = filteredPayments.filter(
+        (row) =>
+          row.admin_approve_status === "0" ||
+          row.finance_approve_status === "0" ||
+          row.purchase_approve_status === "0" ||
+          row.accountent_approve_status === "0" ||
+          row.download_status === "1"
+      );
+
+      const eligibleIds = eligibleRows.map((row) => row.id);
+
+      setSelectedPaymentIds(eligibleIds);
+      setSelectedRows(eligibleRows); // 🔥 Sync selectedRows here
+    } else {
+      setSelectedPaymentIds([]);
+      setSelectedRows([]); // 🔥 Clear selectedRows here too
+    }
   };
 
   return (
@@ -281,13 +319,26 @@ export default function PaymentRequisitionList() {
                 <div>
                   {/* Export & Search Box */}
                   <div className="flex justify-between space-x-2 items-center mb-4 bg-whitesmoke p-2 rounded-xl shadow">
-                    <input
-                      type="text"
-                      placeholder="Search by keyword..."
-                      className="p-2 w-full border rounded-md shadow lg:w-[300px]"
-                      value={searchKeyword}
-                      onChange={(e) => setSearchKeyword(e.target.value)}
-                    />
+                    <div className="flex items-end gap-2">
+                      <input
+                        type="text"
+                        placeholder="Search by keyword..."
+                        className="p-2 w-full border rounded-md shadow lg:w-[300px]"
+                        value={searchKeyword}
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                      />
+                      <div>
+                        <label htmlFor="#" className="text-nowrap block m-0 text-end text-[12px]">Filter By Date: </label>
+                        <input
+                          type="date"
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                          className="p-2 border rounded-md shadow"
+                        />
+                      </div>
+                    </div>
+
+
                     <div className="export-btns flex gap-2">
                       <TooltipProvider>
                         <Tooltip>
@@ -296,9 +347,9 @@ export default function PaymentRequisitionList() {
                               className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
                               onClick={() => {
                                 exportToExcel();
-                                changeDownloadStatus(
-                                  selectedPaymentIds.join(",")
-                                );
+                                // changeDownloadStatus(
+                                //   selectedPaymentIds.join(",")
+                                // );
                               }}
                             >
                               <BsFiletypeXlsx />
@@ -394,21 +445,31 @@ export default function PaymentRequisitionList() {
                     {
                       role_id === 4 &&
                       <Column
-                        body={(rowData) => (
-                          rowData.admin_approve_status === "0" ||
+                        header={
+                          <div className="flex gap-2">
+                            <span>Select All</span>
+                            <input
+                              className="accent-black"
+                              type="checkbox"
+                              checked={selectAllChecked}
+                              onChange={(e) => handleSelectAllChange(e.target.checked)}
+                            />
+                          </div>
+                        }
+                        body={(rowData) =>
+                          (rowData.admin_approve_status === "0" ||
                             rowData.finance_approve_status === "0" ||
                             rowData.purchase_approve_status === "0" ||
                             rowData.accountent_approve_status === "0" ||
-                            rowData.download_status === "1" ?
-                            <MdOutlineFileDownloadOff className="text-red-500" /> :
+                            rowData.download_status === "1") ? (
                             <input
+                              className="accent-black"
                               type="checkbox"
-                              checked={selectedRows.some(
-                                (row) => row.id === rowData.id
-                              )}
+                              checked={selectedPaymentIds.includes(rowData.id)}
                               onChange={(e) => handleCheckboxChange(e, rowData)}
                             />
-                        )}
+                          ) : null
+                        }
                         style={{ width: "3rem", textAlign: "center" }}
                       />
 
@@ -438,6 +499,14 @@ export default function PaymentRequisitionList() {
                       header="Vendor Name"
                     ></Column>
                     <Column
+                      field="date_of_payments"
+                      sortable
+                      header="Payment Date"
+                      body={(rowData) =>
+                        new Date(rowData.date_of_payments).toLocaleDateString()
+                      }
+                    ></Column>
+                    <Column
                       field="requisition_amount"
                       sortable
                       header="Requisition Amount"
@@ -454,14 +523,7 @@ export default function PaymentRequisitionList() {
                         }`
                       }
                     ></Column>
-                    <Column
-                      field="date_of_payments"
-                      sortable
-                      header="Payment Date"
-                      body={(rowData) =>
-                        new Date(rowData.date_of_payments).toLocaleDateString()
-                      }
-                    ></Column>
+
                     <Column
                       field="requisition_remarks"
                       sortable
