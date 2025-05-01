@@ -265,11 +265,8 @@ export default function PaymentRequisitionList() {
     if (checked) {
       const eligibleRows = filteredPayments.filter(
         (row) =>
-          row.admin_approve_status === "0" ||
-          row.finance_approve_status === "0" ||
-          row.purchase_approve_status === "0" ||
           row.accountent_approve_status === "0" ||
-          row.download_status === "1"
+          row.accountent_approve_status === "1"
       );
 
       const eligibleIds = eligibleRows.map((row) => row.id);
@@ -461,11 +458,8 @@ export default function PaymentRequisitionList() {
                           </div>
                         }
                         body={(rowData) =>
-                          (rowData.admin_approve_status === "0" ||
-                            rowData.finance_approve_status === "0" ||
-                            rowData.purchase_approve_status === "0" ||
-                            rowData.accountent_approve_status === "0" ||
-                            rowData.download_status === "1") ? (
+                          (
+                            rowData.accountent_approve_status === "0" || rowData.accountent_approve_status === "1") ? (
                             <input
                               className="accent-black"
                               type="checkbox"
