@@ -229,8 +229,28 @@ const data = {
           url: "/team-list",
           access: "Team",
         },
+        {
+          title: "Enquiry Report",
+          url: "/fo-enquiry-list",
+          access: "Team",
+        },
       ],
     },
+    // {
+    //   title: "Fo Enquiry Report",
+    //   url: "#",
+    //   icon: FaUsers,
+    //   hasSubMenu: true,
+    //   isActive: false,
+    //   access: "Enquiry Report",
+    //   items: [
+    //     {
+    //       title: "Report",
+    //       url: "/",
+    //       access: "Enquiry Report",
+    //     },
+    //   ],
+    // },
     // {
     //   title: "Activity Coordinator",
     //   url: "#",

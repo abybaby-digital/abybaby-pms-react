@@ -242,6 +242,7 @@ export default function PaymentRequisitionList() {
       ],
       body: selectedRows.map((payment) => [
         payment.project_number,
+        payment.project_name,
         payment.vendor_name,
         payment.bank_name,
         payment.bank_account,
@@ -251,7 +252,7 @@ export default function PaymentRequisitionList() {
         payment.requisition_amount,
         payment.approved_amount,
         new Date(payment.date_of_payments).toLocaleDateString(),
-        payment.status === "1" ? "Paid" : "Unpaid",
+        payment.accountent_approve_status === "1" ? "Paid" : "Unpaid",
       ]),
     });
 
@@ -454,7 +455,7 @@ export default function PaymentRequisitionList() {
                             <input
                               className="accent-black"
                               type="checkbox"
-                              checked={selectAllChecked || (selectedRows?.length === filteredPayments?.length)}
+                              checked={selectAllChecked || (selectedRows?.length !== 0 && selectedRows?.length === filteredPayments?.length)}
                               onChange={(e) => handleSelectAllChange(e.target.checked)}
                             />
                           </div>

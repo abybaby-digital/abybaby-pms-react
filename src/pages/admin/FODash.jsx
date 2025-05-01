@@ -26,7 +26,7 @@ const FODash = () => {
 
     console.log("FoReportData", FoReport);
 
-    const PreviousProject = FoReport?.response?.previous_project.filter(project => {
+    const PreviousProject = FoReport?.response?.previous_project?.filter(project => {
         const keyword = searchKeyword.toLowerCase();
         return (
             project.project_number?.toString().toLowerCase().includes(keyword) ||

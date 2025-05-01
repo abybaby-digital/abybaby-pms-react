@@ -5,7 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getFYList, getTeamList, getUserList, removeFO } from "../../../services/api";  // Updated to fetch user list
+import { getFoEnquiryList, getFYList, getTeamList, getUserList, removeFO } from "../../../services/api";  // Updated to fetch user list
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -24,7 +24,7 @@ import { RiDeleteBack2Fill } from "react-icons/ri";
 import toast from "react-hot-toast";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
-export default function TeamList() {
+export default function FoEnqueryReport() {
     const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
     const userId = useSelector(state => state.auth.user.role_id);
@@ -41,50 +41,55 @@ export default function TeamList() {
     });
 
 
-    const { data: teamList = [], isLoading } = useQuery({
-        queryKey: ["team-list", refetchList, fincYear],
+    const { data: foenquirylist = [], isLoading } = useQuery({
+        queryKey: ["fo-enquiry-list", refetchList, fincYear],
         queryFn: async () => {
-            return await getTeamList(token, fincYear);
+            return await getFoEnquiryList(token, "today", 1268);
         }
     });
 
     // console.log("teamlist", teamList);
 
-    const [singleTeamData, setSingleTeamData] = useState(null);
     const [addOrEdit, setAddOrEdit] = useState(null);
     const [searchKeyword, setSearchKeyword] = useState("");
 
-    const singleTeam = (id) => {
-        const team = teamList?.response?.find(user => user.id === id);
-
-        setSingleTeamData(team);
-        setModal(true);
-    };
+    // const singleFoEnquiry = (id) => {
+    //     const foEnquiry = foenquirylist?.response?.find(user => user.id === id);
+    //     setModal(true);
+    // };
 
     // console.log(singleTeamData);
 
 
-    const filteredTeams = teamList?.response?.filter(team => {
+    const filteredFoEnquiry = foenquirylist?.response?.filter(foEnquiry => {
         const keyword = searchKeyword.toLowerCase();
         return (
-            team.project_number?.toString().toLowerCase().includes(keyword) ||
-            team.team_name?.toLowerCase().includes(keyword) ||
-            team.project_name?.toLowerCase().includes(keyword)
+            foEnquiry.project_number?.toString().toLowerCase().includes(keyword) ||
+            foEnquiry.project_name?.toLowerCase().includes(keyword) ||
+            foEnquiry.fo_name?.toLowerCase().includes(keyword)
         );
     });
 
 
     const exportToExcel = () => {
         // Map the user data to include only the required fields
-        const filteredData = teamList?.response?.map((team, index) => ({
+        const filteredData = foenquirylist?.response?.map((foEnquiry, index) => ({
             sl_no: index + 1,
-            project_name: team.project_name,
-            team_name: team.team_name,
-            financial_year: team.financial_year,
-            main_fo: team.fo_main_name,
-            other_fo: team.fo_junior_name,
-            created_by: team.team_created_by,
-            updated_by: team.team_updated_by,
+            project_name: foEnquiry.project_name,
+            dealership_name: foEnquiry.dealership_name,
+            customer_name: foEnquiry.customer_name,
+            customer_number: foEnquiry.customer_number,
+            test_drive: foEnquiry.test_drive === "1" ? "Yes" : "No",
+            current_vehicle: foEnquiry.current_vehicle,
+            current_vehicle_number: foEnquiry.current_vehicle_number,
+            model_year_of_manufacture: foEnquiry.model_year_of_mfg,
+            interested_vehicle: foEnquiry.interested_vehicle,
+            spot_booking: foEnquiry.spot_booking,
+            retail: foEnquiry.retail,
+            gift: foEnquiry.gift,
+            remarks: foEnquiry.remarks,
+            enquiryTime: foEnquiry.diff_time,
+            created_by: foEnquiry.fo_name,
         })) || [];
 
         // Create a worksheet from the filtered data
@@ -95,56 +100,40 @@ export default function TeamList() {
         XLSX.utils.book_append_sheet(wb, ws, "User List");
 
         // Write the file
-        XLSX.writeFile(wb, "team_list.xlsx");
+        XLSX.writeFile(wb, "fo-enquiry-list.xlsx");
     };
 
 
-    // Export to PDF function
     const exportToPDF = () => {
-        const doc = new jsPDF();
+        const doc = new jsPDF({ orientation: "landscape" });
         doc.autoTable({
-            head: [["Project Name", "Team Name", "FY", "Main FO", "Other FO", "Created By"]],
-            body: teamList?.response.map(team => [
-                team.project_name,
-                team.team_name,
-                team.financial_year,
-                team.fo_main_name,
-                team.fo_junior_name,
-                team.team_created_by,
-                team.team_updated_by,
+            head: [[
+                "Project Name", "Dealership Name", "Customer Name", "Customer Number", "Test Drive",
+                "Current Vehicle", "Current Vehicle Number", "Year of Manufacture", "Interested Vehicle",
+                "Spot Booking", "Retail", "Gift", "Remarks", "Enquiry Time", "Created By"
+            ]],
+            body: foenquirylist?.response.map(foEnquiry => [
+                foEnquiry.project_name,
+                foEnquiry.dealership_name,
+                foEnquiry.customer_name,
+                foEnquiry.customer_number,
+                foEnquiry.test_drive === "1" ? "Yes" : "No",
+                foEnquiry.current_vehicle,
+                foEnquiry.current_vehicle_number,
+                foEnquiry.model_year_of_mfg,
+                foEnquiry.interested_vehicle,
+                foEnquiry.spot_booking,
+                foEnquiry.retail,
+                foEnquiry.gift,
+                foEnquiry.remarks,
+                foEnquiry.diff_time,
+                foEnquiry.fo_name,
             ]),
         });
-        doc.save("team_list.pdf");
+        doc.save("fo-enquiry-list.pdf");
     };
 
-    // DELETE INVOICE
 
-    // Mutation for updating the invoice
-    const removeFOMutation = useMutation({
-        mutationFn: async (data) => {
-            return await removeFO(
-                token,
-                data.team_id,
-                data.fo_id,
-                data.fo_type
-            );
-        },
-        onSuccess: (response) => {
-            if (response.success === 1) {
-                toast.success("FO removed successfully!");
-                setRefetchList((prev) => !prev); // Triggers data refetch
-            } else {
-                toast.error(response.message);
-            }
-        },
-        onError: (error) => {
-            toast.error("Failed to remove: " + error.message);
-        },
-    });
-
-    const removeFOById = (team_id, fo_id, fo_type) => {
-        removeFOMutation.mutate({ team_id: team_id, fo_id: fo_id, fo_type: fo_type })
-    }
 
     const EditBtn = ({ id }) => {
         return (
@@ -153,7 +142,6 @@ export default function TeamList() {
                     <Tooltip>
                         <TooltipTrigger>
                             <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                singleTeam(id);
                                 setAddOrEdit("edit");
                             }}>
                                 <MdEditSquare />
@@ -178,7 +166,7 @@ export default function TeamList() {
                         {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">TEAM LIST</h2> */}
                         <div className="flex bg-gray-200 items-center justify-between px-10">
                             <h2 className="font-merri font-semibold p-5 text-center text-2xl">
-                                TEAM ACTIVITY LIST
+                                ENQUIRY REPORT
                             </h2>
                             <div className="finance-year-filter">
                                 <form action="#" className="flex items-center gap-3">
@@ -208,6 +196,7 @@ export default function TeamList() {
                                     <div>
                                         {/* Search and Export Buttons */}
                                         <div className="flex justify-between space-x-2 items-center mb-4 bg-whitesmoke p-2 rounded-xl shadow">
+
                                             <input
                                                 type="text"
                                                 placeholder="Search by name, email, or role..."
@@ -236,7 +225,7 @@ export default function TeamList() {
                                                             </Tooltip>
                                                         </TooltipProvider>
 
-                                                        <TooltipProvider>
+                                                        {/* <TooltipProvider>
                                                             <Tooltip>
                                                                 <TooltipTrigger asChild>
                                                                     <button
@@ -250,7 +239,7 @@ export default function TeamList() {
                                                                     <p>Export to PDF</p>
                                                                 </TooltipContent>
                                                             </Tooltip>
-                                                        </TooltipProvider>
+                                                        </TooltipProvider> */}
                                                     </div>
                                             }
                                         </div>
@@ -258,7 +247,7 @@ export default function TeamList() {
                                         {/* DataTable */}
 
                                         <DataTable
-                                            value={filteredTeams}
+                                            value={filteredFoEnquiry}
                                             stripedRows
                                             rows={10}
                                             rowsPerPageOptions={[5, 10, 25, 50]}
@@ -277,7 +266,7 @@ export default function TeamList() {
                                                             <Tooltip>
                                                                 <TooltipTrigger>
                                                                     <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                        singleTeam(rowData.id);
+
                                                                         setAddOrEdit("view");
                                                                     }}>
                                                                         {userId === 9 ? <span className="bg-black rounded-2xl text-white p-2">View Activity Photos</span> : <FaEye />}
@@ -289,7 +278,7 @@ export default function TeamList() {
                                                             </Tooltip>
                                                         </TooltipProvider>
 
-                                                        <EditBtn id={rowData.id} />
+
                                                     </>
                                                 )}
                                             />
@@ -302,75 +291,41 @@ export default function TeamList() {
                                                 )}
                                                 style={{ width: '5rem', textAlign: 'center' }}
                                             />
-                                            <Column field="project_number" sortable header="Project No" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column
+                                                field="created_at"
+                                                header="Created At"
+                                                sortable
+                                                body={(rowData) => rowData.created_at?.slice(0, 10)}
+                                            />
                                             <Column field="project_name" sortable header="Project Name"></Column>
-                                            <Column field="team_name" sortable header="Team Name"></Column>
+                                            <Column field="dealership_name" sortable header="Dealership name"></Column>
 
+                                            <Column field="activity_location" sortable header="Activity location"></Column>
+                                            <Column field="customer_name" sortable header="Customer name"></Column>
+                                            <Column field="customer_number" sortable header="Customer number"></Column>
                                             <Column
-                                                header="Main FO"
+                                                header="Test drive"
                                                 body={(rowData) => (
-                                                    <div className="flex gap-5">
-                                                        <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_main_name ? rowData.fo_main_name : <div className="flex items-center gap-3" ><span className="text-red-500">"asign someone as main fo"</span> <EditBtn id={rowData.id} /></div>}
-                                                        </span>
-                                                        {
-                                                            userId === 9 ? null :
-
-                                                                rowData.fo_main_name &&
-                                                                <TooltipProvider>
-                                                                    <Tooltip>
-                                                                        <TooltipTrigger>
-                                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                                                                onClick={() => {
-                                                                                    if (window.confirm("Are you sure you want to remove FO?")) {
-                                                                                        removeFOById(rowData.id, rowData.fo_main_id, 1);
-                                                                                    }
-                                                                                }}>
-                                                                                <RiDeleteBack2Fill />
-                                                                            </button>
-                                                                        </TooltipTrigger>
-                                                                        <TooltipContent>
-                                                                            <p>Remove FO</p>
-                                                                        </TooltipContent>
-                                                                    </Tooltip>
-                                                                </TooltipProvider>
-
-                                                        }
-                                                    </div>
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowData.test_drive === "1" ? "Yes" : "No"}
+                                                    </span>
                                                 )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
+
                                             />
-                                            <Column
-                                                header="Junior FO"
-                                                body={(rowData) => (
-                                                    <div className="flex gap-5">
-                                                        <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_junior_name ? rowData.fo_junior_name : <div className="flex items-center gap-3" ><span className="text-red-500">"assign someone as junior fo"</span> <EditBtn id={rowData.id} /></div>}
-                                                        </span>
-                                                        {
-                                                            userId === 9 ? null :
-                                                                rowData.fo_junior_name &&
-                                                                <TooltipProvider>
-                                                                    <Tooltip>
-                                                                        <TooltipTrigger>
-                                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                                if (window.confirm("Are you sure you want to remove FO?")) {
-                                                                                    removeFOById(rowData.id, rowData.fo_junior_id, 0);
-                                                                                }
-                                                                            }}>
-                                                                                <RiDeleteBack2Fill />
-                                                                            </button>
-                                                                        </TooltipTrigger>
-                                                                        <TooltipContent>
-                                                                            <p>Remove FO</p>
-                                                                        </TooltipContent>
-                                                                    </Tooltip>
-                                                                </TooltipProvider>
-                                                        }
-                                                    </div>
-                                                )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
-                                            />
+                                            <Column field="current_vehicle" sortable header="Current vehicle"></Column>
+                                            <Column field="current_vehicle_number" sortable header="Current vehicle number"></Column>
+                                            <Column field="model_year_of_mfg" sortable header="Year of manufacture"></Column>
+                                            <Column field="interested_vehicle" sortable header="Interested vehicle"></Column>
+                                            <Column field="spot_booking" sortable header="Spot booking"></Column>
+                                            <Column field="retail" sortable header="Retail"></Column>
+                                            <Column field="gift" sortable header="gift"></Column>
+                                            <Column field="remarks" sortable header="remarks"></Column>
+
+
+                                            <Column field="fo_name" sortable header="Created By"></Column>
+                                            <Column field="diff_time" sortable header="Timing"></Column>
+
+
 
 
                                         </DataTable>
@@ -378,12 +333,10 @@ export default function TeamList() {
                                 )
                             }
 
-                            {removeFOMutation.isPending ? (
-                                <FormSubmitLoader loading_msg="Removing FO..." />
-                            ) : null}
+
 
                             {/* View User Popup */}
-                            <ViewTeam team={singleTeamData} add_or_edit={addOrEdit} />
+                            <ViewTeam add_or_edit={addOrEdit} />
                         </div>
                     </div>
                 </div>

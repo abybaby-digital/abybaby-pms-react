@@ -884,6 +884,28 @@ export const getRoleList = async (token) => {
   }
 };
 
+// FO ENQUIRY REPORT
+export const getFoEnquiryList = async (token, report_for, project_id) => {
+  try {
+    const response = await api.post(
+      "/fo-enquiry-report",
+      {
+        report_for: report_for,
+        project_id: project_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching fo enquiry list:", error);
+    throw error;
+  }
+};
+
 // ADD TEAM
 export const addTeam = async (
   token,
