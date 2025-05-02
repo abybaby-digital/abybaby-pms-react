@@ -885,13 +885,13 @@ export const getRoleList = async (token) => {
 };
 
 // FO ENQUIRY REPORT
-export const getFoEnquiryList = async (token, report_for, project_id) => {
+export const getFoEnquiryList = async (token, report_for, team_id) => {
   try {
     const response = await api.post(
       "/fo-enquiry-report",
       {
         report_for: report_for,
-        project_id: project_id,
+        team_id: team_id,
       },
       {
         headers: {

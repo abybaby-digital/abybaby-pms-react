@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { MdRateReview } from "react-icons/md";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DataTable } from "primereact/datatable";
@@ -23,6 +24,7 @@ import ViewTeam from "./ViewTeam";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import toast from "react-hot-toast";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
+import { useNavigate } from "react-router-dom";
 
 export default function TeamList() {
     const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
@@ -168,6 +170,13 @@ export default function TeamList() {
         )
     }
 
+    const setTeamIdToSession = (id) => {
+        sessionStorage.setItem("teamId", id);
+    }
+
+    const navigate = useNavigate();
+
+
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -273,23 +282,43 @@ export default function TeamList() {
                                                 header="Actions"
                                                 body={(rowData) => (
                                                     <>
-                                                        <TooltipProvider>
-                                                            <Tooltip>
-                                                                <TooltipTrigger>
-                                                                    <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                        singleTeam(rowData.id);
-                                                                        setAddOrEdit("view");
-                                                                    }}>
-                                                                        {userId === 9 ? <span className="bg-black rounded-2xl text-white p-2">View Activity Photos</span> : <FaEye />}
-                                                                    </button>
-                                                                </TooltipTrigger>
-                                                                <TooltipContent>
-                                                                    <p>View Team Activity</p>
-                                                                </TooltipContent>
-                                                            </Tooltip>
-                                                        </TooltipProvider>
+                                                        <div className="flex items-center justify-center">
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger>
+                                                                        <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                            // singleTeam(rowData.id);
+                                                                            setTeamIdToSession(rowData.id);
+                                                                            // setAddOrEdit("view");
+                                                                            navigate("/fo-enquiry-list")
+                                                                        }} >
+                                                                            {userId === 9 ? <span className="bg-black rounded-2xl text-white p-2">View Activity Photos</span> : <MdRateReview />}
+                                                                        </button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>View Enquiries</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger>
+                                                                        <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                            singleTeam(rowData.id);
+                                                                            setAddOrEdit("view");
+                                                                        }}>
+                                                                            {userId === 9 ? <span className="bg-black rounded-2xl text-white p-2">View Activity Photos</span> : <FaEye />}
+                                                                        </button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>View Team Activity</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
 
-                                                        <EditBtn id={rowData.id} />
+
+                                                            <EditBtn id={rowData.id} />
+                                                        </div>
                                                     </>
                                                 )}
                                             />

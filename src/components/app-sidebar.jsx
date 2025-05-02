@@ -229,11 +229,11 @@ const data = {
           url: "/team-list",
           access: "Team",
         },
-        {
-          title: "Enquiry Report",
-          url: "/fo-enquiry-list",
-          access: "Team",
-        },
+        // {
+        //   title: "Enquiry Report",
+        //   url: "/fo-enquiry-list",
+        //   access: "Team",
+        // },
       ],
     },
     // {

@@ -23,12 +23,23 @@ import ViewTeam from "./ViewTeam";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import toast from "react-hot-toast";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
+import { Link } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function FoEnqueryReport() {
     const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
     const userId = useSelector(state => state.auth.user.role_id);
     // console.log(userId);
+
+    const [teamIdFromSession, setTeamId] = useState(null);
+    const [reportFor, setReportFor] = useState("today");
+
+    useEffect(() => {
+        setTeamId(sessionStorage.getItem("teamId"));
+    }, [teamIdFromSession])
+
+    console.log("team-session", teamIdFromSession);
 
     const [fincYear, setFincYear] = useState(null);
 
@@ -40,12 +51,12 @@ export default function FoEnqueryReport() {
         },
     });
 
-
     const { data: foenquirylist = [], isLoading } = useQuery({
-        queryKey: ["fo-enquiry-list", refetchList, fincYear],
+        queryKey: ["fo-enquiry-list", refetchList, fincYear, reportFor, teamIdFromSession],
         queryFn: async () => {
-            return await getFoEnquiryList(token, "today", 1268);
-        }
+            return await getFoEnquiryList(token, reportFor, +teamIdFromSession);
+        },
+        enabled: teamIdFromSession !== null  // Only run the query if teamIdFromSession is not null
     });
 
     // console.log("teamlist", teamList);
@@ -66,9 +77,11 @@ export default function FoEnqueryReport() {
         return (
             foEnquiry.project_number?.toString().toLowerCase().includes(keyword) ||
             foEnquiry.project_name?.toLowerCase().includes(keyword) ||
-            foEnquiry.fo_name?.toLowerCase().includes(keyword)
+            foEnquiry.enquiry_created_by?.toLowerCase().includes(keyword)
         );
     });
+
+
 
 
     const exportToExcel = () => {
@@ -88,8 +101,7 @@ export default function FoEnqueryReport() {
             retail: foEnquiry.retail,
             gift: foEnquiry.gift,
             remarks: foEnquiry.remarks,
-            enquiryTime: foEnquiry.diff_time,
-            created_by: foEnquiry.fo_name,
+            created_by: foEnquiry.enquiry_created_by,
         })) || [];
 
         // Create a worksheet from the filtered data
@@ -110,7 +122,7 @@ export default function FoEnqueryReport() {
             head: [[
                 "Project Name", "Dealership Name", "Customer Name", "Customer Number", "Test Drive",
                 "Current Vehicle", "Current Vehicle Number", "Year of Manufacture", "Interested Vehicle",
-                "Spot Booking", "Retail", "Gift", "Remarks", "Enquiry Time", "Created By"
+                "Spot Booking", "Retail", "Gift", "Remarks", "Created By"
             ]],
             body: foenquirylist?.response.map(foEnquiry => [
                 foEnquiry.project_name,
@@ -126,8 +138,7 @@ export default function FoEnqueryReport() {
                 foEnquiry.retail,
                 foEnquiry.gift,
                 foEnquiry.remarks,
-                foEnquiry.diff_time,
-                foEnquiry.fo_name,
+                foEnquiry.enquiry_created_by,
             ]),
         });
         doc.save("fo-enquiry-list.pdf");
@@ -137,7 +148,7 @@ export default function FoEnqueryReport() {
 
     const EditBtn = ({ id }) => {
         return (
-            <CheckAccessEdit edit_access="Team">
+            <CheckAccessEdit edit_access="Enquiries">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>
@@ -156,6 +167,9 @@ export default function FoEnqueryReport() {
         )
     }
 
+
+
+
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -168,7 +182,15 @@ export default function FoEnqueryReport() {
                             <h2 className="font-merri font-semibold p-5 text-center text-2xl">
                                 ENQUIRY REPORT
                             </h2>
-                            <div className="finance-year-filter">
+                            <div className="finance-year-filter flex gap-2">
+                                <Tabs defaultValue="account" className="border shadow rounded-xl">
+                                    <TabsList>
+                                        <TabsTrigger value="account" onClick={() => { setReportFor("today") }}>Daily Report</TabsTrigger>
+                                        <TabsTrigger value="password" onClick={() => { setReportFor(null) }}>All Report</TabsTrigger>
+                                    </TabsList>
+                                    {/* <TabsContent value="account">Make changes to your account here.</TabsContent>
+                                            <TabsContent value="password">Change your password here.</TabsContent> */}
+                                </Tabs>
                                 <form action="#" className="flex items-center gap-3">
                                     <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
                                     <select
@@ -209,6 +231,7 @@ export default function FoEnqueryReport() {
                                                 userId === 9 ?
                                                     null :
                                                     <div className="export-btns flex gap-2">
+
                                                         <TooltipProvider>
                                                             <Tooltip>
                                                                 <TooltipTrigger asChild>
@@ -246,6 +269,9 @@ export default function FoEnqueryReport() {
 
                                         {/* DataTable */}
 
+
+
+
                                         <DataTable
                                             value={filteredFoEnquiry}
                                             stripedRows
@@ -258,30 +284,31 @@ export default function FoEnqueryReport() {
                                                 return rowIndex === 0 ? 'highlight-first-row' : '';
                                             }}
                                         >
-                                            <Column
-                                                header="Actions"
-                                                body={(rowData) => (
-                                                    <>
-                                                        <TooltipProvider>
-                                                            <Tooltip>
-                                                                <TooltipTrigger>
-                                                                    <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                            {
+                                                userId === 9 &&
+                                                <Column
+                                                    header="Actions"
+                                                    body={(rowData) => (
+                                                        <>
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger>
+                                                                        <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
 
-                                                                        setAddOrEdit("view");
-                                                                    }}>
-                                                                        {userId === 9 ? <span className="bg-black rounded-2xl text-white p-2">View Activity Photos</span> : <FaEye />}
-                                                                    </button>
-                                                                </TooltipTrigger>
-                                                                <TooltipContent>
-                                                                    <p>View Team Activity</p>
-                                                                </TooltipContent>
-                                                            </Tooltip>
-                                                        </TooltipProvider>
-
-
-                                                    </>
-                                                )}
-                                            />
+                                                                            setAddOrEdit("view");
+                                                                        }}>
+                                                                            {userId === 9 ? <span className="bg-black rounded-2xl text-white p-2">View Activity Photos</span> : <FaEye />}
+                                                                        </button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>View Team Activity</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                        </>
+                                                    )}
+                                                />
+                                            }
                                             <Column
                                                 header="S.No"
                                                 body={(rowData, { rowIndex }) => (
@@ -297,6 +324,17 @@ export default function FoEnqueryReport() {
                                                 sortable
                                                 body={(rowData) => rowData.created_at?.slice(0, 10)}
                                             />
+                                            <Column
+                                                field="enquiry_created_by"
+                                                header="Created By"
+                                                sortable
+                                                body={(rowData) => (
+                                                    <>
+                                                        <span>{rowData.enquiry_created_by?.slice(0, 10)}</span>
+                                                    </>
+                                                )}
+                                            />
+
                                             <Column field="project_name" sortable header="Project Name"></Column>
                                             <Column field="dealership_name" sortable header="Dealership name"></Column>
 
@@ -322,8 +360,16 @@ export default function FoEnqueryReport() {
                                             <Column field="remarks" sortable header="remarks"></Column>
 
 
-                                            <Column field="fo_name" sortable header="Created By"></Column>
-                                            <Column field="diff_time" sortable header="Timing"></Column>
+
+                                            <Column
+                                                header="View Location"
+                                                body={(rowData) => (
+                                                    <Link to={`https://www.google.com/maps?q=${rowData.latitude},${rowData.longitude}`} target="_blank" className="text-sm px-3 py-1  text-blue-700 border inline-block border-blue-500 rounded-xl">
+                                                        Visit Link
+                                                    </Link>
+                                                )}
+
+                                            />
 
 
 
