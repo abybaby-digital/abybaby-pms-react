@@ -20,6 +20,133 @@ export const makeLogin = async (username, password) => {
   return response.data.result;
 };
 
+// ADD DEALERSHIP
+
+export const addDealership = async (token, dealer_name) => {
+  try {
+    const response = await api.post(
+      "/add-dealership",
+      {
+        dealer_name: dealer_name,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding dealership", error);
+    throw error;
+  }
+};
+
+// EDIT DEALERSHIP
+export const editDealership = async (token, id, dealer_name) => {
+  try {
+    const response = await api.post(
+      "/edit-dealership",
+      {
+        id: id,
+        dealer_name: dealer_name,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching branch list:", error);
+    throw error;
+  }
+};
+
+// DEALERSHIP LIST
+
+export const getDealershipList = async (token) => {
+  try {
+    const response = await api.post(
+      "/dealership-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching dealership list:", error);
+    throw error;
+  }
+};
+
+// ADD GIFT
+export const addGift = async (token, gift_name) => {
+  try {
+    const response = await api.post(
+      "/add-gift",
+      {
+        gift_name: gift_name,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding gift:", error);
+    throw error;
+  }
+};
+
+// EDIT GIFT
+export const editGift = async (token, id, gift_name) => {
+  try {
+    const response = await api.post(
+      "/edit-gift",
+      {
+        id: id,
+        gift_name: gift_name,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing gift:", error);
+    throw error;
+  }
+};
+
+// GIFT LIST
+export const getGiftList = async (token) => {
+  try {
+    const response = await api.post(
+      "/gift-list",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching gift list:", error);
+    throw error;
+  }
+};
+
+
 // ADD BRANCH
 
 export const addBranch = async (
@@ -885,13 +1012,15 @@ export const getRoleList = async (token) => {
 };
 
 // FO ENQUIRY REPORT
-export const getFoEnquiryList = async (token, report_for, team_id) => {
+export const getFoEnquiryList = async (token, report_for, team_id , start_date, end_date) => {
   try {
     const response = await api.post(
       "/fo-enquiry-report",
       {
         report_for: report_for,
         team_id: team_id,
+        start_date: start_date,
+        end_date:end_date
       },
       {
         headers: {

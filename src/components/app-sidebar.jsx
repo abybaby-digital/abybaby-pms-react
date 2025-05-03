@@ -20,6 +20,7 @@ import {
 import pmsLogo from "../assets/images/PMS.png"
 
 import { BsBuildingsFill } from "react-icons/bs";
+import { FaGift } from "react-icons/fa6";
 import { FaBuilding } from "react-icons/fa";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { FaBuildingUser } from "react-icons/fa6";
@@ -31,6 +32,7 @@ import { FaMoneyCheck } from "react-icons/fa";
 import { PiUserListFill } from "react-icons/pi";
 import { FaFileInvoice } from "react-icons/fa6";
 import { GiTakeMyMoney } from "react-icons/gi";
+import { IoPersonSharp } from "react-icons/io5";
 import { GiPieChart } from "react-icons/gi";
 import { PiNetworkBold } from "react-icons/pi";
 import { use } from "react";
@@ -236,6 +238,43 @@ const data = {
         // },
       ],
     },
+    {
+      title: "Dealership",
+      url: "#",
+      icon: IoPersonSharp,
+      hasSubMenu: true,
+      isActive: false,
+      access: "Dealership",
+      items: [
+        {
+          title: "Dealership List",
+          url: "/dealership-list",
+          access: "Dealership",
+        },
+       
+      ],
+    },
+    {
+      title: "Gift",
+      url: "#",
+      icon: FaGift,
+      hasSubMenu: true,
+      isActive: false,
+      access: "Gift",
+      items: [
+        {
+          title: "Gift Details",
+          url: "/gift-list",
+          access: "Gift",
+        },
+        // {
+        //   title: "Enquiry Report",
+        //   url: "/fo-enquiry-list",
+        //   access: "Team",
+        // },
+      ],
+    },
+    
     // {
     //   title: "Fo Enquiry Report",
     //   url: "#",

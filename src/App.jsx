@@ -44,6 +44,8 @@ import FODash from "./pages/admin/FODash";
 import ActivityCoOrdinatorList from "./pages/admin/activity-co-ordinator/ActivityCoOrdinatorList";
 import AddActivityCoOrdinator from "./pages/admin/activity-co-ordinator/AddActivityCoOrdinator";
 import FoEnqueryReport from "./pages/admin/teams/FoEnqueryReport";
+import DealershipList from "./pages/admin/Dealership/DealershipList";
+import GiftList from "./pages/admin/Gift/GiftList";
 // Lazy-loaded components
 // const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 // const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
@@ -125,6 +127,8 @@ const App = () => {
                   <Route path="/fo-enquiry-list" element={<FoEnqueryReport />} />
                   <Route path="/activity-co-ordinator-add" element={<AddActivityCoOrdinator />} />
                   <Route path="/activity-co-ordinator-info" element={<ActivityCoOrdinatorList />} />
+                  <Route path="/dealership-list" element={<DealershipList />} />
+                  <Route path="/gift-list" element={<GiftList />} />
                   <Route path="/role-add" element={<AddRole />} />
                   <Route path="/role-list" element={<RoleList />} />
                   <Route path="/payment-receipt-add" element={<AddPaymentReceived />} />

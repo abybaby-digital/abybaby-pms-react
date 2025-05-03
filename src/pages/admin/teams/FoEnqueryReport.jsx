@@ -34,6 +34,9 @@ export default function FoEnqueryReport() {
 
     const [teamIdFromSession, setTeamId] = useState(null);
     const [reportFor, setReportFor] = useState("today");
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [dateRange, setDateRange] = useState(false);
 
     useEffect(() => {
         setTeamId(sessionStorage.getItem("teamId"));
@@ -52,9 +55,9 @@ export default function FoEnqueryReport() {
     });
 
     const { data: foenquirylist = [], isLoading } = useQuery({
-        queryKey: ["fo-enquiry-list", refetchList, fincYear, reportFor, teamIdFromSession],
+        queryKey: ["fo-enquiry-list", refetchList, fincYear, reportFor, teamIdFromSession , startDate , endDate],
         queryFn: async () => {
-            return await getFoEnquiryList(token, reportFor, +teamIdFromSession);
+            return await getFoEnquiryList(token, reportFor, +teamIdFromSession , startDate , endDate);
         },
         enabled: teamIdFromSession !== null  // Only run the query if teamIdFromSession is not null
     });
@@ -101,6 +104,7 @@ export default function FoEnqueryReport() {
             retail: foEnquiry.retail,
             gift: foEnquiry.gift,
             remarks: foEnquiry.remarks,
+            type_of_lead: foEnquiry.type_of_lead,
             created_by: foEnquiry.enquiry_created_by,
         })) || [];
 
@@ -122,7 +126,7 @@ export default function FoEnqueryReport() {
             head: [[
                 "Project Name", "Dealership Name", "Customer Name", "Customer Number", "Test Drive",
                 "Current Vehicle", "Current Vehicle Number", "Year of Manufacture", "Interested Vehicle",
-                "Spot Booking", "Retail", "Gift", "Remarks", "Created By"
+                "Spot Booking", "Retail", "Gift", "Remarks", "Type of load", "Created By"
             ]],
             body: foenquirylist?.response.map(foEnquiry => [
                 foEnquiry.project_name,
@@ -138,6 +142,7 @@ export default function FoEnqueryReport() {
                 foEnquiry.retail,
                 foEnquiry.gift,
                 foEnquiry.remarks,
+                foEnquiry.type_of_lead,
                 foEnquiry.enquiry_created_by,
             ]),
         });
@@ -148,7 +153,7 @@ export default function FoEnqueryReport() {
 
     const EditBtn = ({ id }) => {
         return (
-            <CheckAccessEdit edit_access="Enquiries">
+            <CheckAccessEdit edit_access="team">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>
@@ -174,40 +179,46 @@ export default function FoEnqueryReport() {
         <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-                <AdminHead breadcrumb_name="team" />
+                <AdminHead breadcrumb_name="team enquiry report" />
                 <div className="flex flex-1 flex-col gap-2 p-3 bg-whitesmoke">
                     <div className="bg-white rounded-2xl shadow mx-auto xl:w-[90%] w-full overflow-hidden">
                         {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">TEAM LIST</h2> */}
-                        <div className="flex bg-gray-200 items-center justify-between px-10">
+                        <div className="flex bg-gray-200 py-3 items-center justify-between px-10">
                             <h2 className="font-merri font-semibold p-5 text-center text-2xl">
                                 ENQUIRY REPORT
                             </h2>
-                            <div className="finance-year-filter flex gap-2">
-                                <Tabs defaultValue="account" className="border shadow rounded-xl">
-                                    <TabsList>
-                                        <TabsTrigger value="account" onClick={() => { setReportFor("today") }}>Daily Report</TabsTrigger>
-                                        <TabsTrigger value="password" onClick={() => { setReportFor(null) }}>All Report</TabsTrigger>
-                                    </TabsList>
-                                    {/* <TabsContent value="account">Make changes to your account here.</TabsContent>
+                            <div className="flex flex-col">
+                                <div className="finance-year-filter flex gap-2 mb-2">
+                                    <Tabs defaultValue="account" className="border shadow rounded-xl">
+                                        <TabsList>
+                                            <TabsTrigger value="account" onClick={() => { setReportFor("today"); setDateRange(false) }}>Daily Report</TabsTrigger>
+                                            <TabsTrigger value="password" onClick={() => { setReportFor(null); setDateRange(true) }}>All Report</TabsTrigger>
+                                        </TabsList>
+                                        {/* <TabsContent value="account">Make changes to your account here.</TabsContent>
                                             <TabsContent value="password">Change your password here.</TabsContent> */}
-                                </Tabs>
-                                <form action="#" className="flex items-center gap-3">
-                                    <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
-                                    <select
-                                        name="financeYear"
-                                        id="financeYear"
-                                        className="block"
-                                        onChange={(e) => {
-                                            setFincYear(e.target.value);
-                                        }}
-                                    >
-                                        {fincYearList?.response?.map((option) => (
-                                            <option key={option.id} value={option.id}>
-                                                {option.financial_year}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </form>
+                                    </Tabs>
+                                    <form action="#" className="flex items-center gap-3">
+                                        <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                                        <select
+                                            name="financeYear"
+                                            id="financeYear"
+                                            className="block"
+                                            onChange={(e) => {
+                                                setFincYear(e.target.value);
+                                            }}
+                                        >
+                                            {fincYearList?.response?.map((option) => (
+                                                <option key={option.id} value={option.id}>
+                                                    {option.financial_year}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </form>
+                                </div>
+                                <div className={`finance-year-filter flex gap-2 border rounded-xl p-2 shadow ${dateRange ? "" : "hidden"}`}>
+                                    <span className="mt-2">From</span><input type="date" name="" id="" onChange={(e) => setStartDate(e.target.value)} />
+                                    <span className="mt-2">To</span><input type="date" name="" id="" onChange={(e) => setEndDate(e.target.value)} />
+                                </div>
                             </div>
                         </div>
                         <div className="card-body p-5 bg-white shadow overflow-hidden">
@@ -358,9 +369,7 @@ export default function FoEnqueryReport() {
                                             <Column field="retail" sortable header="Retail"></Column>
                                             <Column field="gift" sortable header="gift"></Column>
                                             <Column field="remarks" sortable header="remarks"></Column>
-
-
-
+                                            <Column field="type_of_lead" sortable header="Type of Lead"></Column>
                                             <Column
                                                 header="View Location"
                                                 body={(rowData) => (

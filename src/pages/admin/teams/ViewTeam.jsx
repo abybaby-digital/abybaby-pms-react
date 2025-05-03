@@ -76,7 +76,7 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                 <div className="flex w-full justify-between border-b px-3 py-2 items-center" >
                                     <h2 className="text-center text-black text-xl  uppercase">{team.project_name}</h2>
                                     <div className="flex items-center gap-2">
-                                        {/* <div className="w-full text-center text-nowrap">
+                                        <div className="w-full text-center text-nowrap">
                                             <button
                                                 onClick={handleBulkDownload}
                                                 disabled={selectedPhotos.length === 0}
@@ -84,7 +84,7 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                             >
                                                 Download Selected Photos
                                             </button>
-                                        </div> */}
+                                        </div>
                                         <input
                                             type="text"
                                             placeholder="Search by FO name..."
@@ -118,12 +118,12 @@ const ViewTeam = ({ team, add_or_edit, stateList, companyList, branchList, roleL
                                                                 uploaded by : {item.team_created_by}
                                                             </p>
                                                             <div className="text-center my-4 absolute top-2 left-3">
-                                                                {/* <input
+                                                                <input
                                                                     type="checkbox"
                                                                     onChange={() => handleSelectPhoto(item.id, item.activity_photo)}
                                                                     checked={selectedPhotos.some(photo => photo.id === item.id)}
                                                                     className="mr-2"
-                                                                /> */}
+                                                                />
                                                                 {/* <button type="button"
                                                                     onClick={() => downloadImage(item?.activity_photo, `activity-by-${item.team_created_by}-${item.id}`)}
                                                                     className="ml-4 px-1 rounded-full py-1 bg-lightdark text-white text-sm hover:bg-black transition"
