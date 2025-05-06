@@ -20,6 +20,50 @@ export const makeLogin = async (username, password) => {
   return response.data.result;
 };
 
+// DOWNLOAD IMAGES
+
+export const downloadImages = async (token, urls) => {
+  try {
+    const response = await api.post(
+      "/download-images",
+      {
+        urls: urls,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error download", error);
+    throw error;
+  }
+};
+
+// Remove IMAGES
+
+export const removeImageZip = async (token, zip_file_name) => {
+  try {
+    const response = await api.post(
+      "/remove-images",
+      {
+        zip_file_name: zip_file_name,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error download", error);
+    throw error;
+  }
+};
+
 // ADD DEALERSHIP
 
 export const addDealership = async (token, dealer_name) => {

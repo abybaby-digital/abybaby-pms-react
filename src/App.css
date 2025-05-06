@@ -9,11 +9,26 @@
   animation: rotation 1s linear infinite;
 }
 
+.downloadbtn {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  background: #ffffffed;
+  display: flex
+;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .p-datatable-wrapper table {
   border-collapse: collapse;
 }
 
-.p-dropdown{
+.p-dropdown {
   @apply border shadow-lg
 }
 
@@ -100,8 +115,9 @@ input[type="checkbox"]:checked {
   position: relative;
   transform: rotate(45deg);
 }
+
 .loader1::before {
-  content: '';  
+  content: '';
   box-sizing: border-box;
   width: 24px;
   height: 24px;
@@ -110,8 +126,9 @@ input[type="checkbox"]:checked {
   top: -24px;
   animation: animloader 4s ease infinite;
 }
+
 .loader1::after {
-  content: '';  
+  content: '';
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -127,27 +144,35 @@ input[type="checkbox"]:checked {
   0% {
     box-shadow: 0 24px rgba(255, 255, 255, 0), 24px 24px rgba(255, 255, 255, 0), 24px 48px rgba(255, 255, 255, 0), 0px 48px rgba(255, 255, 255, 0);
   }
+
   12% {
     box-shadow: 0 24px white, 24px 24px rgba(255, 255, 255, 0), 24px 48px rgba(255, 255, 255, 0), 0px 48px rgba(255, 255, 255, 0);
   }
+
   25% {
     box-shadow: 0 24px white, 24px 24px white, 24px 48px rgba(255, 255, 255, 0), 0px 48px rgba(255, 255, 255, 0);
   }
+
   37% {
     box-shadow: 0 24px white, 24px 24px white, 24px 48px white, 0px 48px rgba(255, 255, 255, 0);
   }
+
   50% {
     box-shadow: 0 24px white, 24px 24px white, 24px 48px white, 0px 48px white;
   }
+
   62% {
     box-shadow: 0 24px rgba(255, 255, 255, 0), 24px 24px white, 24px 48px white, 0px 48px white;
   }
+
   75% {
     box-shadow: 0 24px rgba(255, 255, 255, 0), 24px 24px rgba(255, 255, 255, 0), 24px 48px white, 0px 48px white;
   }
+
   87% {
     box-shadow: 0 24px rgba(255, 255, 255, 0), 24px 24px rgba(255, 255, 255, 0), 24px 48px rgba(255, 255, 255, 0), 0px 48px white;
   }
+
   100% {
     box-shadow: 0 24px rgba(255, 255, 255, 0), 24px 24px rgba(255, 255, 255, 0), 24px 48px rgba(255, 255, 255, 0), 0px 48px rgba(255, 255, 255, 0);
   }
@@ -157,23 +182,27 @@ input[type="checkbox"]:checked {
   0% {
     transform: translate(0, 0) rotateX(0) rotateY(0);
   }
+
   25% {
     transform: translate(100%, 0) rotateX(0) rotateY(180deg);
   }
+
   50% {
     transform: translate(100%, 100%) rotateX(-180deg) rotateY(180deg);
   }
+
   75% {
     transform: translate(0, 100%) rotateX(-180deg) rotateY(360deg);
   }
+
   100% {
     transform: translate(0, 0) rotateX(0) rotateY(360deg);
   }
 }
 
-.p-datatable-table th,.p-datatable-table td{
+.p-datatable-table th,
+.p-datatable-table td {
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
