@@ -7,6 +7,13 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
+import { IoIosImage } from "react-icons/io";
+import { FaFileZipper } from "react-icons/fa6";
+import { RiFilePpt2Fill } from "react-icons/ri";
+import { SiGoogledocs } from "react-icons/si";
+import { FaFilePdf } from "react-icons/fa";
+import { BsFiletypeXlsx } from "react-icons/bs";
+
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useContext, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
@@ -15,12 +22,36 @@ import EditBillingSupportings from "./EditBillingSupportings";
 
 const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
   const { modal, setModal } = useContext(dialogOpenCloseContext);
-  const [imageModalOpen, setImageModalOpen] = useState(false); // state to control image modal visibility
-  const [fileSrc, setFileSrc] = useState(null); // state to store the file source (image or PDF)
 
-  const handleFileClick = (src) => {
-    setFileSrc(src); // set the file source to the clicked file
-    setImageModalOpen(true); // open the file modal (image or PDF)
+  const getFileIcon = (url, size = 24) => {
+    const extension = url.split('.').pop().split('?')[0].toLowerCase();
+
+    switch (extension) {
+      case 'pdf':
+        return <FaFilePdf size={size} className="text-red-600" />;
+      case 'doc':
+      case 'docx':
+        return <SiGoogledocs size={size} className="text-blue-600" />;
+      case 'ppt':
+      case 'pptx':
+        return <RiFilePpt2Fill size={size} className="text-orange-600" />;
+      case 'xls':
+      case 'csv':
+      case 'xlsx':
+        return <BsFiletypeXlsx size={size} className="text-green-600" />;
+      case 'zip':
+      case 'rar':
+      case '7z':
+        return <FaFileZipper size={size} className="text-black" />;
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'webp':
+      case 'avif':
+        return <IoIosImage size={size} className="text-grey-600" />;
+
+    }
   };
 
   return (
@@ -66,22 +97,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.center_vehicle_hire_bill !== "0" && billingSupportings?.center_vehicle_hire_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.center_vehicle_hire_img
-                            )
-                          }
-                        >
-                          {billingSupportings.center_vehicle_hire_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.center_vehicle_hire_bill !== "0" && billingSupportings?.center_vehicle_hire_img && (
+                          billingSupportings?.center_vehicle_hire_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.center_vehicle_hire_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -109,20 +133,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.manpower_bill !== "0" && billingSupportings?.manpower_bill_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.manpower_bill_img
-                            )
-                          }
-                        >
-                          {billingSupportings.manpower_bill_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.manpower_bill !== "0" && billingSupportings?.manpower_bill_img && (
+                          billingSupportings?.manpower_bill_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.manpower_bill_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -150,18 +169,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.gift_bill !== "0" && billingSupportings?.gift_bill_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.gift_bill_img)
-                          }
-                        >
-                          {billingSupportings.gift_bill_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.gift_bill !== "0" && billingSupportings?.gift_bill_img && (
+                          billingSupportings?.gift_bill_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.gift_bill_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -189,18 +205,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.billing_ppt !== "0"  && billingSupportings?.billing_ppt_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.billing_ppt_img)
-                          }
-                        >
-                          {billingSupportings.billing_ppt_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.billing_ppt !== "0" && billingSupportings?.billing_ppt_img && (
+                          billingSupportings?.billing_ppt_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.billing_ppt_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -227,18 +240,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                         </span>
                       )}
 
-                      { billingSupportings?.report !== "0"  && billingSupportings?.report_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.report_img)
-                          }
-                        >
-                          {billingSupportings.report_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.report_img !== "0" && billingSupportings?.report_img && (
+                          billingSupportings?.report_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.report_img_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -268,22 +278,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.day_wise_log_book !== "0" && billingSupportings?.day_wise_log_book_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.day_wise_log_book_img
-                            )
-                          }
-                        >
-                          {billingSupportings.day_wise_log_book_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.day_wise_log_book !== "0" && billingSupportings?.day_wise_log_book_img && (
+                          billingSupportings?.day_wise_log_book_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.day_wise_log_book_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -313,22 +316,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.day_wise_meter_console !== "0" && billingSupportings?.day_wise_meter_console_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.day_wise_meter_console_img
-                            )
-                          }
-                        >
-                          {billingSupportings.day_wise_meter_console_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.day_wise_meter_console !== "0" && billingSupportings?.day_wise_meter_console_img && (
+                          billingSupportings?.day_wise_meter_console_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.day_wise_meter_console_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -359,22 +355,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.no_objection_certificate !== "0" && billingSupportings?.no_objection_certificate_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.no_objection_certificate_img
-                            )
-                          }
-                        >
-                          {billingSupportings.no_objection_certificate_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.no_objection_certificate !== "0" && billingSupportings?.no_objection_certificate_img && (
+                          billingSupportings?.no_objection_certificate_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.no_objection_certificate_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -404,18 +393,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.snacks_bill !== "0" && billingSupportings?.snacks_bill_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.snacks_bill_img)
-                          }
-                        >
-                          {billingSupportings.snacks_bill_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.snacks_bill !== "0" && billingSupportings?.snacks_bill_img && (
+                          billingSupportings?.snacks_bill_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.snacks_bill_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -443,22 +429,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.element_wise_photo !== "0" && billingSupportings?.element_wise_photo_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.element_wise_photo_img
-                            )
-                          }
-                        >
-                          {billingSupportings.element_wise_photo_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.element_wise_photo !== "0" && billingSupportings?.element_wise_photo_img && (
+                          billingSupportings?.element_wise_photo_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.element_wise_photo_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -486,18 +465,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.nagar_nigan !== "0" && billingSupportings?.nagar_nigan_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.nagar_nigan_img)
-                          }
-                        >
-                          {billingSupportings.nagar_nigan_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.nagar_nigan !== "0" && billingSupportings?.nagar_nigan_img && (
+                          billingSupportings?.nagar_nigan_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.nagar_nigan_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -525,18 +501,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.fuel_bill !== "0" && billingSupportings?.fuel_bill_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.fuel_bill_img)
-                          }
-                        >
-                          {billingSupportings.fuel_bill_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.fuel_bill !== "0" && billingSupportings?.fuel_bill_img && (
+                          billingSupportings?.fuel_bill_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.fuel_bill_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -564,20 +537,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.customer_gift !== "0" && billingSupportings?.customer_gift_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.customer_gift_img
-                            )
-                          }
-                        >
-                          {billingSupportings.customer_gift_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                     <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.customer_gift !== "0" && billingSupportings?.customer_gift_img && (
+                          billingSupportings?.customer_gift_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
 
                       {billingSupportings?.customer_gift_comment && (
                         <p className="my-5 text-end">
@@ -606,18 +574,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.route_plan !== "0" && billingSupportings?.route_plan_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.route_plan_img)
-                          }
-                        >
-                          {billingSupportings.route_plan_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.route_plan !== "0" && billingSupportings?.route_plan_img && (
+                          billingSupportings?.route_plan_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.route_plan_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -645,20 +610,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.approvel_copy !== "0" && billingSupportings?.approvel_copy_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.approvel_copy_img
-                            )
-                          }
-                        >
-                          {billingSupportings.approvel_copy_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.approvel_copy !== "0" && billingSupportings?.approvel_copy_img && (
+                          billingSupportings?.approvel_copy_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.approvel_copy_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -684,20 +644,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.po !== "0" && billingSupportings?.po_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.po_img
-                            )
-                          }
-                        >
-                          {billingSupportings.po_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.po !== "0" && billingSupportings?.po_img && (
+                          billingSupportings?.po_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.po_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -725,22 +680,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      { billingSupportings?.wayforward_learning !== "0" && billingSupportings?.wayforward_learning_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.wayforward_learning_img
-                            )
-                          }
-                        >
-                          {billingSupportings.wayforward_learning_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.wayforward_learning !== "0" && billingSupportings?.wayforward_learning_img && (
+                          billingSupportings?.wayforward_learning_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
 
                       {billingSupportings?.wayforward_learning_comment && (
                         <p className="my-5 text-end">
@@ -770,22 +718,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.courier_delivery_challan !== "0" && billingSupportings?.courier_delivery_challan_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.courier_delivery_challan_img
-                            )
-                          }
-                        >
-                          {billingSupportings.courier_delivery_challan_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                     <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.courier_delivery_challan !== "0" && billingSupportings?.courier_delivery_challan_img && (
+                          billingSupportings?.courier_delivery_challan_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
 
                       {billingSupportings?.courier_delivery_challan_comment && (
                         <p className="my-5 text-end">
@@ -814,22 +755,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.transport_bill !== "0" && billingSupportings?.transport_bill_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.transport_bill_img
-                            )
-                          }
-                        >
-                          {billingSupportings.transport_bill_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.transport_bill !== "0" && billingSupportings?.transport_bill_img && (
+                          billingSupportings?.transport_bill_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.transport_bill_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -857,18 +791,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.anocher_bill !== "0" && billingSupportings?.anocher_bill_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(billingSupportings.anocher_bill_img)
-                          }
-                        >
-                          {billingSupportings.anocher_bill_img.endsWith(".pdf")
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                     <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.anocher_bill !== "0" && billingSupportings?.anocher_bill_img && (
+                          billingSupportings?.anocher_bill_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
 
                       {billingSupportings?.anocher_bill_comment && (
                         <p className="my-5 text-end">
@@ -897,22 +828,15 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
                           No
                         </span>
                       )}
-                      {billingSupportings?.any_other_supporting !== "0" && billingSupportings?.any_other_supporting_img && (
-                        <button
-                          className="text-blue-500 ms-5"
-                          onClick={() =>
-                            handleFileClick(
-                              billingSupportings.any_other_supporting_img
-                            )
-                          }
-                        >
-                          {billingSupportings.any_other_supporting_img.endsWith(
-                            ".pdf"
-                          )
-                            ? "View PDF"
-                            : "View Image"}
-                        </button>
-                      )}
+                      <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                        {billingSupportings?.any_other_supporting !== "0" && billingSupportings?.any_other_supporting_img && (
+                          billingSupportings?.any_other_supporting_img?.map((item) => (
+                            <a href={item} target="_blank">
+                              {getFileIcon(item)}
+                            </a>
+                          ))
+                        )}
+                      </div>
                       {billingSupportings?.any_other_supporting_comment && (
                         <p className="my-5 text-end">
                           <strong>Remarks :</strong>{" "}
@@ -925,49 +849,6 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
               </Table>
             ) : (
               <EditBillingSupportings billingSupportings={billingSupportings} /> // You can add your edit component here
-            )}
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
-
-      {/* File Modal (for image or PDF) */}
-      <Dialog
-        open={imageModalOpen}
-        onOpenChange={() => setImageModalOpen(false)}
-      >
-        <DialogContent className="p-0">
-          <DialogHeader>
-            <DialogTitle className="text-center text-xl font-bold font-merri">
-              {fileSrc?.endsWith(".pdf")
-                ? "Billing Supportings PDF"
-                : "Billing Supportings Image"}
-            </DialogTitle>
-            <DialogClose
-              asChild
-              onClick={() => {
-                setImageModalOpen(false);
-              }}
-              className="text-black text-2xl cursor-pointer"
-            >
-              <MdOutlineClose />
-            </DialogClose>
-          </DialogHeader>
-          <DialogDescription className="p-5">
-            {/* Check if the file is a PDF or image and render accordingly */}
-            {fileSrc?.endsWith(".pdf") ? (
-              <iframe
-                src={fileSrc}
-                width="100%"
-                height="500"
-                title="Billing Supportings PDF"
-                className="border-none"
-              />
-            ) : (
-              <img
-                src={fileSrc}
-                alt="Billing Supportings"
-                className="w-full h-auto object-contain"
-              />
             )}
           </DialogDescription>
         </DialogContent>

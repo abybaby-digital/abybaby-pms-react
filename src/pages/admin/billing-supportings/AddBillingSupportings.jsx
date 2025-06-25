@@ -12,9 +12,10 @@ import { addBillingSupportings, getFYList, getProjectList } from "../../../servi
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 
 export default function AddBillingSupportings() {
+
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
   const [imagePreviews, setImagePreviews] = useState({});
   const [fincYear, setFincYear] = useState(null);
 
@@ -100,7 +101,7 @@ export default function AddBillingSupportings() {
       data.any_other_supporting,
       (data.any_other_supporting_img?.length === 0) ? null : data.any_other_supporting_img,
       data.any_other_supporting_comment,
-      fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
+      // fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
       "1",
 
     ),
@@ -126,12 +127,6 @@ export default function AddBillingSupportings() {
       toast.error("Choose Financial Year First !!");
     }
   }
-
-  // WATCH 
-
-  // const canterBillStatus = watch("center_vehicle_hire_bill");
-  // console.log(canterBillStatus);
-
 
 
   return (
@@ -180,8 +175,8 @@ export default function AddBillingSupportings() {
                 <div className="form-group col-span-2">
                   <label htmlFor="project_id">Project ID <span className="text-red-600">*</span></label>
                   <select id="project_id" {...register("project_id", { required: "Project is required" })} className="block w-full"
-                    // disabled={fincYear === null || fincYear === "NA"}
-                    >
+                  // disabled={fincYear === null || fincYear === "NA"}
+                  >
                     <option value="">Select Project</option>
 
                     {!isLoadingProjects ?
@@ -215,12 +210,12 @@ export default function AddBillingSupportings() {
                       watch("center_vehicle_hire_bill") === "1" ?
                         (
                           <div className="mt-2">
-                            <label htmlFor="center_vehicle_hire_img" className="text-sm">Upload Canter/Vehicle Hire Bill(Image/PDF)</label>
+                            <label htmlFor="center_vehicle_hire_img" className="text-sm">Upload Canter/Vehicle Hire Bill</label>
                             <input
                               type="file"
                               id="center_vehicle_hire_img"
-                              accept="image/*, application/pdf"
-                              {...register("center_vehicle_hire_img")}
+                              multiple
+                              onChange={(e) => setValue("center_vehicle_hire_img", Array.from(e.target.files))}
                               className="block border w-full rounded-lg p-3 bg-white"
                             />
                           </div>
@@ -251,11 +246,12 @@ export default function AddBillingSupportings() {
                       watch("manpower_bill") === "1" ?
                         (
                           <div className="mt-2">
-                            <label htmlFor="manpower_bill_img" className="text-sm">Upload Canter/Vehicle Hire Bill(Image/PDF)</label>
+                            <label htmlFor="manpower_bill_img" className="text-sm">Upload Canter/Vehicle Hire Bill</label>
                             <input
                               type="file"
                               id="center_vehicle_hire_img"
-                              accept="image/*, application/pdf"
+                              multiple
+                              onChange={(e) => setValue("manpower_bill_img", Array.from(e.target.files))}
                               {...register("manpower_bill_img")}
                               className="block border w-full rounded-lg p-3 bg-white"
                             />
@@ -280,8 +276,11 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("gift_bill") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="gift_bill_img" className="text-sm">Upload Gift Bill (Image/PDF)</label>
-                      <input type="file" id="gift_bill_img" accept="image/*, application/pdf" {...register("gift_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="gift_bill_img" className="text-sm">Upload Gift Bill </label>
+                      <input type="file" id="gift_bill_img"
+                        multiple
+                        onChange={(e) => setValue("gift_bill_img", Array.from(e.target.files))}
+                        {...register("gift_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -302,8 +301,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("billing_ppt") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="billing_ppt_img" className="text-sm">Upload Billing PPT (Image/PDF)</label>
-                      <input type="file" id="billing_ppt_img" accept="image/*, application/pdf" {...register("billing_ppt_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="billing_ppt_img" className="text-sm">Upload Billing PPT </label>
+                      <input type="file" id="billing_ppt_img" multiple
+                        onChange={(e) => setValue("billing_ppt_img", Array.from(e.target.files))} {...register("billing_ppt_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -324,8 +324,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("report") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="report_img" className="text-sm">Upload Report (Image/PDF)</label>
-                      <input type="file" id="report_img" accept="image/*, application/pdf" {...register("report_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="report_img" className="text-sm">Upload Report </label>
+                      <input type="file" id="report_img" multiple
+                        onChange={(e) => setValue("report_img", Array.from(e.target.files))} {...register("report_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -346,8 +347,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("day_wise_log_book") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="day_wise_log_book_img" className="text-sm">Upload Day Wise Log Book (Image/PDF)</label>
-                      <input type="file" id="day_wise_log_book_img" accept="image/*, application/pdf" {...register("day_wise_log_book_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="day_wise_log_book_img" className="text-sm">Upload Day Wise Log Book </label>
+                      <input type="file" id="day_wise_log_book_img" multiple
+                        onChange={(e) => setValue("day_wise_log_book_img", Array.from(e.target.files))} {...register("day_wise_log_book_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -368,8 +370,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("day_wise_meter_console") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="day_wise_meter_console_img" className="text-sm">Upload Day Wise Meter Console (Image/PDF)</label>
-                      <input type="file" id="day_wise_meter_console_img" accept="image/*, application/pdf" {...register("day_wise_meter_console_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="day_wise_meter_console_img" className="text-sm">Upload Day Wise Meter Console </label>
+                      <input type="file" id="day_wise_meter_console_img" multiple
+                        onChange={(e) => setValue("day_wise_meter_console_img", Array.from(e.target.files))} {...register("day_wise_meter_console_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -390,8 +393,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("no_objection_certificate") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="no_objection_certificate_img" className="text-sm">Upload No Objection Certificate (Image/PDF)</label>
-                      <input type="file" id="no_objection_certificate_img" accept="image/*, application/pdf" {...register("no_objection_certificate_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="no_objection_certificate_img" className="text-sm">Upload No Objection Certificate </label>
+                      <input type="file" id="no_objection_certificate_img" multiple
+                        onChange={(e) => setValue("no_objection_certificate_img", Array.from(e.target.files))} {...register("no_objection_certificate_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -412,8 +416,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("snacks_bill") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="snacks_bill_img" className="text-sm">Upload Snacks Bill (Image/PDF)</label>
-                      <input type="file" id="snacks_bill_img" accept="image/*, application/pdf" {...register("snacks_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="snacks_bill_img" className="text-sm">Upload Snacks Bill </label>
+                      <input type="file" id="snacks_bill_img" multiple
+                        onChange={(e) => setValue("snacks_bill_img", Array.from(e.target.files))} {...register("snacks_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -434,8 +439,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("element_wise_photo") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="element_wise_photo_img" className="text-sm">Upload Element Wise Photo (Image/PDF)</label>
-                      <input type="file" id="element_wise_photo_img" accept="image/*, application/pdf" {...register("element_wise_photo_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="element_wise_photo_img" className="text-sm">Upload Element Wise Photo </label>
+                      <input type="file" id="element_wise_photo_img" multiple
+                        onChange={(e) => setValue("element_wise_photo_img", Array.from(e.target.files))} {...register("element_wise_photo_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -456,8 +462,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("nagar_nigan") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="nagar_nigan_img" className="text-sm">Upload Nagar Nigan (Image/PDF)</label>
-                      <input type="file" id="nagar_nigan_img" accept="image/*, application/pdf" {...register("nagar_nigan_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="nagar_nigan_img" className="text-sm">Upload Nagar Nigan </label>
+                      <input type="file" id="nagar_nigan_img" multiple
+                        onChange={(e) => setValue("nagar_nigan_img", Array.from(e.target.files))} {...register("nagar_nigan_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -478,8 +485,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("fuel_bill") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="fuel_bill_img" className="text-sm">Upload Fuel Bill (Image/PDF)</label>
-                      <input type="file" id="fuel_bill_img" accept="image/*, application/pdf" {...register("fuel_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="fuel_bill_img" className="text-sm">Upload Fuel Bill </label>
+                      <input type="file" id="fuel_bill_img" multiple
+                        onChange={(e) => setValue("fuel_bill_img", Array.from(e.target.files))} {...register("fuel_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -500,8 +508,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("customer_gift") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="customer_gift_img" className="text-sm">Upload Customer Gift (Image/PDF)</label>
-                      <input type="file" id="customer_gift_img" accept="image/*, application/pdf" {...register("customer_gift_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="customer_gift_img" className="text-sm">Upload Customer Gift </label>
+                      <input type="file" id="customer_gift_img" multiple
+                        onChange={(e) => setValue("customer_gift_img", Array.from(e.target.files))} {...register("customer_gift_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -522,8 +531,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("customer_acknowledge") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="customer_acknowledge_img" className="text-sm">Upload Customer Acknowledge (Image/PDF)</label>
-                      <input type="file" id="customer_acknowledge_img" accept="image/*, application/pdf" {...register("customer_acknowledge_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="customer_acknowledge_img" className="text-sm">Upload Customer Acknowledge </label>
+                      <input type="file" id="customer_acknowledge_img" multiple
+                        onChange={(e) => setValue("customer_acknowledge_img", Array.from(e.target.files))} {...register("customer_acknowledge_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -544,8 +554,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("route_plan") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="route_plan_img" className="text-sm">Upload Route Plan (Image/PDF)</label>
-                      <input type="file" id="route_plan_img" accept="image/*, application/pdf" {...register("route_plan_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="route_plan_img" className="text-sm">Upload Route Plan </label>
+                      <input type="file" id="route_plan_img" multiple
+                        onChange={(e) => setValue("route_plan_img", Array.from(e.target.files))} {...register("route_plan_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -566,8 +577,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("approvel_copy") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="approvel_copy_img" className="text-sm">Upload Approval Copy (Image/PDF)</label>
-                      <input type="file" id="approvel_copy_img" accept="image/*, application/pdf" {...register("approvel_copy_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="approvel_copy_img" className="text-sm">Upload Approval Copy </label>
+                      <input type="file" id="approvel_copy_img" multiple
+                        onChange={(e) => setValue("approvel_copy_img", Array.from(e.target.files))} {...register("approvel_copy_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -588,8 +600,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("po") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="po_img" className="text-sm">Upload Purchase Order (Image/PDF)</label>
-                      <input type="file" id="po_img" accept="image/*, application/pdf" {...register("po_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="po_img" className="text-sm">Upload Purchase Order </label>
+                      <input type="file" id="po_img" multiple
+                        onChange={(e) => setValue("po_img", Array.from(e.target.files))} {...register("po_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -610,8 +623,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("wayforward_learning") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="wayforward_learning_img" className="text-sm">Upload Way Forward Learning (Image/PDF)</label>
-                      <input type="file" id="wayforward_learning_img" accept="image/*, application/pdf" {...register("wayforward_learning_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="wayforward_learning_img" className="text-sm">Upload Way Forward Learning </label>
+                      <input type="file" id="wayforward_learning_img" multiple
+                        onChange={(e) => setValue("wayforward_learning_img", Array.from(e.target.files))} {...register("wayforward_learning_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -632,8 +646,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("courier_delivery_challan") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="courier_delivery_challan_img" className="text-sm">Upload Courier Delivery Challan (Image/PDF)</label>
-                      <input type="file" id="courier_delivery_challan_img" accept="image/*, application/pdf" {...register("courier_delivery_challan_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="courier_delivery_challan_img" className="text-sm">Upload Courier Delivery Challan </label>
+                      <input type="file" id="courier_delivery_challan_img" multiple
+                        onChange={(e) => setValue("courier_delivery_challan_img", Array.from(e.target.files))} {...register("courier_delivery_challan_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -654,8 +669,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("transport_bill") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="transport_bill_img" className="text-sm">Upload Transport Bill (Image/PDF)</label>
-                      <input type="file" id="transport_bill_img" accept="image/*, application/pdf" {...register("transport_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="transport_bill_img" className="text-sm">Upload Transport Bill </label>
+                      <input type="file" id="transport_bill_img" multiple
+                        onChange={(e) => setValue("transport_bill_img", Array.from(e.target.files))} {...register("transport_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -676,8 +692,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("anocher_bill") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="anocher_bill_img" className="text-sm">Upload Another Bill (Image/PDF)</label>
-                      <input type="file" id="anocher_bill_img" accept="image/*, application/pdf" {...register("anocher_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="anocher_bill_img" className="text-sm">Upload Another Bill </label>
+                      <input type="file" id="anocher_bill_img" multiple
+                        onChange={(e) => setValue("anocher_bill_img", Array.from(e.target.files))} {...register("anocher_bill_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -698,8 +715,9 @@ export default function AddBillingSupportings() {
                     </div>
                   ) : watch("any_other_supporting") === "1" ? (
                     <div className="mt-2">
-                      <label htmlFor="any_other_supporting_img" className="text-sm">Upload Other Supporting Document (Image/PDF)</label>
-                      <input type="file" id="any_other_supporting_img" accept="image/*, application/pdf" {...register("any_other_supporting_img")} className="block border w-full rounded-lg p-3 bg-white" />
+                      <label htmlFor="any_other_supporting_img" className="text-sm">Upload Other Supporting Document </label>
+                      <input type="file" id="any_other_supporting_img" multiple
+                        onChange={(e) => setValue("any_other_supporting_img", Array.from(e.target.files))} {...register("any_other_supporting_img")} className="block border w-full rounded-lg p-3 bg-white" />
                     </div>
                   ) : null}
                 </div>
@@ -715,8 +733,8 @@ export default function AddBillingSupportings() {
 
             <div className="card-footer text-center bg-gray-100 py-5">
               <button type="submit" className="px-10 py-2 text-white bg-lightdark rounded-2xl" disabled={addBillingMutation.isPending}
-                // onClick={() => { checkFinancialYear() }}
-                >
+              // onClick={() => { checkFinancialYear() }}
+              >
                 {addBillingMutation.isPending ? <ButtonLoader /> : "Submit"}
               </button>
             </div>

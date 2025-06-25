@@ -1056,7 +1056,7 @@ export const getRoleList = async (token) => {
 };
 
 // FO ENQUIRY REPORT
-export const getFoEnquiryList = async (token, report_for, team_id , start_date, end_date) => {
+export const getFoEnquiryList = async (token, report_for, team_id, start_date, end_date) => {
   try {
     const response = await api.post(
       "/fo-enquiry-report",
@@ -1064,7 +1064,7 @@ export const getFoEnquiryList = async (token, report_for, team_id , start_date, 
         report_for: report_for,
         team_id: team_id,
         start_date: start_date,
-        end_date:end_date
+        end_date: end_date
       },
       {
         headers: {
@@ -2130,7 +2130,7 @@ export const addBillingSupportings = async (
   try {
     const formData = new FormData();
 
-    // Append all form data fields
+    // All field values collected in an object
     const data = {
       project_id,
       center_vehicle_hire_bill,
@@ -2202,17 +2202,22 @@ export const addBillingSupportings = async (
       status,
     };
 
-    Object.keys(data).forEach((key) => {
-      if (data[key] !== null && data[key] !== undefined) {
-        if (key.endsWith("_img") && data[key][0]) {
-          formData.append(key, data[key][0]); // Handling file uploads
+    // Append to FormData
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        // For file arrays (supporting multiple uploads)
+        if (key.endsWith("_img") && Array.isArray(value)) {
+          value.forEach((file) => {
+            if (file instanceof File) {
+              formData.append(key, file); // multiple files for the same key
+            }
+          });
         } else {
-          formData.append(key, data[key]);
+          formData.append(key, value);
         }
       }
     });
 
-    // Make the POST request
     const response = await api.post("/add-billing-support", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -2227,9 +2232,10 @@ export const addBillingSupportings = async (
   }
 };
 
+
 export const editBillingSupportings = async (
   token,
-  id, // The id of the existing billing support to be edited
+  id,
   project_id,
   center_vehicle_hire_bill,
   center_vehicle_hire_img,
@@ -2302,7 +2308,6 @@ export const editBillingSupportings = async (
   try {
     const formData = new FormData();
 
-    // Prepare data for updating
     const data = {
       id,
       project_id,
@@ -2375,20 +2380,21 @@ export const editBillingSupportings = async (
       status,
     };
 
-    // Iterate over data and append each field to FormData
-    Object.keys(data).forEach((key) => {
-      // If data is not null/undefined and the image exists, append the image
-      if (data[key] !== null && data[key] !== undefined) {
-        if (key.endsWith("_img") && data[key][0]) {
-          formData.append(key, data[key][0]); // Handling file uploads
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (key.endsWith("_img") && Array.isArray(value)) {
+          value.forEach((file) => {
+            if (file instanceof File) {
+              formData.append(key, file); // allows multiple files for the same field
+            }
+          });
         } else {
-          formData.append(key, data[key]);
+          formData.append(key, value);
         }
       }
     });
 
-    // Make the PUT request to update the billing supporting
-    const response = await api.post(`/edit-billing-support`, formData, {
+    const response = await api.post("/edit-billing-support", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -2401,6 +2407,7 @@ export const editBillingSupportings = async (
     throw error;
   }
 };
+
 
 // PAYMENT REQUISITION LIST
 export const getBillingSupportList = async (token, financial_year_id) => {

@@ -8,7 +8,46 @@ import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { getProjectList, editClientPO, editBillingSupportings } from "../../../services/api"; // Import necessary functions
 
+import { IoIosImage } from "react-icons/io";
+import { FaFileZipper } from "react-icons/fa6";
+import { RiFilePpt2Fill } from "react-icons/ri";
+import { SiGoogledocs } from "react-icons/si";
+import { FaFilePdf } from "react-icons/fa";
+import { BsFiletypeXlsx } from "react-icons/bs";
+
 const EditBillingSupportings = ({ billingSupportings }) => {
+
+  const getFileIcon = (url, size = 24) => {
+    const extension = url.split('.').pop().split('?')[0].toLowerCase();
+
+    switch (extension) {
+      case 'pdf':
+        return <FaFilePdf size={size} className="text-red-600" />;
+      case 'doc':
+      case 'docx':
+        return <SiGoogledocs size={size} className="text-blue-600" />;
+      case 'ppt':
+      case 'pptx':
+        return <RiFilePpt2Fill size={size} className="text-orange-600" />;
+      case 'xls':
+      case 'csv':
+      case 'xlsx':
+        return <BsFiletypeXlsx size={size} className="text-green-600" />;
+      case 'zip':
+      case 'rar':
+      case '7z':
+        return <FaFileZipper size={size} className="text-black" />;
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'webp':
+      case 'avif':
+        return <IoIosImage size={size} className="text-grey-600" />;
+
+    }
+  };
+
   const token = useSelector((state) => state.auth.token);
   console.log(billingSupportings.id);
 
@@ -16,6 +55,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
   const { refetchList, setRefetchList, setModal } = useContext(
     dialogOpenCloseContext
   );
+
   const {
     register,
     handleSubmit,
@@ -60,10 +100,19 @@ const EditBillingSupportings = ({ billingSupportings }) => {
 
   }, [billingSupportings])
   const [imagePreviews, setImagePreviews] = useState({});
+  const [fincYear, setFincYear] = useState(null);
+
+  // FY LIST CALL
+  const { data: fincYearList } = useQuery({
+    queryKey: ["finc-year-list", token],
+    queryFn: async () => {
+      return await getFYList(token);
+    },
+  });
 
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list"],
-    queryFn: async () => await getProjectList(token, "", "", "", "", "", "", 2, 0, 0),
+    queryFn: async () => await getProjectList(token, "", "", "", fincYear, "", "", "", 2, 0, 0),
   });
 
   const editBillingMutation = useMutation({
@@ -138,6 +187,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
         data.any_other_supporting,
         (data.any_other_supporting_img?.length === 0) ? null : data.any_other_supporting_img,
         data.any_other_supporting_comment,
+        // fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
         "1",
       ),
     onSuccess: (response) => {
@@ -225,16 +275,27 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("center_vehicle_hire_bill") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="center_vehicle_hire_img" className="text-sm">
-                  Upload Canter/Vehicle Hire Bill(Image/PDF)
+                  Upload Canter/Vehicle Hire Bill
                 </label>
                 <input
                   type="file"
                   id="center_vehicle_hire_img"
-                  accept="image/*, application/pdf"
-                  {...register("center_vehicle_hire_img")}
+                  multiple
+                  onChange={(e) => setValue("center_vehicle_hire_img", Array.from(e.target.files))}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.center_vehicle_hire_img && <a href={billingSupportings.center_vehicle_hire_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+
+                  {billingSupportings?.center_vehicle_hire_bill !== "0" && billingSupportings?.center_vehicle_hire_img && (
+                    billingSupportings?.center_vehicle_hire_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
 
@@ -273,16 +334,27 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("manpower_bill") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="manpower_bill_img" className="text-sm">
-                  Upload Canter/Vehicle Hire Bill(Image/PDF)
+                  Upload Canter/Vehicle Hire Bill
                 </label>
                 <input
                   type="file"
                   id="center_vehicle_hire_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("manpower_bill_img", Array.from(e.target.files))}
                   {...register("manpower_bill_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.manpower_bill_img && <a href={billingSupportings.manpower_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.manpower_bill !== "0" && billingSupportings?.manpower_bill_img && (
+                    billingSupportings?.manpower_bill_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -316,16 +388,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("gift_bill") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="gift_bill_img" className="text-sm">
-                  Upload Gift Bill (Image/PDF)
+                  Upload Gift Bill
                 </label>
                 <input
                   type="file"
                   id="gift_bill_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("gift_bill_img", Array.from(e.target.files))}
                   {...register("gift_bill_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.gift_bill_img && <a href={billingSupportings.gift_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.gift_bill !== "0" && billingSupportings?.gift_bill_img && (
+                    billingSupportings?.gift_bill_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -360,15 +442,17 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("billing_ppt") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="billing_ppt_img" className="text-sm">
-                  Upload Billing PPT (Image/PDF)
+                  Upload Billing PPT
                 </label>
                 <input
                   type="file"
                   id="billing_ppt_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("billing_ppt_img", Array.from(e.target.files))}
                   {...register("billing_ppt_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
+                <p className="mt-4">Pre Uploaded files:</p>
                 {billingSupportings.billing_ppt_img && <a href={billingSupportings.billing_ppt_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
               </div>
             ) : null}
@@ -400,16 +484,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("report") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="report_img" className="text-sm">
-                  Upload Report (Image/PDF)
+                  Upload Report
                 </label>
                 <input
                   type="file"
                   id="report_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("report_img", Array.from(e.target.files))}
                   {...register("report_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.report_img && <a href={billingSupportings.report_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.report_img !== "0" && billingSupportings?.report_img && (
+                    billingSupportings?.report_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -444,16 +538,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("day_wise_log_book") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="day_wise_log_book_img" className="text-sm">
-                  Upload Day Wise Log Book (Image/PDF)
+                  Upload Day Wise Log Book
                 </label>
                 <input
                   type="file"
                   id="day_wise_log_book_img"
-                  accept="image/*, application/pdf"
+                   multiple
+                  onChange={(e) => setValue("day_wise_log_book_img", Array.from(e.target.files))}
                   {...register("day_wise_log_book_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.day_wise_log_book_img && <a href={billingSupportings.day_wise_log_book_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.day_wise_log_book !== "0" && billingSupportings?.day_wise_log_book_img && (
+                    billingSupportings?.day_wise_log_book_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -493,16 +597,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("day_wise_meter_console") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="day_wise_meter_console_img" className="text-sm">
-                  Upload Day Wise Meter Console (Image/PDF)
+                  Upload Day Wise Meter Console
                 </label>
                 <input
                   type="file"
                   id="day_wise_meter_console_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("day_wise_meter_console_img", Array.from(e.target.files))}
                   {...register("day_wise_meter_console_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.day_wise_meter_console_img && <a href={billingSupportings.day_wise_meter_console_img}  target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.day_wise_meter_console !== "0" && billingSupportings?.day_wise_meter_console_img && (
+                    billingSupportings?.day_wise_meter_console_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -543,16 +657,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("no_objection_certificate") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="no_objection_certificate_img" className="text-sm">
-                  Upload No Objection Certificate (Image/PDF)
+                  Upload No Objection Certificate
                 </label>
                 <input
                   type="file"
                   id="no_objection_certificate_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("no_objection_certificate_img", Array.from(e.target.files))}
                   {...register("no_objection_certificate_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.no_objection_certificate_img && <a href={billingSupportings.no_objection_certificate_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.no_objection_certificate !== "0" && billingSupportings?.no_objection_certificate_img && (
+                    billingSupportings?.no_objection_certificate_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -587,16 +711,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("snacks_bill") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="snacks_bill_img" className="text-sm">
-                  Upload Snacks Bill (Image/PDF)
+                  Upload Snacks Bill
                 </label>
                 <input
                   type="file"
                   id="snacks_bill_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("snacks_bill_img", Array.from(e.target.files))}
                   {...register("snacks_bill_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.snacks_bill_img && <a href={billingSupportings.snacks_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.snacks_bill !== "0" && billingSupportings?.snacks_bill_img && (
+                    billingSupportings?.snacks_bill_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -631,16 +765,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("element_wise_photo") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="element_wise_photo_img" className="text-sm">
-                  Upload Element Wise Photo (Image/PDF)
+                  Upload Element Wise Photo
                 </label>
                 <input
                   type="file"
                   id="element_wise_photo_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("element_wise_photo_img", Array.from(e.target.files))}
                   {...register("element_wise_photo_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.element_wise_photo_img && <a href={billingSupportings.element_wise_photo_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.element_wise_photo !== "0" && billingSupportings?.element_wise_photo_img && (
+                    billingSupportings?.element_wise_photo_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -677,16 +821,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("nagar_nigan") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="nagar_nigan_img" className="text-sm">
-                  Upload Nagar Nigan (Image/PDF)
+                  Upload Nagar Nigan
                 </label>
                 <input
                   type="file"
                   id="nagar_nigan_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("nagar_nigan_img", Array.from(e.target.files))}
                   {...register("nagar_nigan_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.nagar_nigan_img && <a href={billingSupportings.nagar_nigan_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.nagar_nigan !== "0" && billingSupportings?.nagar_nigan_img && (
+                    billingSupportings?.nagar_nigan_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -721,16 +875,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("fuel_bill") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="fuel_bill_img" className="text-sm">
-                  Upload Fuel Bill (Image/PDF)
+                  Upload Fuel Bill
                 </label>
                 <input
                   type="file"
                   id="fuel_bill_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("fuel_bill_img", Array.from(e.target.files))}
                   {...register("fuel_bill_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.fuel_bill_img && <a href={billingSupportings.fuel_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.fuel_bill !== "0" && billingSupportings?.fuel_bill_img && (
+                    billingSupportings?.fuel_bill_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -767,16 +931,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("customer_gift") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="customer_gift_img" className="text-sm">
-                  Upload Customer Gift (Image/PDF)
+                  Upload Customer Gift
                 </label>
                 <input
                   type="file"
                   id="customer_gift_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("customer_gift_img", Array.from(e.target.files))}
                   {...register("customer_gift_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.customer_gift_img && <a href={billingSupportings.customer_gift_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.customer_gift !== "0" && billingSupportings?.customer_gift_img && (
+                    billingSupportings?.customer_gift_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -813,16 +987,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("customer_acknowledge") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="customer_acknowledge_img" className="text-sm">
-                  Upload Customer Acknowledge (Image/PDF)
+                  Upload Customer Acknowledge
                 </label>
                 <input
                   type="file"
                   id="customer_acknowledge_img"
-                  accept="image/*, application/pdf"
+                   multiple
+                  onChange={(e) => setValue("customer_acknowledge_img", Array.from(e.target.files))}
                   {...register("customer_acknowledge_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.customer_acknowledge_img && <a href={billingSupportings.customer_acknowledge_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.route_plan !== "0" && billingSupportings?.route_plan_img && (
+                    billingSupportings?.route_plan_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -857,16 +1041,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("route_plan") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="route_plan_img" className="text-sm">
-                  Upload Route Plan (Image/PDF)
+                  Upload Route Plan
                 </label>
                 <input
                   type="file"
                   id="route_plan_img"
-                  accept="image/*, application/pdf"
+                   multiple
+                  onChange={(e) => setValue("route_plan_img", Array.from(e.target.files))}
                   {...register("route_plan_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.route_plan_img && <a href={billingSupportings.route_plan_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.route_plan !== "0" && billingSupportings?.route_plan_img && (
+                    billingSupportings?.route_plan_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -901,16 +1095,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("approvel_copy") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="approvel_copy_img" className="text-sm">
-                  Upload Approval Copy (Image/PDF)
+                  Upload Approval Copy
                 </label>
                 <input
                   type="file"
                   id="approvel_copy_img"
-                  accept="image/*, application/pdf"
+                   multiple
+                  onChange={(e) => setValue("approvel_copy_img", Array.from(e.target.files))}
                   {...register("approvel_copy_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.approvel_copy_img && <a href={billingSupportings.approvel_copy_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.approvel_copy !== "0" && billingSupportings?.approvel_copy_img && (
+                    billingSupportings?.approvel_copy_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -941,16 +1145,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("po") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="po_img" className="text-sm">
-                  Upload Purchase Order (Image/PDF)
+                  Upload Purchase Order
                 </label>
                 <input
                   type="file"
                   id="po_img"
-                  accept="image/*, application/pdf"
+                   multiple
+                  onChange={(e) => setValue("po_img", Array.from(e.target.files))}
                   {...register("po_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.po_img && <a href={billingSupportings.po_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.po !== "0" && billingSupportings?.po_img && (
+                    billingSupportings?.po_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -985,16 +1199,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("wayforward_learning") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="wayforward_learning_img" className="text-sm">
-                  Upload Way Forward Learning (Image/PDF)
+                  Upload Way Forward Learning
                 </label>
                 <input
                   type="file"
                   id="wayforward_learning_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("wayforward_learning_img", Array.from(e.target.files))}
                   {...register("wayforward_learning_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.wayforward_learning_img && <a href={billingSupportings.wayforward_learning_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.wayforward_learning !== "0" && billingSupportings?.wayforward_learning_img && (
+                    billingSupportings?.wayforward_learning_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -1034,16 +1258,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("courier_delivery_challan") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="courier_delivery_challan_img" className="text-sm">
-                  Upload Courier Delivery Challan (Image/PDF)
+                  Upload Courier Delivery Challan
                 </label>
                 <input
                   type="file"
                   id="courier_delivery_challan_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("courier_delivery_challan_img", Array.from(e.target.files))}
                   {...register("courier_delivery_challan_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.courier_delivery_challan_img && <a href={billingSupportings.courier_delivery_challan_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.courier_delivery_challan !== "0" && billingSupportings?.courier_delivery_challan_img && (
+                    billingSupportings?.courier_delivery_challan_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -1078,16 +1312,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("transport_bill") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="transport_bill_img" className="text-sm">
-                  Upload Transport Bill (Image/PDF)
+                  Upload Transport Bill
                 </label>
                 <input
                   type="file"
                   id="transport_bill_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("transport_bill_img", Array.from(e.target.files))}
                   {...register("transport_bill_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-               {billingSupportings.transport_bill_img &&  <a href={billingSupportings.transport_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.transport_bill !== "0" && billingSupportings?.transport_bill_img && (
+                    billingSupportings?.transport_bill_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -1122,16 +1366,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("anocher_bill") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="anocher_bill_img" className="text-sm">
-                  Upload Another Bill (Image/PDF)
+                  Upload Another Bill
                 </label>
                 <input
                   type="file"
                   id="anocher_bill_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("anocher_bill_img", Array.from(e.target.files))}
                   {...register("anocher_bill_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.anocher_bill_img && <a href={billingSupportings.anocher_bill_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.anocher_bill !== "0" && billingSupportings?.anocher_bill_img && (
+                    billingSupportings?.anocher_bill_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -1168,16 +1422,26 @@ const EditBillingSupportings = ({ billingSupportings }) => {
             ) : watch("any_other_supporting") === "1" ? (
               <div className="mt-2">
                 <label htmlFor="any_other_supporting_img" className="text-sm">
-                  Upload Other Supporting Document (Image/PDF)
+                  Upload Other Supporting Document
                 </label>
                 <input
                   type="file"
                   id="any_other_supporting_img"
-                  accept="image/*, application/pdf"
+                  multiple
+                  onChange={(e) => setValue("any_other_supporting_img", Array.from(e.target.files))}
                   {...register("any_other_supporting_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
-                {billingSupportings.any_other_supporting_img && <a href={billingSupportings.any_other_supporting_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <p className="mt-4">Pre Uploaded files:</p>
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.any_other_supporting !== "0" && billingSupportings?.any_other_supporting_img && (
+                    billingSupportings?.any_other_supporting_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
