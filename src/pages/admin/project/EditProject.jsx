@@ -38,8 +38,8 @@ const EditProject = ({ project }) => {
 
 
   const project_id = project.id;
-  console.log(project);
-
+  // console.log(project);
+  const roleId = useSelector((state) => state.auth.user?.role_id);
   // Fetch Branch List
   const { data: branchList } = useQuery({
     queryKey: ["branch-list"],
@@ -280,6 +280,7 @@ const EditProject = ({ project }) => {
           <input
             type="text"
             className="block"
+            disabled={roleId === 5}
             id="project_name"
             placeholder="Project Name"
             {...register("project_name", {
@@ -301,6 +302,7 @@ const EditProject = ({ project }) => {
           <input
             type="number"
             className="block"
+            disabled={roleId === 5}
             id="client_po_no"
             placeholder="Client PO Number"
             {...register("client_po_no")}
@@ -330,6 +332,7 @@ const EditProject = ({ project }) => {
                   label: client.label,
                 }))}
                 components={animatedComponents}
+                isDisabled={roleId === 5}
               />
             )}
           />
@@ -357,6 +360,7 @@ const EditProject = ({ project }) => {
                   value: branch.value,
                   label: branch.label,
                 }))}
+                isDisabled={roleId === 5}
                 components={animatedComponents}
               />
             )}
@@ -386,6 +390,7 @@ const EditProject = ({ project }) => {
                   label: company.label,
                 }))}
                 components={animatedComponents}
+                isDisabled={roleId === 5}
               />
             )}
           />
@@ -416,6 +421,7 @@ const EditProject = ({ project }) => {
                   label: item.name,
                 }))}
                 components={animatedComponents}
+                isDisabled={roleId === 5}
               />
             )}
           />
@@ -592,6 +598,7 @@ const EditProject = ({ project }) => {
             {...register("quotation_no", {
               required: "Quotation Number is required",
             })}
+            disabled={roleId === 5}
           />
           {errors.project_amount && (
             <span className="text-red-600 text-sm">
@@ -613,6 +620,7 @@ const EditProject = ({ project }) => {
             {...register("project_amount_pre_gst", {
               required: "Project Amount is required",
             })}
+            disabled={roleId === 5}
           />
           {errors.project_amount_pre_gst && (
             <span className="text-red-600 text-sm">
@@ -633,6 +641,7 @@ const EditProject = ({ project }) => {
             {...register("project_amount_with_gst", {
               required: "Project Amount is required",
             })}
+            disabled={roleId === 5}
           />
           {errors.project_amount_with_gst && (
             <span className="text-red-600 text-sm">
@@ -655,6 +664,7 @@ const EditProject = ({ project }) => {
             {...register("branch_expenses_cash", {
               required: "Branch Expense (Cash) is required",
             })}
+            disabled={roleId === 5}
           />
           {errors.branch_expenses_cash && (
             <span className="text-red-600 text-sm">
@@ -677,6 +687,7 @@ const EditProject = ({ project }) => {
             {...register("branch_expenses_check", {
               required: "Branch Expense (Bill / Check) is required",
             })}
+            disabled={roleId === 5}
           />
           {errors.branch_expenses_check && (
             <span className="text-red-600 text-sm">
@@ -697,6 +708,7 @@ const EditProject = ({ project }) => {
             {...register("project_start_date", {
               required: "Start Date is required",
             })}
+            disabled={roleId === 5}
           />
           {errors.project_start_date && (
             <span className="text-red-600 text-sm">
@@ -717,6 +729,7 @@ const EditProject = ({ project }) => {
             {...register("project_end_date", {
               required: "End Date is required",
             })}
+            disabled={roleId === 5}
           />
           {errors.project_end_date && (
             <span className="text-red-600 text-sm">
@@ -732,6 +745,7 @@ const EditProject = ({ project }) => {
           </label>
 
           <select
+            disabled={roleId === 5}
             {...register("project_status", {
               required: "Project Status is required",
             })}
