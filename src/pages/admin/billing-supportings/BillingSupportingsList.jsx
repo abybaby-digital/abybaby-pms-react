@@ -219,19 +219,16 @@ export default function BillingSupportingList() {
                       )}
                     ></Column>
                     <Column
-                      header="S.No"
-                      body={(rowData, { rowIndex }) => (
-                        <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                          {rowIndex + 1}
-                        </span>
-                      )}
-                      style={{ width: "1rem", textAlign: "center" }}
-                    />
+                      field="project_number"
+                      sortable
+                      header="Project no"
+                    ></Column>
                     <Column
                       field="project_name"
                       sortable
                       header="Project Name"
                     ></Column>
+                    
                     <Column
                       header="Created By"
                       body={(rowData) =>
