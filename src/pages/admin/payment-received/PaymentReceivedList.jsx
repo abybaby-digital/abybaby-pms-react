@@ -4,8 +4,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import AdminHead from "../../../components/common/AdminHead";
-import { useQuery } from "@tanstack/react-query";
-import { getFYList, getPaymentReceivedList } from "../../../services/api";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { cancelPaymentReceived, getFYList, getPaymentReceivedList } from "../../../services/api";
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { MdEditSquare } from "react-icons/md";
@@ -20,9 +20,12 @@ import "jspdf-autotable";
 import ViewPaymentReceived from "./ViewPaymentReceived";
 import EditPaymentReceived from "./EditPaymentReceived"; // Import EditPaymentReceived component
 import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
+import toast from "react-hot-toast";
+import { IoMdTrash } from "react-icons/io";
 
 export default function PaymentReceivedList() {
-    const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
+    const queryClient = new QueryClient();
+    const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
     const [fincYear, setFincYear] = useState(null);
 
@@ -64,10 +67,33 @@ export default function PaymentReceivedList() {
         const keyword = debouncedSearchKeyword.toLowerCase();
         return (
             payment.project_name?.toLowerCase()?.includes(keyword) ||
+            payment.project_no?.toLowerCase()?.includes(keyword) ||
             payment.received_no?.toLowerCase()?.includes(keyword) ||
             payment.received_details?.toLowerCase()?.includes(keyword)
         );
     });
+
+    const cancelMuutation = useMutation({
+        mutationFn: async (id) => {
+            return await cancelPaymentReceived(token, id)
+        },
+        onSuccess: (response) => {
+            if (response.success === 1) {
+                toast.success("Payment Requisition Cancelled Successfully ");
+                setRefetchList(!refetchList);
+            }
+        },
+        onError: (error) => {
+            toast.error(error);
+        }
+    })
+
+    const cancelReceipt = (id) => {
+        const confirm = window.confirm("Are you sure ?");
+        if (confirm) {
+            cancelMuutation.mutate(id);
+        }
+    }
 
     // Export to Excel
     // const exportToExcel = () => {
@@ -240,17 +266,25 @@ export default function PaymentReceivedList() {
                                                         </Tooltip>
                                                     </TooltipProvider>
                                                 </CheckAccessEdit>
+
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger>
+                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
+                                                                cancelReceipt(rowData.id);
+                                                            }}>
+                                                                <IoMdTrash />
+                                                            </button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Cancel Payment</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
                                             </>
                                         )}></Column>
-                                        <Column
-                                            header="S.No"
-                                            body={(rowData, { rowIndex }) => (
-                                                <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
-                                                    {rowIndex + 1}
-                                                </span>
-                                            )}
-                                            style={{ width: '5rem', textAlign: 'center' }}
-                                        />
+
+                                        <Column field="project_no" sortable header="Project No"></Column>
                                         <Column field="project_name" sortable header="Project Name"></Column>
                                         <Column field="received_no" sortable header="Invoice No"></Column>
                                         <Column field="received_amount" sortable header="Amount" body={(rowData) => `₹${rowData.received_amount}`}></Column>

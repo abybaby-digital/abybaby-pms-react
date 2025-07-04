@@ -47,7 +47,7 @@ export default function AddPaymentReceived() {
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ["project-list", fincYear],
     queryFn: async () => {
-      return await getProjectList(token, null, null, null, fincYear, null, null, 2, 1, 0); // Assume this function fetches the list of projects
+      return await getProjectList(token, null, null, null, fincYear, null, null, null, 1, 0); // Assume this function fetches the list of projects
     },
   });
 

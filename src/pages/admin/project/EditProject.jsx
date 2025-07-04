@@ -754,8 +754,8 @@ const EditProject = ({ project }) => {
               Select Status
             </option>
             <option value="1">Running</option>
-            <option value="0">Closed</option>
-            <option value="2">Cancelled</option>
+            <option value="2">Closed</option>
+            <option value="0">Cancelled</option>
           </select>
           {errors.project_status && (
             <span className="text-red-600 text-sm">

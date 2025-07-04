@@ -71,8 +71,12 @@ export default function BillingSupportingList() {
   const filteredBillingSupportings = billingSupportingList?.response?.filter(
     (billingSupporting) => {
       const keyword = debouncedSearchKeyword?.toLowerCase();
-      const projectName = billingSupporting.project_name?.toLowerCase() || ""; // Default to empty string if null/undefined
-      return projectName.includes(keyword);
+      const projectName = billingSupporting.project_name?.toLowerCase() || "";
+      const projectNumber = billingSupporting.project_number?.toLowerCase() || "";
+      return (
+        projectName.includes(keyword) ||
+        projectNumber.includes(keyword)
+      );
     }
   );
 
@@ -228,7 +232,7 @@ export default function BillingSupportingList() {
                       sortable
                       header="Project Name"
                     ></Column>
-                    
+
                     <Column
                       header="Created By"
                       body={(rowData) =>

@@ -37,8 +37,8 @@ export function LoginForm({ className, ...props }) {
       if (response.status === 200 || response.status === 201) {
         toast.success("You are successfully logged in!");
 
-        console.log("Login response", response.response);
-        dispatch(setUsers(response.response));
+        console.log("Login response", response.response.user);
+        dispatch(setUsers(response?.response.user));
 
         // Encrypt the access token using AES
         const encryptedToken = CryptoJS.AES.encrypt(
@@ -49,7 +49,7 @@ export function LoginForm({ className, ...props }) {
         // Store encrypted token and authentication state
         sessionStorage.setItem('token', encryptedToken);
         sessionStorage.setItem('isAuthenticated', true);
-        sessionStorage.setItem('user', JSON.stringify(response.response));
+        sessionStorage.setItem('user', JSON.stringify(response.response.user));
 
         // Dispatch Redux action with user data and token
         dispatch(loginSuccess());

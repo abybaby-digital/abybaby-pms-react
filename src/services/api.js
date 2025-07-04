@@ -1552,6 +1552,27 @@ export const getPaymentReceivedList = async (token, financial_year_id) => {
   }
 };
 
+// CANCEL PAYMENT RECEIVED
+export const cancelPaymentReceived = async (token, payment_received_id) => {
+  try {
+    const response = await api.post(
+      "/cancel-payment-received",
+      {
+        payment_received_id: payment_received_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error deleting payment received:", error);
+    throw error;
+  }
+};
+
 // ADD INVOICE
 export const addInvoice = async (
   token,

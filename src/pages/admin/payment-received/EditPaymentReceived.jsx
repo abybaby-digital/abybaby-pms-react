@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useContext, useEffect, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import ButtonLoader from "../../../components/common/ButtonLoader";
-import { getProjectList, editPaymentReceived } from "../../../services/api"; // Import necessary functions
+import { getProjectList, editPaymentReceived, getFYList } from "../../../services/api"; // Import necessary functions
 
 const EditPaymentReceived = ({ payment }) => {
   const token = useSelector((state) => state.auth.token);
@@ -17,12 +17,21 @@ const EditPaymentReceived = ({ payment }) => {
 
   // Initialize image preview state
   const [imagePreview, setImagePreview] = useState(null);
+  const [fincYear, setFincYear] = useState(null);
+
+  // FY LIST CALL
+  const { data: fincYearList } = useQuery({
+    queryKey: ["finc-year-list", token],
+    queryFn: async () => {
+      return await getFYList(token);
+    },
+  });
 
   // Fetch projects for the project dropdown
   const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
-    queryKey: ["project-list"],
+    queryKey: ["project-list", fincYear],
     queryFn: async () => {
-      return await getProjectList(token); // Assuming this function fetches the list of projects
+      return await getProjectList(token, null, null, null, fincYear, null, null, null, 1, 0); // Assume this function fetches the list of projects
     },
   });
 
@@ -103,152 +112,186 @@ const EditPaymentReceived = ({ payment }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto w-full overflow-hidden"
-    >
-      <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
-        {/* Project ID Dropdown */}
-        <div className="form-group">
-          <label htmlFor="project_id">
-            Project <span className="text-red-600">*</span>
-          </label>
-          <select
-            id="project_id"
-            {...register("project_id", { required: "Project is required" })}
-            className="block w-full"
-          >
-            <option value="">Select Project</option>
-            {projectList?.response?.map((project) => (
-            <option key={project.id} value={project.id}>
-              {`${project.project_number} - ${project.project_name}`}
-            </option>
-            ))}
-          </select>
-          {errors.project_id && (
-            <span className="text-red-600 text-sm">
-              {errors.project_id.message}
-            </span>
-          )}
-        </div>
 
-        {/* Received No Input */}
-        <div className="form-group">
-          <label htmlFor="received_no">
-            Received No <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="text"
-            id="received_no"
-            {...register("received_no", {
-              required: "Received No is required",
-            })}
-            className="block"
-            placeholder="Enter Received No"
-          />
-          {errors.received_no && (
-            <span className="text-red-600 text-sm">
-              {errors.received_no.message}
-            </span>
-          )}
-        </div>
+    isLoadingProjects ?
+      <div className="h-[350px] flex justify-center items-center">
+        < p className="text-green-500 font-bold text-xl animate-pulse" > Prepairing for edit, Please Wait ...</p >
+      </div >
+      :
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="mx-auto w-full overflow-hidden"
+      >
+        <div className="flex bg-gray-200 items-center justify-end px-10 py-2">
 
-        {/* Received Amount Input */}
-        <div className="form-group">
-          <label htmlFor="received_amount">
-            Received Amount <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="number"
-            id="received_amount"
-            {...register("received_amount", {
-              required: "Received Amount is required",
-            })}
-            className="block"
-            placeholder="Enter Amount"
-          />
-          {errors.received_amount && (
-            <span className="text-red-600 text-sm">
-              {errors.received_amount.message}
-            </span>
-          )}
-        </div>
+          <div className="finance-year-filter">
+            <form action="#" className="flex items-center gap-3">
+              <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+              <select
+                name="financeYear"
+                id="financeYear"
+                className="block"
+                onChange={(e) => {
+                  setFincYear(e.target.value);
 
-        {/* Received Date Input */}
-        <div className="form-group">
-          <label htmlFor="received_date">
-            Received Date <span className="text-red-600">*</span>
-          </label>
-          <input
-            type="date"
-            id="received_date"
-            {...register("received_date", {
-              required: "Received Date is required",
-            })}
-            className="block"
-          />
-          {errors.received_date && (
-            <span className="text-red-600 text-sm">
-              {errors.received_date.message}
-            </span>
-          )}
+                  // console.log(e.target.value); 
+                }}
+                disabled
+              >
+                {/* <option value="NA">--Select--</option> */}
+                {fincYearList?.response?.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.financial_year}
+                  </option>
+                ))}
+              </select>
+            </form>
+          </div>
         </div>
+        <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
+          {/* Project ID Dropdown */}
+          <div className="form-group">
+            <label htmlFor="project_id">
+              Project <span className="text-red-600">*</span>
+            </label>
+            <select
+              id="project_id"
+              {...register("project_id", { required: "Project is required" })}
+              className="block w-full"
+              disabled
+            >
+              <option value="">Select Project</option>
+              {projectList?.response?.map((project) => (
+                <option key={project.id} value={project.id} selected={project.id === payment?.project_id}>
+                  {`${project.project_number} - ${project.project_name}`}
+                </option>
+              ))}
+            </select>
+            {errors.project_id && (
+              <span className="text-red-600 text-sm">
+                {errors.project_id.message}
+              </span>
+            )}
+          </div>
 
-        {/* Image Preview */}
-        {imagePreview && (
-          <div className="mt-2">
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-full h-auto rounded-lg"
+          {/* Received No Input */}
+          <div className="form-group">
+            <label htmlFor="received_no">
+              Received No <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="text"
+              id="received_no"
+              {...register("received_no", {
+                required: "Received No is required",
+              })}
+              className="block"
+              placeholder="Enter Received No"
+            />
+            {errors.received_no && (
+              <span className="text-red-600 text-sm">
+                {errors.received_no.message}
+              </span>
+            )}
+          </div>
+
+          {/* Received Amount Input */}
+          <div className="form-group">
+            <label htmlFor="received_amount">
+              Received Amount <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="number"
+              id="received_amount"
+              {...register("received_amount", {
+                required: "Received Amount is required",
+              })}
+              className="block"
+              placeholder="Enter Amount"
+            />
+            {errors.received_amount && (
+              <span className="text-red-600 text-sm">
+                {errors.received_amount.message}
+              </span>
+            )}
+          </div>
+
+          {/* Received Date Input */}
+          <div className="form-group">
+            <label htmlFor="received_date">
+              Received Date <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="date"
+              id="received_date"
+              {...register("received_date", {
+                required: "Received Date is required",
+              })}
+              className="block"
+            />
+            {errors.received_date && (
+              <span className="text-red-600 text-sm">
+                {errors.received_date.message}
+              </span>
+            )}
+          </div>
+
+          {/* Image Preview */}
+          {imagePreview && (
+            <div className="mt-2">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-auto rounded-lg"
+              />
+            </div>
+          )}
+
+          {/* Upload New Receipt */}
+          <div className="form-group lg:col-span-2">
+            <label htmlFor="received_img">Upload New Receipt (Optional)</label>
+            <input
+              type="file"
+              id="received_img"
+              accept="image/*"
+              {...register("received_img")}
+              className="block border w-full rounded-lg p-3"
+              onChange={handleImageChange} // Add this line
             />
           </div>
-        )}
 
-        {/* Upload New Receipt */}
-        <div className="form-group lg:col-span-2">
-          <label htmlFor="received_img">Upload New Receipt (Optional)</label>
-          <input
-            type="file"
-            id="received_img"
-            accept="image/*"
-            {...register("received_img")}
-            className="block border w-full rounded-lg p-3"
-            onChange={handleImageChange} // Add this line
-          />
+          {/* Payment Details */}
+          <div className="form-group lg:col-span-2">
+            <label htmlFor="received_details">Received Details</label>
+            <textarea
+              id="received_details"
+              {...register("received_details")}
+              className="block border w-full rounded-lg p-3"
+              placeholder="Enter Payment Details"
+            />
+          </div>
+
+          {/* Status */}
+          <div className="form-group">
+            <label htmlFor="status">Status</label>
+            <select {...register("status")} id="status">
+              <option value="1">Active</option>
+              <option value="0">Inactive</option>
+            </select>
+          </div>
         </div>
 
-        {/* Payment Details */}
-        <div className="form-group lg:col-span-2">
-          <label htmlFor="received_details">Received Details</label>
-          <textarea
-            id="received_details"
-            {...register("received_details")}
-            className="block border w-full rounded-lg p-3"
-            placeholder="Enter Payment Details"
-          />
+        <div className="card-footer text-center bg-gray-100 py-5">
+          <button
+            type="submit"
+            className="px-10 py-2 text-white bg-lightdark rounded-2xl"
+            disabled={editPaymentMutation.isPending}
+          >
+            {editPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
+          </button>
         </div>
+      </form>
 
-        {/* Status */}
-        <div className="form-group">
-          <label htmlFor="status">Status</label>
-          <select {...register("status")} id="status">
-            <option value="1">Active</option>
-            <option value="0">Inactive</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="card-footer text-center bg-gray-100 py-5">
-        <button
-          type="submit"
-          className="px-10 py-2 text-white bg-lightdark rounded-2xl"
-          disabled={editPaymentMutation.isPending}
-        >
-          {editPaymentMutation.isPending ? <ButtonLoader /> : "Submit"}
-        </button>
-      </div>
-    </form>
   );
 };
 

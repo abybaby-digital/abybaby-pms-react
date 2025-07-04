@@ -6,26 +6,36 @@ import toast from "react-hot-toast";
 import { useContext, useEffect, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import ButtonLoader from "../../../components/common/ButtonLoader";
-import { getProjectList, editInvoice } from "../../../services/api"; // Import necessary functions
+import { getProjectList, editInvoice, getFYList } from "../../../services/api"; // Import necessary functions
 
 const EditInvoice = ({ invoice }) => {
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
     const { setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
+    console.log(invoice);
 
     // Initialize image preview state
     const [imagePreview, setImagePreview] = useState(null);
     const [selectedProject, setProject] = useState(null);
-    
+    const [fincYear, setFincYear] = useState(null);
+
+    // FY LIST CALL
+    const { data: fincYearList } = useQuery({
+        queryKey: ["finc-year-list", token],
+        queryFn: async () => {
+            return await getFYList(token);
+        },
+    });
+
     // Fetch projects for the project dropdown
     const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
-        queryKey: ["project-list"],
+        queryKey: ["project-list", fincYear],
         queryFn: async () => {
-            return await getProjectList(token, "", "", "", "", "", "", 2, "", ""); // Assuming this function fetches the list of projects
+            return await getProjectList(token, null, null, null, fincYear, null, null, null, 0, null, null); // Assuming this function fetches the list of projects
         }
     });
 
-    const { register, handleSubmit, watch , formState: { errors }, setValue } = useForm({
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm({
         defaultValues: {
             project_id: invoice.project_id, // Ensure this is set as the default value
             invoice_no: invoice.invoice_no,
@@ -38,16 +48,16 @@ const EditInvoice = ({ invoice }) => {
         }
     });
 
-    useEffect(() => {
-        if (projectList) {
-            const foundProject = projectList?.response?.find((item) => item.id === +watch("project_id"));
-            setProject(foundProject);
-        }
-    }, [watch("project_id")])
+    // useEffect(() => {
+    //     if (projectList) {
+    //         const foundProject = projectList?.response?.find((item) => item.id === +watch("project_id"));
+    //         setProject(foundProject);
+    //     }
+    // }, [watch("project_id")])
 
     // Pre-fill the form with existing data
     useEffect(() => {
-        setValue("project_id", invoice.project_id);  // Ensure selected project is set
+        // setValue("project_id", invoice.project_id); 
         setValue("invoice_no", invoice.invoice_no);
         setValue("invoice_amountpre_gst", invoice.invoice_amount_pre_gst);
         setValue("invoice_amount_with_gst", invoice.invoice_amount_with_gst);
@@ -94,6 +104,8 @@ const EditInvoice = ({ invoice }) => {
 
     // Handle form submission
     const onSubmit = (data) => {
+        console.log(data);
+        
         editInvoiceMutation.mutate(data);
     };
 
@@ -113,6 +125,29 @@ const EditInvoice = ({ invoice }) => {
             </div>
             :
             <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full overflow-hidden">
+                <div className="flex bg-gray-200 items-center justify-end px-10 py-2">
+                    <div className="finance-year-filter">
+                        <form action="#" className="flex items-center gap-3">
+                            <label htmlFor="financeYear" className="text-nowrap m-0">Select Financial Year</label>
+                            <select
+                                name="financeYear"
+                                id="financeYear"
+                                className="block"
+                                onChange={(e) => {
+                                    setFincYear(e.target.value);
+                                }}
+                                disabled
+                            >
+                                {/* <option value="NA">--Select--</option> */}
+                                {fincYearList?.response?.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.financial_year}
+                                    </option>
+                                ))}
+                            </select>
+                        </form>
+                    </div>
+                </div>
                 <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
 
                     {/* Project ID Dropdown */}
@@ -122,13 +157,14 @@ const EditInvoice = ({ invoice }) => {
                             id="project_id"
                             {...register("project_id", { required: "Project is required" })}
                             className="block w-full"
+                            disabled
                         >
                             <option value="">Select Project</option>
                             {isLoadingProjects ? (
                                 <option>Loading Projects, Please wait....</option>
                             ) : (
                                 projectList?.response?.map((project) => (
-                                    <option key={project.id} value={project.id} selected={project?.id === invoice?.project_id}>
+                                    <option key={project.id} value={project.id} selected={project.id === invoice.project_id}>
                                         {`${project.project_number} - ${project.project_name}`}
                                     </option>
                                 ))
@@ -150,7 +186,7 @@ const EditInvoice = ({ invoice }) => {
                         {errors.invoice_no && <span className="text-red-600 text-sm">{errors.invoice_no.message}</span>}
                     </div>
 
-                    
+
                     {/* Invoice Amount with gst Input */}
                     <div className="form-group">
                         <label htmlFor="invoice_amount_with_gst">Invoice Amount (with GST) <span className="text-red-600">*</span></label>
