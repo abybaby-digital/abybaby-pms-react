@@ -251,7 +251,7 @@ const data = {
           url: "/dealership-list",
           access: "Dealership",
         },
-       
+
       ],
     },
     {
@@ -274,7 +274,7 @@ const data = {
         // },
       ],
     },
-    
+
     // {
     //   title: "Fo Enquiry Report",
     //   url: "#",
@@ -356,17 +356,17 @@ const data = {
       icon: FaMoneyCheck,
       hasSubMenu: true,
       isActive: false,
-      access: "Payment Requition",
+      access: "Payment Requisition",
       items: [
         {
           title: "Add Payment Requisition",
           url: "/payment-requisition-add",
-          access: "Payment Requition",
+          access: "Payment Requisition",
         },
         {
           title: "Payment Requisition Info",
           url: "/payment-requisition-list",
-          access: "Payment Requition",
+          access: "Payment Requisition",
         },
       ],
     },
