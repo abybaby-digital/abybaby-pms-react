@@ -31,7 +31,7 @@ const EditInvoice = ({ invoice }) => {
     const { data: projectList = [], isLoading: isLoadingProjects } = useQuery({
         queryKey: ["project-list", fincYear],
         queryFn: async () => {
-            return await getProjectList(token, null, null, null, fincYear, null, null, null, 0, null, null); // Assuming this function fetches the list of projects
+            return await getProjectList(token, null, null, null, fincYear, null, null, null, null, null, null); // Assuming this function fetches the list of projects
         }
     });
 
