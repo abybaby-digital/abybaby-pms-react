@@ -144,9 +144,6 @@ export default function ProjectList() {
     (item) => !selectedMis?.includes(item.id)
   );
 
-
-
-
   useEffect(() => {
     setValue("activity_coordinator_id", projectById?.response?.project?.selected_activity_coordinator);
     setValue("activity_coordinator_other_id", projectById?.response?.project?.selected_activity_coordinator_other);
@@ -453,7 +450,7 @@ export default function ProjectList() {
                     }
 
 
-                    {roleId === 7 && <Column
+                    {(roleId === 7 || roleId === 6) && <Column
                       header="Activity Coordinator"
                       body={(rowData, { rowIndex }) => (
                         <button type="button" onClick={() => {

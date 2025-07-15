@@ -1228,6 +1228,27 @@ export const FOList = async (token) => {
   }
 };
 
+// FO LIST BY PROJECT ID
+export const FOListByProjectId = async (token, project_id) => {
+  try {
+    const response = await api.post(
+      "/fo-list-by-project-id",
+      {
+        project_id: project_id
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching team details:", error);
+    throw error;
+  }
+};
+
 // ACTIVITY BY  ID
 export const viewTeamById = async (token, team_id) => {
   try {
@@ -1986,6 +2007,44 @@ export const addPaymentRequisition = async (
     throw error;
   }
 };
+// ADD FO PAYMENT REQUISITION
+export const addFOPaymentRequisition = async (
+  token,
+  project_id,
+  requisition_amount,
+  fo_requisition_img, // Image or PDF file
+  requisition_remarks,
+  assign_fo_id
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("project_id", project_id);
+    formData.append("requisition_amount", requisition_amount);
+    formData.append("requisition_remarks", requisition_remarks);
+    formData.append("assign_fo_id", assign_fo_id);
+
+    // Append the requisition image (either image or PDF) if it exists
+    if (fo_requisition_img && fo_requisition_img[0]) {
+      formData.append("fo_requisition_img", fo_requisition_img[0]); // requisition_img should be a File object
+    }
+
+    // Make the POST request
+    const response = await api.post("/add-fo-payment-requisition", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    // You might want to check response status or structure here for safety
+    return response.data.result;
+  } catch (error) {
+    console.error("Error adding Payment Requisition:", error);
+    throw error;
+  }
+};
 
 // EDIT PAYMENT REQUISITION
 export const editPaymentRequisition = async (
@@ -2032,6 +2091,46 @@ export const editPaymentRequisition = async (
   }
 };
 
+
+// EDIT FO PAYMENT REQUISITION
+export const editFoPaymentRequisition = async (
+  token,
+  fo_payment_requisition_id,
+  project_id,
+  requisition_amount,
+  fo_requisition_img, // Image or PDF file
+  requisition_remarks,
+  assign_fo_id
+) => {
+  try {
+    const formData = new FormData();
+
+    // Append all form data fields
+    formData.append("fo_payment_requisition_id", fo_payment_requisition_id);
+    formData.append("project_id", project_id);
+    formData.append("requisition_amount", requisition_amount);
+    formData.append("requisition_remarks", requisition_remarks);
+    formData.append("assign_fo_id", assign_fo_id);
+
+    // Append the requisition image (either image or PDF) if it exists
+    if (fo_requisition_img) {
+      formData.append("fo_requisition_img", fo_requisition_img[0]); // requisition_img should be a File object
+    }
+
+    const response = await api.post("/edit-fo-payment-requisition", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Make sure the correct content-type is set
+      },
+    });
+
+    return response.data.result;
+  } catch (error) {
+    console.error("Error editing Payment Requisition:", error);
+    throw error;
+  }
+};
+
 // PAYMENT REQUISITION LIST
 export const getPaymentRequisitionList = async (token, financial_year_id) => {
   try {
@@ -2049,6 +2148,70 @@ export const getPaymentRequisitionList = async (token, financial_year_id) => {
     return response.data.result;
   } catch (error) {
     console.error("Error fetching Payment Requisition list:", error);
+    throw error;
+  }
+};
+
+// FO PAYMENT REQUISITION LIST
+export const getFOPaymentRequisitionList = async (token, financial_year_id) => {
+  try {
+    const response = await api.post(
+      "/fo-payment-requisition-list",
+      {
+        financial_year_id: financial_year_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching Payment Requisition list:", error);
+    throw error;
+  }
+};
+
+// FO EXPENSE LIST BY ID
+export const getFOExpenseListById = async (token, fo_payment_requition_id) => {
+
+  try {
+    const response = await api.post(
+      "/expenses-by-payment-requition-id",
+      {
+        fo_payment_requition_id: fo_payment_requition_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching Expense list:", error);
+    throw error;
+  }
+};
+
+// FO EXPENSE REJECTION
+export const rejectExpense = async (token, fo_expenses_id) => {
+  try {
+    const response = await api.post(
+      "/rejected-fo-expenses",
+      {
+        fo_expenses_id: fo_expenses_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fo expense reject:", error);
     throw error;
   }
 };
@@ -2487,6 +2650,35 @@ export const approvePaymentRequisition = async (
       "/payment-requisition-approved-status",
       {
         payment_requition_id: payment_requition_id,
+        approved_amount: approved_amount,
+        status: status,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error Approving Payment:", error);
+    throw error;
+  }
+};
+
+// PAYMENT REQUISITION APPROVAL
+
+export const approveFoPaymentRequisition = async (
+  token,
+  fo_payment_requition_id,
+  approved_amount,
+  status
+) => {
+  try {
+    const response = await api.post(
+      "/fo-payment-requisition-approved-status",
+      {
+        fo_payment_requition_id: fo_payment_requition_id,
         approved_amount: approved_amount,
         status: status,
       },

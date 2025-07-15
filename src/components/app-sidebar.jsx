@@ -371,6 +371,26 @@ const data = {
       ],
     },
     {
+      title: "Fo Payment Requisition",
+      url: "#",
+      icon: FaMoneyCheck,
+      hasSubMenu: true,
+      isActive: false,
+      access: "Fo Payment Requisition",
+      items: [
+        {
+          title: "Add FO Payment Requisition",
+          url: "/fo-payment-requisition-add",
+          access: "Fo Payment Requisition",
+        },
+        {
+          title: "FO Payment Requisition Info",
+          url: "/fo-payment-requisition-list",
+          access: "Fo Payment Requisition",
+        },
+      ],
+    },
+    {
       title: "Client Purchase Order",
       url: "#",
       icon: PiUserListFill,

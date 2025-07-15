@@ -46,6 +46,8 @@ import AddActivityCoOrdinator from "./pages/admin/activity-co-ordinator/AddActiv
 import FoEnqueryReport from "./pages/admin/teams/FoEnqueryReport";
 import DealershipList from "./pages/admin/Dealership/DealershipList";
 import GiftList from "./pages/admin/Gift/GiftList";
+import AddFOPaymentRequisition from "./pages/admin/fo-payment-requisition/AddFOPaymentRequisition";
+import FOPaymentRequisitionList from "./pages/admin/fo-payment-requisition/FOPaymentRequisitionList";
 // Lazy-loaded components
 // const Dashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 // const AddCompany = React.lazy(() => import("./pages/admin/company/AddCompany"));
@@ -139,6 +141,8 @@ const App = () => {
                   <Route path="/client-po-list" element={<ClientPOList />} />
                   <Route path="/payment-requisition-add" element={<AddPaymentRequisition />} />
                   <Route path="/payment-requisition-list" element={<PaymentRequisitionList />} />
+                  <Route path="/fo-payment-requisition-add" element={<AddFOPaymentRequisition />} />
+                  <Route path="/fo-payment-requisition-list" element={<FOPaymentRequisitionList />} />
                   <Route path="/billing-supportings-add" element={<AddBillingSupportings />} />
                   <Route path="/billing-supportings-info" element={<BillingSupportingList />} />
                   <Route path="/project-list/:category" element={<ProjectListByCategory />} />

@@ -55,9 +55,9 @@ export default function FoEnqueryReport() {
     });
 
     const { data: foenquirylist = [], isLoading } = useQuery({
-        queryKey: ["fo-enquiry-list", refetchList, fincYear, reportFor, teamIdFromSession , startDate , endDate],
+        queryKey: ["fo-enquiry-list", refetchList, fincYear, reportFor, teamIdFromSession, startDate, endDate],
         queryFn: async () => {
-            return await getFoEnquiryList(token, reportFor, +teamIdFromSession , startDate , endDate);
+            return await getFoEnquiryList(token, reportFor, +teamIdFromSession, startDate, endDate);
         },
         enabled: teamIdFromSession !== null  // Only run the query if teamIdFromSession is not null
     });
@@ -100,12 +100,13 @@ export default function FoEnqueryReport() {
             current_vehicle_number: foEnquiry.current_vehicle_number,
             model_year_of_manufacture: foEnquiry.model_year_of_mfg,
             interested_vehicle: foEnquiry.interested_vehicle,
-            spot_booking: foEnquiry.spot_booking,
-            retail: foEnquiry.retail,
-            gift: foEnquiry.gift,
+            spot_booking: foEnquiry.spot_booking === "1" ? "Yes" : "No",
+            retail: foEnquiry.retail === "1" ? "Yes" : "No",
+            gift: foEnquiry.gift_name,
             remarks: foEnquiry.remarks,
             type_of_lead: foEnquiry.type_of_lead,
             created_by: foEnquiry.enquiry_created_by,
+            created_at: formatTimestampWithAmPm(foEnquiry.created_at),
         })) || [];
 
         // Create a worksheet from the filtered data
@@ -119,6 +120,22 @@ export default function FoEnqueryReport() {
         XLSX.writeFile(wb, "fo-enquiry-list.xlsx");
     };
 
+    function formatTimestampWithAmPm(isoString) {
+        const date = new Date(isoString);
+
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: 'numeric',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        };
+
+        return date.toLocaleString('en-US', options);
+    }
+
 
     const exportToPDF = () => {
         const doc = new jsPDF({ orientation: "landscape" });
@@ -126,7 +143,7 @@ export default function FoEnqueryReport() {
             head: [[
                 "Project Name", "Dealership Name", "Customer Name", "Customer Number", "Test Drive",
                 "Current Vehicle", "Current Vehicle Number", "Year of Manufacture", "Interested Vehicle",
-                "Spot Booking", "Retail", "Gift", "Remarks", "Type of load", "Created By"
+                "Spot Booking", "Retail", "Gift", "Remarks", "Type of load", "Created By", "Created At"
             ]],
             body: foenquirylist?.response.map(foEnquiry => [
                 foEnquiry.project_name,
@@ -138,12 +155,13 @@ export default function FoEnqueryReport() {
                 foEnquiry.current_vehicle_number,
                 foEnquiry.model_year_of_mfg,
                 foEnquiry.interested_vehicle,
-                foEnquiry.spot_booking,
-                foEnquiry.retail,
-                foEnquiry.gift,
+                foEnquiry.spot_booking === "1" ? "Yes" : "No",
+                foEnquiry.retail === "1" ? "Yes" : "No", ,
+                foEnquiry.gift_name,
                 foEnquiry.remarks,
                 foEnquiry.type_of_lead,
                 foEnquiry.enquiry_created_by,
+                formatTimestampWithAmPm(foEnquiry.created_at),
             ]),
         });
         doc.save("fo-enquiry-list.pdf");
@@ -333,7 +351,7 @@ export default function FoEnqueryReport() {
                                                 field="created_at"
                                                 header="Created At"
                                                 sortable
-                                                body={(rowData) => rowData.created_at?.slice(0, 10)}
+                                                body={(rowData) => formatTimestampWithAmPm(rowData.created_at)}
                                             />
                                             <Column
                                                 field="enquiry_created_by"
@@ -365,9 +383,27 @@ export default function FoEnqueryReport() {
                                             <Column field="current_vehicle_number" sortable header="Current vehicle number"></Column>
                                             <Column field="model_year_of_mfg" sortable header="Year of manufacture"></Column>
                                             <Column field="interested_vehicle" sortable header="Interested vehicle"></Column>
-                                            <Column field="spot_booking" sortable header="Spot booking"></Column>
-                                            <Column field="retail" sortable header="Retail"></Column>
-                                            <Column field="gift" sortable header="gift"></Column>
+
+                                            <Column
+                                                header="Spot booking"
+                                                body={(rowData) => (
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowData.spot_booking === "1" ? "Yes" : "No"}
+                                                    </span>
+                                                )}
+
+                                            />
+
+                                            <Column
+                                                header="Retail"
+                                                body={(rowData) => (
+                                                    <span className="text-sm px-3 py-1 rounded-xl text-gray-700">
+                                                        {rowData.retail === "1" ? "Yes" : "No"}
+                                                    </span>
+                                                )}
+
+                                            />
+                                            <Column field="gift_name" sortable header="gift"></Column>
                                             <Column field="remarks" sortable header="remarks"></Column>
                                             <Column field="type_of_lead" sortable header="Type of Lead"></Column>
                                             <Column
