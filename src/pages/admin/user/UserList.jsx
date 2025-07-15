@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import AdminHead from "../../../components/common/AdminHead";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUserList } from "../../../services/api";  // Updated to fetch user list
 import { useContext, useEffect, useState } from "react";
 import { FaEye } from "react-icons/fa";
@@ -21,9 +21,14 @@ import ViewUser from "./ViewUser";  // Updated from ViewRole to ViewUser
 import CheckAccessEdit from "../../../components/common/CheckAccessEdit";
 import { CiImageOff } from "react-icons/ci";
 
+
 export default function UserList() {
     const { modal, setModal, refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
+    const role = useSelector((state) => state.auth.user.role_id);
+
+    console.log("role", role);
+
 
     const { data: userList = [], isLoading } = useQuery({
         queryKey: ["user-list", refetchList],
@@ -95,6 +100,8 @@ export default function UserList() {
         });
         doc.save("user_list.pdf");
     };
+
+
 
     return (
         <SidebarProvider>
@@ -174,39 +181,6 @@ export default function UserList() {
                                                 )}
                                                 style={{ width: '5rem', textAlign: 'center' }}
                                             />
-                                            <Column field="name" sortable header="Name" style={{ textTransform: "capitalize" }}></Column>
-                                            <Column field="email" sortable header="Email"></Column>
-                                            <Column field="role_name" sortable header="Role"></Column>
-
-                                            {/* Profile Image Column */}
-                                            <Column
-                                                header="Profile"
-                                                body={(rowData) => (
-
-                                                    rowData.profile_img !== "https://test.abybabyoffice.com/storage/user/profile/" ?
-                                                        <img
-                                                            src={rowData.profile_img}
-                                                            alt="User Profile"
-                                                            className="w-10 h-10 rounded-full border shadow mx-auto"
-                                                        />
-                                                        :
-                                                        <div className="text-center flex flex-col items-center">
-                                                            <CiImageOff className="text-2xl me-1" /> No Image
-                                                        </div>
-                                                )}
-                                            />
-
-                                            <Column header="Company" field="company_name"></Column>
-
-                                            <Column
-                                                header="Status"
-                                                body={(rowData) => (
-                                                    <span className={`px-3 py-1 rounded-xl ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"} text-white shadow`}>
-                                                        {rowData.status === "1" ? "Active" : "Inactive"}
-                                                    </span>
-                                                )}
-                                            />
-
                                             {/* Actions Column */}
                                             <Column
                                                 header="Actions"
@@ -248,6 +222,53 @@ export default function UserList() {
                                                     </>
                                                 )}
                                             />
+
+                                            {
+                                                role === 4 &&
+                                                <Column
+                                                    header="Change Password"
+                                                    body={(rowData, { rowIndex }) => (
+                                                        <button type="button" onClick={() => { setAddOrEdit("cp"); singleUser(rowData.id); }} className="text-sm px-3 py-1 rounded-xl text-white bg-black">
+                                                            Change Password
+                                                        </button>
+                                                    )}
+                                                    style={{ width: '5rem', textAlign: 'center' }}
+                                                />
+                                            }
+                                            <Column field="name" sortable header="Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column field="email" sortable header="Email"></Column>
+                                            <Column field="role_name" sortable header="Role"></Column>
+
+                                            {/* Profile Image Column */}
+                                            <Column
+                                                header="Profile"
+                                                body={(rowData) => (
+
+                                                    rowData.profile_img !== "https://test.abybabyoffice.com/storage/user/profile/" ?
+                                                        <img
+                                                            src={rowData.profile_img}
+                                                            alt="User Profile"
+                                                            className="w-10 h-10 rounded-full border shadow mx-auto"
+                                                        />
+                                                        :
+                                                        <div className="text-center flex flex-col items-center">
+                                                            <CiImageOff className="text-2xl me-1" /> No Image
+                                                        </div>
+                                                )}
+                                            />
+
+                                            <Column header="Company" field="company_name"></Column>
+
+                                            <Column
+                                                header="Status"
+                                                body={(rowData) => (
+                                                    <span className={`px-3 py-1 rounded-xl ${rowData.status === "1" ? "bg-green-500" : "bg-red-500"} text-white shadow`}>
+                                                        {rowData.status === "1" ? "Active" : "Inactive"}
+                                                    </span>
+                                                )}
+                                            />
+
+
                                         </DataTable>
                                     </div>
                                 )

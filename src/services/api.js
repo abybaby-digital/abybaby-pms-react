@@ -2386,16 +2386,22 @@ export const addBillingSupportings = async (
       status,
     };
 
-    // Append to FormData
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        // For file arrays (supporting multiple uploads)
-        if (key.endsWith("_img") && Array.isArray(value)) {
-          value.forEach((file) => {
-            if (file instanceof File) {
-              formData.append(key, file); // multiple files for the same key
-            }
-          });
+      if (
+        value !== null &&
+        value !== undefined &&
+        !(typeof value === "string" && value.trim() === "")
+      ) {
+        if (key.endsWith("_img")) {
+          if (value instanceof FileList || Array.isArray(value)) {
+            Array.from(value).forEach((file) => {
+              if (file instanceof File) {
+                formData.append(`${key}[]`, file); // ✅ Append as array
+              }
+            });
+          } else if (value instanceof File) {
+            formData.append(`${key}[]`, value); // ✅ Single file also as array
+          }
         } else {
           formData.append(key, value);
         }
@@ -2415,6 +2421,7 @@ export const addBillingSupportings = async (
     throw error;
   }
 };
+
 
 
 export const editBillingSupportings = async (
@@ -2565,13 +2572,21 @@ export const editBillingSupportings = async (
     };
 
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        if (key.endsWith("_img") && Array.isArray(value)) {
-          value.forEach((file) => {
-            if (file instanceof File) {
-              formData.append(key, file); // allows multiple files for the same field
-            }
-          });
+      if (
+        value !== null &&
+        value !== undefined &&
+        !(typeof value === "string" && value.trim() === "")
+      ) {
+        if (key.endsWith("_img")) {
+          if (value instanceof FileList || Array.isArray(value)) {
+            Array.from(value).forEach((file) => {
+              if (file instanceof File) {
+                formData.append(`${key}[]`, file); // ✅ Append as array
+              }
+            });
+          } else if (value instanceof File) {
+            formData.append(`${key}[]`, value); // ✅ Single file also as array
+          }
         } else {
           formData.append(key, value);
         }
@@ -2591,6 +2606,7 @@ export const editBillingSupportings = async (
     throw error;
   }
 };
+
 
 
 // PAYMENT REQUISITION LIST
@@ -2710,6 +2726,35 @@ export const changePassword = async (
       {
         email_id: email_id,
         old_password: old_password,
+        new_password: new_password,
+        confirm_password: confirm_password,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Failed to change password:", error);
+    throw error;
+  }
+};
+
+// CHANGE PASSWORD BY ADMIN
+
+export const changePasswordByAdmin = async (
+  token,
+  user_id,
+  new_password,
+  confirm_password,
+) => {
+  try {
+    const response = await api.post(
+      "/change-password-by-admin",
+      {
+        user_id: user_id,
         new_password: new_password,
         confirm_password: confirm_password,
       },

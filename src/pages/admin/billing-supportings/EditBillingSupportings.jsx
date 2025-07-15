@@ -453,7 +453,15 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                   className="block border w-full rounded-lg p-3 bg-white"
                 />
                 <p className="mt-4">Pre Uploaded files:</p>
-                {billingSupportings.billing_ppt_img && <a href={billingSupportings.billing_ppt_img} target="_blank" className="text-blue-500 border border-blue-500 p-2 rounded-lg inline-block mt-5">View Pre-uploaded Supporting</a>}
+                <div className="flex justify-center items-center gap-3 flex-wrap my-3">
+                  {billingSupportings?.billing_ppt_img !== "0" && billingSupportings?.billing_ppt_img && (
+                    billingSupportings?.billing_ppt_img?.map((item) => (
+                      <a href={item} target="_blank">
+                        {getFileIcon(item)}
+                      </a>
+                    ))
+                  )}
+                </div>
               </div>
             ) : null}
           </div>
@@ -543,7 +551,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 <input
                   type="file"
                   id="day_wise_log_book_img"
-                   multiple
+                  multiple
                   onChange={(e) => setValue("day_wise_log_book_img", Array.from(e.target.files))}
                   {...register("day_wise_log_book_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
@@ -992,7 +1000,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 <input
                   type="file"
                   id="customer_acknowledge_img"
-                   multiple
+                  multiple
                   onChange={(e) => setValue("customer_acknowledge_img", Array.from(e.target.files))}
                   {...register("customer_acknowledge_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
@@ -1046,7 +1054,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 <input
                   type="file"
                   id="route_plan_img"
-                   multiple
+                  multiple
                   onChange={(e) => setValue("route_plan_img", Array.from(e.target.files))}
                   {...register("route_plan_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
@@ -1100,7 +1108,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 <input
                   type="file"
                   id="approvel_copy_img"
-                   multiple
+                  multiple
                   onChange={(e) => setValue("approvel_copy_img", Array.from(e.target.files))}
                   {...register("approvel_copy_img")}
                   className="block border w-full rounded-lg p-3 bg-white"
@@ -1150,7 +1158,7 @@ const EditBillingSupportings = ({ billingSupportings }) => {
                 <input
                   type="file"
                   id="po_img"
-                   multiple
+                  multiple
                   onChange={(e) => setValue("po_img", Array.from(e.target.files))}
                   {...register("po_img")}
                   className="block border w-full rounded-lg p-3 bg-white"

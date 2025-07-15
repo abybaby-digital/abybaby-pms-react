@@ -49,6 +49,7 @@ const ViewBillingSupportings = ({ billingSupportings, add_or_edit }) => {
       case 'gif':
       case 'webp':
       case 'avif':
+      case 'jfif':
         return <IoIosImage size={size} className="text-grey-600" />;
 
     }

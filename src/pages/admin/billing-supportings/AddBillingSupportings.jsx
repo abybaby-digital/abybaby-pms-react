@@ -103,7 +103,6 @@ export default function AddBillingSupportings() {
       data.any_other_supporting_comment,
       // fincYear !== null ? +fincYear : fincYearList?.response[0]?.id,
       "1",
-
     ),
     onSuccess: (response) => {
       if (response.status === 200 || response.status === 201) {
