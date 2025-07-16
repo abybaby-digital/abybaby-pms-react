@@ -235,7 +235,22 @@ export default function UserList() {
                                                     style={{ width: '5rem', textAlign: 'center' }}
                                                 />
                                             }
-                                            <Column field="name" sortable header="Name" style={{ textTransform: "capitalize" }}></Column>
+                                            <Column
+                                                header="Name"
+                                                field="name"
+                                                sortable
+                                                body={(rowData, { rowIndex }) => (
+                                                    <figure key={rowIndex} className="text-center">
+                                                        <span className="block">{rowData.name}</span>
+                                                        {
+                                                            rowData?.fo_payment_req_amount &&
+                                                            <span className="inline-block mt-1 bg-green-500 text-white p-1 rounded-xl">{rowData.fo_payment_req_amount}</span>   
+                                                        }
+                                                    </figure>
+                                                )}
+                                                style={{ width: '5rem', textAlign: 'center' }}
+                                            />
+                                            {/* <Column field="name" sortable header="Name" style={{ textTransform: "capitalize" }}></Column> */}
                                             <Column field="email" sortable header="Email"></Column>
                                             <Column field="role_name" sortable header="Role"></Column>
 

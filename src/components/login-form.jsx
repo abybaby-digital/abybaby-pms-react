@@ -34,7 +34,7 @@ export function LoginForm({ className, ...props }) {
     mutationFn: ({ username, password }) => makeLogin(username, password),
 
     onSuccess: (response) => {
-      if (response.status === 200 || response.status === 201) {
+      if (response.success === 1) {
         toast.success("You are successfully logged in!");
 
         console.log("Login response", response.response.user);
