@@ -132,6 +132,7 @@ export default function FOPaymentRequisitionList() {
     const keyword = debouncedSearchKeyword.toLowerCase();
     const matchesKeyword =
       payment.project_name?.toLowerCase()?.includes(keyword) ||
+      payment.project_number?.toString().toLowerCase()?.includes(keyword) ||
       payment.received_no?.toLowerCase()?.includes(keyword) ||
       payment.received_details?.toLowerCase()?.includes(keyword);
 
