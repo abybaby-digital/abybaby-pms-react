@@ -75,34 +75,42 @@ const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleL
                                         <TableCell className="font-bold text-lg">Contact Number :</TableCell>
                                         <TableCell>{user?.contact_number}</TableCell>
                                     </TableRow>
-                                    {/* <TableRow>
-                                            <TableCell className="font-bold text-lg">Vertical Head :</TableCell>
-                                            <TableCell>{user?.name_prefix || "N/A"}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Business Manager :</TableCell>
-                                            <TableCell>{user?.business_manager_name || "N/A"}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Client Service :</TableCell>
-                                            <TableCell>{user?.client_service_name || "N/A"}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell className="font-bold text-lg">Other Services :</TableCell>
-                                            <TableCell>{user?.other_service_name || "N/A"}</TableCell>
-                                        </TableRow> */}
+
+                                    {/* Extra KYC fields if role === 9 */}
+                                    {user?.role_id === 9 && (
+                                        <>
+                                            <TableRow>
+                                                <TableCell className="font-bold text-lg">PAN Card Number :</TableCell>
+                                                <TableCell>{user?.pancard_no || "N/A"}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell className="font-bold text-lg">Aadhaar Number :</TableCell>
+                                                <TableCell>{user?.aadhaar_no || "N/A"}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell className="font-bold text-lg">GST Number :</TableCell>
+                                                <TableCell>{user?.gst_no || "N/A"}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell className="font-bold text-lg">Bank Name :</TableCell>
+                                                <TableCell>{user?.bank_name || "N/A"}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell className="font-bold text-lg">Bank Account Number :</TableCell>
+                                                <TableCell>{user?.bank_account || "N/A"}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell className="font-bold text-lg">IFSC Code :</TableCell>
+                                                <TableCell>{user?.ifsc_code || "N/A"}</TableCell>
+                                            </TableRow>
+                                        </>
+                                    )}
+
                                     <TableRow>
                                         <TableCell className="font-bold text-lg">User Details :</TableCell>
                                         <TableCell>{user?.user_details || "N/A"}</TableCell>
                                     </TableRow>
-                                    {/* <TableRow>
-                                            <TableCell className="font-bold text-lg">View Status :</TableCell>
-                                            <TableCell>{user?.view_status === "1" ? "Enabled" : "Disabled"}</TableCell>
-                                        </TableRow> */}
-                                    {/* <TableRow>
-                                            <TableCell className="font-bold text-lg">Veto Power :</TableCell>
-                                            <TableCell>{user?.veto_power === "1" ? "Yes" : "No"}</TableCell>
-                                        </TableRow> */}
+
                                     <TableRow>
                                         <TableCell className="font-bold text-lg">Account Status :</TableCell>
                                         <TableCell>
@@ -113,6 +121,7 @@ const ViewUser = ({ user, add_or_edit, stateList, companyList, branchList, roleL
                                     </TableRow>
                                 </TableBody>
                             </Table>
+
                         </div>
                         :
                         add_or_edit === "edit" ?

@@ -1310,7 +1310,13 @@ export const addUser = async (
   contact_number,
   password,
   profile_img, // This will be a file object (image)
-  user_details
+  user_details,
+  pancard_no,
+  aadhaar_no,
+  gst_no,
+  bank_name,
+  bank_account,
+  ifsc_code
 ) => {
   try {
     const formData = new FormData();
@@ -1326,6 +1332,12 @@ export const addUser = async (
     formData.append("contact_number", contact_number);
     formData.append("password", password);
     formData.append("user_details", user_details);
+    formData.append("pancard_no", pancard_no);
+    formData.append("aadhaar_no", aadhaar_no);
+    formData.append("gst_no", gst_no);
+    formData.append("bank_name", bank_name);
+    formData.append("bank_account", bank_account);
+    formData.append("ifsc_code", ifsc_code);
 
     // Append the profile image if it exists
     if (profile_img) {

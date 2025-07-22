@@ -70,9 +70,40 @@ const ViewFOPaymentRequisition = ({ payment, add_or_edit }) => {
                                         <TableCell>{payment?.branch_name}</TableCell>
                                     </TableRow>
                                     <TableRow className="flex justify-between">
-                                        <TableCell className="font-bold text-lg">Payment fo Fo name:</TableCell>
-                                        <TableCell>{payment?.user_fo_data.name}</TableCell>
+                                        <TableCell className="font-bold text-lg">Payment for FO name:</TableCell>
+                                        <TableCell>{payment?.user_fo_data?.name}</TableCell>
                                     </TableRow>
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">FO PAN no:</TableCell>
+                                        <TableCell>{payment?.user_fo_data?.pancard_no}</TableCell>
+                                    </TableRow>
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">FO Aadhaar no:</TableCell>
+                                        <TableCell>{payment?.user_fo_data?.aadhaar_no}</TableCell>
+                                    </TableRow>
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">FO GST no:</TableCell>
+                                        <TableCell>{payment?.user_fo_data?.gst_no}</TableCell>
+                                    </TableRow>
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">FO Bank Name:</TableCell>
+                                        <TableCell>{payment?.user_fo_data?.bank_name}</TableCell>
+                                    </TableRow>
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">FO Bank Account:</TableCell>
+                                        <TableCell>{payment?.user_fo_data?.bank_account}</TableCell>
+                                    </TableRow>
+
+                                    <TableRow className="flex justify-between">
+                                        <TableCell className="font-bold text-lg">FO IFSC Code:</TableCell>
+                                        <TableCell>{payment?.user_fo_data?.ifsc_code}</TableCell>
+                                    </TableRow>
+
                                     <TableRow className="flex justify-between">
                                         <TableCell className="font-bold text-lg">Requisition Amount:</TableCell>
                                         <TableCell>₹{payment?.requisition_amount}</TableCell>

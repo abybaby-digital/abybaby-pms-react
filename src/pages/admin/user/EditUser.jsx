@@ -143,12 +143,22 @@ export default function EditUser({ user }) {
       // password: "",
       user_details: user.user_details || "",
       status: user.status === "1" ? "active" : "inactive",
+      pancard_no:user.pancard_no,
+      aadhaar_no:user.aadhaar_no,
+      gst_no:user.gst_no,
+      bank_name:user.bank_name,
+      bank_account:user.bank_account,
+      ifsc_code:user.ifsc_code,
       profile_img: null,
     },
   });
 
   // Profile Image Watch & Preview
   const profileImgFile = watch("profile_img");
+  const pancardValue = watch("pancard_no");
+  const roleId = watch("role_id");
+
+  console.log("role", roleId?.value);
 
   useEffect(() => {
     // Set initial image preview if there is an existing image
@@ -223,6 +233,13 @@ export default function EditUser({ user }) {
         // data.password || null,
         data.profile_img,
         data.user_details,
+
+        roleId?.value === 9 ? data.pancard_no : null,
+        roleId?.value === 9 ? data.aadhaar_no : null,
+        roleId?.value === 9 ? data.gst_no : null,
+        roleId?.value === 9 ? data.bank_name : null,
+        roleId?.value === 9 ? data.bank_account : null,
+        roleId?.value === 9 ? data.ifsc_code : null,
         data.status === "active" ? "1" : "0"
       );
     },
@@ -471,6 +488,100 @@ export default function EditUser({ user }) {
             <label>User Details</label>
             <input type="text" {...register("user_details")} />
           </div>
+
+          {
+            roleId?.value === 9 &&
+            <>
+              {/* PAN Card Number Field */}
+              <div className="form-group">
+                <label htmlFor="pancard_no">PAN Card Number</label>
+                <input
+                  id="pancard_no"
+                  placeholder="Enter PAN card number"
+                  {...register("pancard_no", {
+                    required: "PAN card number is required",
+                    pattern: {
+                      value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+                      message: "Invalid PAN card format , make sure all letters in capital"
+                    }
+                  })}
+                />
+                {errors.pancard_no && <span className="text-red-600 text-sm">{errors.pancard_no.message}</span>}
+              </div>
+
+              {/* Aadhaar Number Field */}
+              <div className="form-group">
+                <label htmlFor="aadhaar_no">Aadhaar Number</label>
+                <input
+                  id="aadhaar_no"
+                  placeholder="Enter Aadhaar number"
+                  {...register("aadhaar_no", {
+                    validate: (value) => {
+                      if (
+                        pancardValue &&
+                        pancardValue.length >= 4 &&
+                        pancardValue[3].toUpperCase() === "P"
+                      ) {
+                        if (!value) return "Aadhaar number is required for PAN type 'P'";
+                        if (!/^\d{12}$/.test(value)) return "Aadhaar must be 12 digits";
+                      }
+                      return true;
+                    }
+                  })}
+                />
+                {errors.aadhaar_no && <span className="text-red-600 text-sm">{errors.aadhaar_no.message}</span>}
+              </div>
+
+              {/* GST Number Field */}
+              <div className="form-group">
+                <label htmlFor="gst_no">GST Number</label>
+                <input
+                  id="gst_no"
+                  placeholder="Enter GST number"
+                  {...register("gst_no")}
+                />
+              </div>
+
+              {/* Bank Name Field */}
+              <div className="form-group">
+                <label htmlFor="bank_name">Bank Name</label>
+                <input
+                  id="bank_name"
+                  placeholder="Enter bank name"
+                  {...register("bank_name", {
+                    required: "Bank name is required",
+                  })}
+                />
+                {errors.bank_name && <span className="text-red-600 text-sm">{errors.bank_name.message}</span>}
+              </div>
+
+              {/* Bank Account Number Field */}
+              <div className="form-group">
+                <label htmlFor="bank_account">Bank Account Number</label>
+                <input
+                  id="bank_account"
+                  placeholder="Enter bank account number"
+                  {...register("bank_account", {
+                    required: "Bank account number is required",
+                  })}
+                />
+                {errors.bank_account && <span className="text-red-600 text-sm">{errors.bank_account.message}</span>}
+              </div>
+
+              {/* IFSC Code Field */}
+              <div className="form-group">
+                <label htmlFor="ifsc_code">IFSC Code</label>
+                <input
+                  id="ifsc_code"
+                  placeholder="Enter IFSC code"
+                  {...register("ifsc_code", {
+                    required: "IFSC code is required",
+                  })}
+                />
+                {errors.ifsc_code && <span className="text-red-600 text-sm">{errors.ifsc_code.message}</span>}
+              </div>
+            </>
+          }
 
           {/* Status */}
           <div className="form-group">

@@ -199,6 +199,7 @@ export default function PaymentRequisitionList() {
       "Requisition Amount": payment.requisition_amount,
       "Approved Amount": payment.approved_amount,
       "Received Date": new Date(payment.date_of_payments).toLocaleDateString(),
+      "Created By": payment.created_by_name,
       "Status": payment.accountent_approve_status === "1" ? "Paid" : "Unpaid",
     }));
 
@@ -237,6 +238,7 @@ export default function PaymentRequisitionList() {
           "Requisition Amount",
           "Approved Amount",
           "Payment Date",
+          "Created By",
           "Status",
         ],
       ],
@@ -252,6 +254,7 @@ export default function PaymentRequisitionList() {
         payment.requisition_amount,
         payment.approved_amount,
         new Date(payment.date_of_payments).toLocaleDateString(),
+        payment.created_by_name,
         payment.accountent_approve_status === "1" ? "Paid" : "Unpaid",
       ]),
     });
@@ -340,49 +343,52 @@ export default function PaymentRequisitionList() {
                     </div>
 
 
-                    <div className="export-btns flex gap-2">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
-                              onClick={() => {
-                                exportToExcel();
-                                // changeDownloadStatus(
-                                //   selectedPaymentIds.join(",")
-                                // );
-                              }}
-                            >
-                              <BsFiletypeXlsx />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Export to XLSX</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                    {
+                      role_id === 4 &&
+                      <div className="export-btns flex gap-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
+                                onClick={() => {
+                                  exportToExcel();
+                                  // changeDownloadStatus(
+                                  //   selectedPaymentIds.join(",")
+                                  // );
+                                }}
+                              >
+                                <BsFiletypeXlsx />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Export to XLSX</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
 
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
-                              onClick={() => {
-                                exportToPDF();
-                                changeDownloadStatus(
-                                  selectedPaymentIds.join(",")
-                                );
-                              }}
-                            >
-                              <FaFilePdf />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Export to PDF</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
+                                onClick={() => {
+                                  exportToPDF();
+                                  changeDownloadStatus(
+                                    selectedPaymentIds.join(",")
+                                  );
+                                }}
+                              >
+                                <FaFilePdf />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Export to PDF</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    }
                   </div>
 
                   {/* DataTable */}

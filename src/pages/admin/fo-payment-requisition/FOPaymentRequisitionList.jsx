@@ -189,20 +189,22 @@ export default function FOPaymentRequisitionList() {
 
     // Prepare the data for export with the updated fields
     const formattedRows = selectedRows.map((payment) => ({
-      "Project No.": payment.project_number,
+      "Project Number": payment.project_number,
       "Project Name": payment.project_name,
-      "Vendor Name": payment.vendor_name,
-      "Vendor Bank Name": payment.bank_name,
-      "Vendor A/C No": payment.bank_account,
-      "Vendor IFSC code": payment.ifsc_code,
-      "Vendor No": payment.vendor_name,
-      "Vendor PAN no": payment.pancard_no,
-      "Vendor GST no": payment.gst_no,
-      "Requisition Amount": payment.requisition_amount,
-      "Approved Amount": payment.approved_amount,
-      "Received Date": new Date(payment.date_of_payments).toLocaleDateString(),
-      "Status": payment.accountent_approve_status === "1" ? "Paid" : "Unpaid",
+      "FO Name": payment?.user_fo_data?.name || "-",
+      "FO PAN No": payment?.user_fo_data?.pancard_no || "-",
+      "FO Aadhaar No": payment?.user_fo_data?.aadhaar_no || "-",
+      "FO GST No": payment?.user_fo_data?.gst_no || "-",
+      "FO Bank Name": payment?.user_fo_data?.bank_name || "-",
+      "FO Bank Account": payment?.user_fo_data?.bank_account || "-",
+      "FO IFSC Code": payment?.user_fo_data?.ifsc_code || "-",
+      "Payment Date": new Date(payment.date_of_payments).toLocaleDateString(),
+      "FO Requisition Amount": `₹${payment.requisition_amount}`,
+      "Approved Amount": `₹${payment.approved_amount ?? 0}`,
+      "Remarks": payment.requisition_remarks || "-",
+      "Created By": payment.created_by_name || "-",
     }));
+
 
     const ws = XLSX.utils.json_to_sheet(formattedRows);
     const wb = XLSX.utils.book_new();
@@ -230,12 +232,13 @@ export default function FOPaymentRequisitionList() {
         [
           "Project No",
           "Project Name",
-          "Vendor Name",
-          "Vendor Bank Name",
-          "Vendor A/C No",
-          "Vendor IFSC Code",
-          "Vendor PAN No",
-          "Vendor GST No",
+          "FO Name",
+          "FO PAN No",
+          "FO Aadhaar No",
+          "FO GST No",
+          "FO Bank Name",
+          "FO A/C No",
+          "FO IFSC Code",
           "Requisition Amount",
           "Approved Amount",
           "Payment Date",
@@ -245,18 +248,20 @@ export default function FOPaymentRequisitionList() {
       body: selectedRows.map((payment) => [
         payment.project_number,
         payment.project_name,
-        payment.vendor_name,
-        payment.bank_name,
-        payment.bank_account,
-        payment.ifsc_code,
-        payment.pancard_no,
-        payment.gst_no,
+        payment?.user_fo_data?.name || "-",
+        payment?.user_fo_data?.pancard_no || "-",
+        payment?.user_fo_data?.aadhaar_no || "-",
+        payment?.user_fo_data?.gst_no || "-",
+        payment?.user_fo_data?.bank_name || "-",
+        payment?.user_fo_data?.bank_account || "-",
+        payment?.user_fo_data?.ifsc_code || "-",
         payment.requisition_amount,
-        payment.approved_amount,
+        payment.approved_amount ?? 0,
         new Date(payment.date_of_payments).toLocaleDateString(),
         payment.accountent_approve_status === "1" ? "Paid" : "Unpaid",
       ]),
     });
+
 
     doc.save("payment_requisition_list.pdf");
   };
@@ -342,49 +347,52 @@ export default function FOPaymentRequisitionList() {
                     </div>
 
 
-                    <div className="export-btns flex gap-2">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
-                              onClick={() => {
-                                exportToExcel();
-                                // changeDownloadStatus(
-                                //   selectedPaymentIds.join(",")
-                                // );
-                              }}
-                            >
-                              <BsFiletypeXlsx />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Export to XLSX</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                    {
+                      role_id === 4 &&
+                      <div className="export-btns flex gap-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black shadow active:scale-95"
+                                onClick={() => {
+                                  exportToExcel();
+                                  // changeDownloadStatus(
+                                  //   selectedPaymentIds.join(",")
+                                  // );
+                                }}
+                              >
+                                <BsFiletypeXlsx />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Export to XLSX</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
 
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
-                              onClick={() => {
-                                exportToPDF();
-                                changeDownloadStatus(
-                                  selectedPaymentIds.join(",")
-                                );
-                              }}
-                            >
-                              <FaFilePdf />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Export to PDF</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 hover:text-black shadow active:scale-95"
+                                onClick={() => {
+                                  exportToPDF();
+                                  changeDownloadStatus(
+                                    selectedPaymentIds.join(",")
+                                  );
+                                }}
+                              >
+                                <FaFilePdf />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Export to PDF</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    }
                   </div>
 
                   {/* DataTable */}
@@ -513,10 +521,34 @@ export default function FOPaymentRequisitionList() {
                       header="Project Name"
                     ></Column>
                     <Column
-                      field="user_fo_data.name"
-                      sortable
                       header="Payment for FO Name"
-                    ></Column>
+                      sortable
+                      body={(rowData) => rowData?.user_fo_data?.name}
+                    />
+                    <Column
+                      header="FO PAN No"
+                      body={(rowData) => rowData?.user_fo_data?.pancard_no}
+                    />
+                    <Column
+                      header="FO Aadhaar No"
+                      body={(rowData) => rowData?.user_fo_data?.aadhaar_no}
+                    />
+                    <Column
+                      header="FO GST No"
+                      body={(rowData) => rowData?.user_fo_data?.gst_no}
+                    />
+                    <Column
+                      header="FO Bank Name"
+                      body={(rowData) => rowData?.user_fo_data?.bank_name}
+                    />
+                    <Column
+                      header="FO Bank Account"
+                      body={(rowData) => rowData?.user_fo_data?.bank_account}
+                    />
+                    <Column
+                      header="FO IFSC Code"
+                      body={(rowData) => rowData?.user_fo_data?.ifsc_code}
+                    />
                     <Column
                       field="date_of_payments"
                       sortable
