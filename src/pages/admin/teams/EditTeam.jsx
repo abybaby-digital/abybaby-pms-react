@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import ButtonLoader from "../../../components/common/ButtonLoader";
 import { getProjectList, editInvoice, FOList, editTeam } from "../../../services/api"; // Import necessary functions
+import Select from 'react-select';
 
 const EditTeam = ({ team }) => {
     console.log("team", team);
@@ -34,21 +35,20 @@ const EditTeam = ({ team }) => {
         },
     });
 
-    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm({});
+    const { register, handleSubmit, watch, formState: { errors }, setValue, control } = useForm({});
 
     // Pre-fill the form with existing data
     useEffect(() => {
         setValue("project_id", team.project_id);  // Ensure selected project is set
         setValue("team_name", team.team_name);
-        setValue("main_fo_name", team.fo_main_id);  // Preselect main FO
-        setValue("other_fo_name", team.fo_junior_id); // Preselect other FO
+        setValue("fo_ids", team.fo_users?.map(item => ({ value: item.id, label: item.name })));
+       
 
-        // Automatically update other FO list when main FO is selected
-        if (team.fo_main_id) {
-            const filteredOtherFOs = FoList?.response?.filter((fo) => fo.id !== team.fo_main_id);
-            setOtherFo(filteredOtherFOs);
-        }
-    }, [team, setValue, FoList]);
+        
+    }, [team, setValue, FoList, projectList]);
+
+    console.log(team.fo_users);
+
 
     // Mutation for updating the invoice
     const editTeamMutation = useMutation({
@@ -57,8 +57,7 @@ const EditTeam = ({ team }) => {
                 token,
                 team.id, // Invoice ID
                 data.team_name,
-                +data.main_fo_name,
-                +data.other_fo_name,
+                data.fo_ids?.map(item => item.value).join(',')
             );
         },
         onSuccess: (response) => {
@@ -156,8 +155,27 @@ const EditTeam = ({ team }) => {
                         )}
                     </div>
 
-                    {/* Main Field Officer Dropdown */}
+                    {/* Include Field Officers */}
                     <div className="form-group">
+                        <label htmlFor="fo_ids">Include Field Officers to team <span className="text-red-600">*</span></label>
+                        <Controller
+                            name="fo_ids"
+                            control={control}
+                            rules={{ required: "Fo is required" }}
+                            render={({ field }) => (
+                                <Select
+                                    {...field}
+                                    options={FoList?.response?.map(item => ({ value: item.id, label: item.name }))}
+                                    isMulti // This makes the select a multiple selection field
+                                    placeholder="Select FOs"
+                                />
+                            )}
+                        />
+                        {errors.fo_ids && <span className="text-red-600 text-sm">{errors.fo_ids.message}</span>}
+                    </div>
+
+                    {/* Main Field Officer Dropdown */}
+                    {/* <div className="form-group">
                         <label htmlFor="main_fo_name">
                             Main Field Officer
                         </label>
@@ -181,10 +199,10 @@ const EditTeam = ({ team }) => {
                                 {errors.main_fo_name.message}
                             </span>
                         )}
-                    </div>
+                    </div> */}
 
                     {/* Other Field Officer Dropdown */}
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label htmlFor="other_fo_name">
                             Junior Field Officer
                         </label>
@@ -207,7 +225,8 @@ const EditTeam = ({ team }) => {
                                 {errors.other_fo_name.message}
                             </span>
                         )}
-                    </div>
+                    </div> */}
+
                 </div>
 
                 <div className="card-footer text-center bg-gray-100 py-5">

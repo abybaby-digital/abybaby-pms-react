@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { getFYList, getProjectList, getReport } from "../../services/api";
 import { useState } from "react";
+import { TrashIcon } from "lucide-react";
 
 export default function Dashboard() {
   const token = useSelector((state) => state.auth.token);
@@ -77,7 +78,7 @@ export default function Dashboard() {
       return await getReport(token, fincYear);
     },
   });
-  
+
   //   console.log(projectList);
 
   const projectListByCategory = (title, navigate_url, status, billed, paid, partial) => {
@@ -190,7 +191,7 @@ export default function Dashboard() {
             </form>
           </div>
 
-          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-4 lg:grid-cols-2 ">
+          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-3 lg:grid-cols-2 ">
             <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <MdBallot className="text-3xl text-white inline" />
@@ -311,7 +312,7 @@ export default function Dashboard() {
                   {projectReport?.response[3]?.project_amount_with_gst} (with GST)
                 </p>
                 <p className="text-lg text-lightdark font-merri italic font-bold ">
-                  Closed Projects (Unbilled)
+                  Closed Projects <br /> (Unbilled)
                 </p>
               </div>
               <button
@@ -331,10 +332,6 @@ export default function Dashboard() {
                 More Info
               </button>
             </div>
-
-          </div>
-          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-4 lg:grid-cols-2">
-
             <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-lightdark shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
                 <FaMoneyBillTrendUp className="text-3xl text-white inline" />
@@ -372,7 +369,45 @@ export default function Dashboard() {
                 More Info
               </button>
             </div>
-
+            <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
+              <div className="bg-red-500 shadow-lg shadow-lightdark -mt-[40px] p-3 w-[60px] text-center rounded-2xl">
+                <TrashIcon className="text-3xl text-white inline" />
+              </div>
+              <div className="dash-card-content text-end">
+                <p className="text-2xl font-bold">
+                  {projectReport?.response[8]?.project_count}
+                </p>
+                <p className="text-lg text-lightdark">
+                  <MdOutlineCurrencyRupee className="inline mb-1" />
+                  {projectReport?.response[8]?.project_amount_pre_gst} (pre GST)
+                </p>
+                <p className="text-lg text-lightdark">
+                  <MdOutlineCurrencyRupee className="inline mb-1" />
+                  {projectReport?.response[8]?.project_amount_with_gst} (with GST)
+                </p>
+                <p className="text-lg text-lightdark font-merri italic font-bold ">
+                  Cancelled Project
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  projectListByCategory(
+                    "billed Closed Projects",
+                    "/project-list/billed-closed",
+                    "2",
+                    "1",
+                    null
+                  );
+                }}
+                className="absolute more-info text-black bg-gray-200 border left-0 bottom-0 py-2 shadow px-3 rounded-xl"
+              >
+                <PiArrowFatLinesRightFill className="inline me-1" />
+                More Info
+              </button>
+            </div>
+          </div>
+          <div className="grid mt-10 auto-rows-min gap-x-5 gap-y-10 xl:grid-cols-3 lg:grid-cols-2">
             <div className="dash-card bg-white  rounded-3xl shadow border flex items-start justify-between p-5">
               <div className="bg-[#fec107] shadow-lg shadow-[#fec107]  p-3 w-[60px] -mt-[40px] text-center rounded-2xl">
                 <FaMoneyBillWave className="text-3xl text-white inline" />
@@ -487,6 +522,7 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
+          
           <div className="grid 2xl:grid-cols-2 grid-cols-1 gap-5">
             <CommonTable
               table_title="running projects"

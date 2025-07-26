@@ -13,7 +13,7 @@ import { MdEditSquare } from "react-icons/md";
 import { dialogOpenCloseContext } from "../../../context/DialogOpenClose";
 import TableSkeleton from "../../../components/common/TableSkeleton";
 import { useSelector } from "react-redux";
-import { BsFiletypeXlsx } from "react-icons/bs";
+import { BsFiletypeXlsx, BsTrash } from "react-icons/bs";
 import { FaFilePdf } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -25,6 +25,7 @@ import { RiDeleteBack2Fill } from "react-icons/ri";
 import toast from "react-hot-toast";
 import FormSubmitLoader from "../../../components/common/FormSubmitLoader";
 import { useNavigate } from "react-router-dom";
+import { Trash } from "lucide-react";
 
 export default function TeamList() {
     const { modal, setModal, refetchList, setRefetchList } = useContext(dialogOpenCloseContext);
@@ -128,7 +129,6 @@ export default function TeamList() {
                 token,
                 data.team_id,
                 data.fo_id,
-                data.fo_type
             );
         },
         onSuccess: (response) => {
@@ -144,8 +144,8 @@ export default function TeamList() {
         },
     });
 
-    const removeFOById = (team_id, fo_id, fo_type) => {
-        removeFOMutation.mutate({ team_id: team_id, fo_id: fo_id, fo_type: fo_type })
+    const handleFoDelete = (team_id, fo_id) => {
+        removeFOMutation.mutate({ team_id: team_id, fo_id: fo_id })
     }
 
     const EditBtn = ({ id }) => {
@@ -334,67 +334,18 @@ export default function TeamList() {
                                             <Column field="project_number" sortable header="Project No" style={{ textTransform: "capitalize" }}></Column>
                                             <Column field="project_name" sortable header="Project Name"></Column>
                                             <Column field="team_name" sortable header="Team Name"></Column>
-
                                             <Column
-                                                header="Main FO"
-                                                body={(rowData) => (
-                                                    <div className="flex gap-5">
-                                                        <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_main_name ? rowData.fo_main_name : <div className="flex items-center gap-3" ><span className="text-red-500">"asign someone as main fo"</span> <EditBtn id={rowData.id} /></div>}
-                                                        </span>
+                                                header="Fo Included"
+                                                sortable
+                                                body={(rowData, { rowIndex }) => (
+                                                    <div className="fo-users">
                                                         {
-                                                            userId === 9 ? null :
-
-                                                                rowData.fo_main_name &&
-                                                                <TooltipProvider>
-                                                                    <Tooltip>
-                                                                        <TooltipTrigger>
-                                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95"
-                                                                                onClick={() => {
-                                                                                    if (window.confirm("Are you sure you want to remove FO?")) {
-                                                                                        removeFOById(rowData.id, rowData.fo_main_id, 1);
-                                                                                    }
-                                                                                }}>
-                                                                                <RiDeleteBack2Fill />
-                                                                            </button>
-                                                                        </TooltipTrigger>
-                                                                        <TooltipContent>
-                                                                            <p>Remove FO</p>
-                                                                        </TooltipContent>
-                                                                    </Tooltip>
-                                                                </TooltipProvider>
-
-                                                        }
-                                                    </div>
-                                                )}
-                                                style={{ width: '5rem', textAlign: 'center' }}
-                                            />
-                                            <Column
-                                                header="Junior FO"
-                                                body={(rowData) => (
-                                                    <div className="flex gap-5">
-                                                        <span className="px-3 py-1 rounded-xl text-gray-700">
-                                                            {rowData.fo_junior_name ? rowData.fo_junior_name : <div className="flex items-center gap-3" ><span className="text-red-500">"assign someone as junior fo"</span> <EditBtn id={rowData.id} /></div>}
-                                                        </span>
-                                                        {
-                                                            userId === 9 ? null :
-                                                                rowData.fo_junior_name &&
-                                                                <TooltipProvider>
-                                                                    <Tooltip>
-                                                                        <TooltipTrigger>
-                                                                            <button className="bg-white shadow p-2 rounded me-2 hover:scale-110 active:scale-95" onClick={() => {
-                                                                                if (window.confirm("Are you sure you want to remove FO?")) {
-                                                                                    removeFOById(rowData.id, rowData.fo_junior_id, 0);
-                                                                                }
-                                                                            }}>
-                                                                                <RiDeleteBack2Fill />
-                                                                            </button>
-                                                                        </TooltipTrigger>
-                                                                        <TooltipContent>
-                                                                            <p>Remove FO</p>
-                                                                        </TooltipContent>
-                                                                    </Tooltip>
-                                                                </TooltipProvider>
+                                                            rowData.fo_users.map((item) =>
+                                                                <div className="flex bg-whitesmoke p-2 items-center rounded justify-between mb-2 gap-3">
+                                                                    <span>{item.name}</span>
+                                                                    <span className="bg-white text-red-500 cursor-pointer" onClick={() => { handleFoDelete(rowData.id, item.id) }}><BsTrash className="" /></span>
+                                                                </div>
+                                                            )
                                                         }
                                                     </div>
                                                 )}

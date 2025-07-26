@@ -27,8 +27,10 @@ export default function AddVendor() {
     const { refetchList } = useContext(dialogOpenCloseContext);
     const token = useSelector((state) => state.auth.token);
     const navigate = useNavigate();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, watch, handleSubmit, formState: { errors } } = useForm();
 
+
+    const pancardValue = watch("pancard_no");
     // BRANCH LIST
 
     const { data: branchList } = useQuery({
@@ -71,10 +73,11 @@ export default function AddVendor() {
                 +data.branch_id,
                 data.vendor_address,
                 +data.vendor_state,
-                data.pan_no,
+                data.pancard_no,
+                data.aadhaar_no,
                 data.gst_no,
                 data.bank_name,
-                data.bank_account_number,
+                data.bank_account,
                 data.ifsc_code,
                 "1");
         },
@@ -274,29 +277,44 @@ export default function AddVendor() {
                                 )}
                             </div>
 
-                            {/* PAN Number Field */}
+                            {/* PAN Card Number Field */}
                             <div className="form-group">
-                                <label htmlFor="pan_no">PAN No
-                                    <span className="text-red-600">*</span>
-                                </label>
+                                <label htmlFor="pancard_no">PAN Card Number</label>
                                 <input
-                                    type="text"
-                                    className="block"
-                                    id="pan_no"
-                                    placeholder="Enter PAN Number"
-                                    {...register("pan_no", {
-                                        required: "PAN Number is required",
-                                        // pattern: {
-                                        //     value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
-                                        //     message: "Invalid PAN Number, All letter will be capital"
-                                        // }
+                                    id="pancard_no"
+                                    placeholder="Enter PAN card number"
+                                    {...register("pancard_no", {
+                                        required: "PAN card number is required",
+                                        pattern: {
+                                            value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+                                            message: "Invalid PAN card format , make sure all letters in capital"
+                                        }
                                     })}
                                 />
-                                {errors.pan_no && (
-                                    <span className="text-red-600 text-sm">
-                                        {errors.pan_no.message}
-                                    </span>
-                                )}
+                                {errors.pancard_no && <span className="text-red-600 text-sm">{errors.pancard_no.message}</span>}
+                            </div>
+
+                            {/* Aadhaar Number Field */}
+                            <div className="form-group">
+                                <label htmlFor="aadhaar_no">Aadhaar Number</label>
+                                <input
+                                    id="aadhaar_no"
+                                    placeholder="Enter Aadhaar number"
+                                    {...register("aadhaar_no", {
+                                        validate: (value) => {
+                                            if (
+                                                pancardValue &&
+                                                pancardValue.length >= 4 &&
+                                                pancardValue[3].toUpperCase() === "P"
+                                            ) {
+                                                if (!value) return "Aadhaar number is required for PAN type 'P'";
+                                                if (!/^\d{12}$/.test(value)) return "Aadhaar must be 12 digits";
+                                            }
+                                            return true;
+                                        }
+                                    })}
+                                />
+                                {errors.aadhaar_no && <span className="text-red-600 text-sm">{errors.aadhaar_no.message}</span>}
                             </div>
 
                             {/* GST Number Field */}
@@ -345,19 +363,19 @@ export default function AddVendor() {
 
                             {/* Bank Account Number Field */}
                             <div className="form-group">
-                                <label htmlFor="bank_account_number">Bank Account No.
+                                <label htmlFor="bank_account">Bank Account No.
                                     <span className="text-red-600">*</span>
                                 </label>
                                 <input
                                     type="number"
                                     className="block"
-                                    id="bank_account_number"
+                                    id="bank_account"
                                     placeholder="Enter Bank Account Number"
-                                    {...register("bank_account_number", { required: "Bank Account Number is required" })}
+                                    {...register("bank_account", { required: "Bank Account Number is required" })}
                                 />
-                                {errors.bank_account_number && (
+                                {errors.bank_account && (
                                     <span className="text-red-600 text-sm">
-                                        {errors.bank_account_number.message}
+                                        {errors.bank_account.message}
                                     </span>
                                 )}
                             </div>

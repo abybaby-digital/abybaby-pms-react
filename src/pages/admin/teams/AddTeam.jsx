@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import AdminHead from "../../../components/common/AdminHead";
 import ButtonLoader from "../../../components/common/ButtonLoader";
+import Select from 'react-select';
 import {
     addPaymentRequisition,
     getProjectList,
@@ -29,14 +30,15 @@ export default function AddTeam() {
         formState: { errors },
         setValue,
         watch,
+        control
     } = useForm();
 
     const [fincYear, setFincYear] = useState(null);
     const [selectedMainFO, setMainFO] = useState(null);
     const [otherFoList, setOtherFo] = useState(null);
 
-    console.log("sele",selectedMainFO);
-    
+    console.log("sele", selectedMainFO);
+
 
     // FY LIST CALL
     const { data: fincYearList } = useQuery({
@@ -82,8 +84,7 @@ export default function AddTeam() {
                 token,
                 +data.project_id,
                 data.team_name,
-                +data.main_fo_name,
-                +data.other_fo_name,
+                data.fo_ids?.map(item => item.value).join(',')
             );
         },
         onSuccess: (response) => {
@@ -130,12 +131,12 @@ export default function AddTeam() {
 
                     <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="bg-white rounded-2xl shadow mx-auto 2xl:w-[80%] w-full overflow-hidden"
+                        className="bg-white rounded-2xl shadow mx-auto 2xl:w-[80%] w-full"
                     >
                         {/* <h2 className="font-merri font-semibold p-5 text-center text-2xl bg-gray-200">
                 ADD PAYMENT REQUISITION
               </h2> */}
-                        <div className="flex bg-gray-200 items-center justify-between px-10">
+                        <div className="flex bg-gray-200 items-center justify-between px-10 rounded-t-2xl">
                             <h2 className="font-merri font-semibold p-5 text-center text-2xl">
                                 ADD TEAM
                             </h2>
@@ -166,7 +167,7 @@ export default function AddTeam() {
                             :
                             <div className="card-body grid gap-3 lg:grid-cols-2 grid-cols-1 p-5">
                                 {/* Project ID Dropdown */}
-                                <div className="form-group">
+                                <div className="form-group col-span-full">
                                     <label htmlFor="project_id">
                                         Project Name <span className="text-red-600">*</span>
                                     </label>
@@ -176,7 +177,7 @@ export default function AddTeam() {
                                             required: "Project ID is required",
                                         })}
                                         className="block w-full"
-                                        // disabled={fincYear === null || fincYear === "NA"}
+                                    // disabled={fincYear === null || fincYear === "NA"}
                                     >
                                         <option value="">Select Project</option>
                                         {
@@ -196,7 +197,7 @@ export default function AddTeam() {
                                     )}
                                 </div>
 
-                                {/* Vendor Name Field */}
+                                {/* Team Name Field */}
                                 <div className="form-group">
                                     <label htmlFor="team_name">
                                         Team Name <span className="text-red-600">*</span>
@@ -215,8 +216,27 @@ export default function AddTeam() {
                                     )}
                                 </div>
 
-                                {/* Main Field Office Dropdown */}
+                                {/* Include Field Officers */}
                                 <div className="form-group">
+                                    <label htmlFor="branch_id">Include Field Officers to team <span className="text-red-600">*</span></label>
+                                    <Controller
+                                        name="fo_ids"
+                                        control={control}
+                                        rules={{ required: "Branch is required" }}
+                                        render={({ field }) => (
+                                            <Select
+                                                {...field}
+                                                options={FoList?.response?.map(item => ({ value: item.id, label: item.name }))}
+                                                isMulti // This makes the select a multiple selection field
+                                                placeholder="Select FOs"
+                                            />
+                                        )}
+                                    />
+                                    {errors.fo_ids && <span className="text-red-600 text-sm">{errors.fo_ids.message}</span>}
+                                </div>
+
+                                {/* Main Field Office Dropdown */}
+                                {/* <div className="form-group">
                                     <label htmlFor="main_fo_name">
                                         Main Field Officer <span className="text-red-600">*</span>
                                     </label>
@@ -240,9 +260,9 @@ export default function AddTeam() {
                                             {errors.main_fo_name.message}
                                         </span>
                                     )}
-                                </div>
+                                </div> */}
                                 {/* Other Field Office Dropdown */}
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label htmlFor="other_fo_name">
                                         Junior Field Officer
                                     </label>
@@ -266,7 +286,7 @@ export default function AddTeam() {
                                             {errors.other_fo_name.message}
                                         </span>
                                     )}
-                                </div>
+                                </div> */}
 
                             </div>
                         }

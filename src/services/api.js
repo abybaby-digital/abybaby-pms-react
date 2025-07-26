@@ -369,6 +369,7 @@ export const addVendor = async (
   vendor_address,
   state_id,
   pancard_no,
+  aadhaar_no,
   gst_no,
   bank_name,
   bank_account,
@@ -386,6 +387,7 @@ export const addVendor = async (
       vendor_address: vendor_address,
       state_id: state_id,
       pancard_no: pancard_no,
+      aadhaar_no: aadhaar_no,
       gst_no: gst_no,
       bank_name: bank_name,
       bank_account: bank_account,
@@ -430,6 +432,7 @@ export const editVendor = async (
   vendor_address,
   state_id,
   pancard_no,
+  aadhaar_no,
   gst_no,
   bank_name,
   bank_account,
@@ -448,6 +451,7 @@ export const editVendor = async (
       vendor_address: vendor_address,
       state_id: state_id,
       pancard_no: pancard_no,
+      aadhaar_no: aadhaar_no,
       gst_no: gst_no,
       bank_name: bank_name,
       bank_account: bank_account,
@@ -1084,8 +1088,9 @@ export const addTeam = async (
   token,
   project_id,
   team_name,
-  fo_main_id,
-  fo_junior_id
+  // fo_main_id,
+  // fo_junior_id
+  fo_ids
 ) => {
   try {
     const response = await api.post(
@@ -1093,8 +1098,9 @@ export const addTeam = async (
       {
         project_id: project_id,
         team_name: team_name,
-        fo_main_id: fo_main_id,
-        fo_junior_id: fo_junior_id,
+        // fo_main_id: fo_main_id,
+        // fo_junior_id: fo_junior_id,
+        fo_ids: fo_ids
       },
       {
         headers: {
@@ -1114,8 +1120,9 @@ export const editTeam = async (
   token,
   team_id,
   team_name,
-  fo_main_id,
-  fo_junior_id
+  // fo_main_id,
+  // fo_junior_id
+  fo_ids
 ) => {
   try {
     const response = await api.post(
@@ -1123,8 +1130,9 @@ export const editTeam = async (
       {
         team_id: team_id,
         team_name: team_name,
-        fo_main_id: fo_main_id,
-        fo_junior_id: fo_junior_id,
+        // fo_main_id: fo_main_id,
+        // fo_junior_id: fo_junior_id,
+        fo_ids: fo_ids
       },
       {
         headers: {
@@ -1145,6 +1153,27 @@ export const getTeamList = async (token) => {
     const response = await api.post(
       "/team-list",
       {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching team list:", error);
+    throw error;
+  }
+};
+
+// TEAM LIST
+export const getTeamListById = async (token, project_id) => {
+  try {
+    const response = await api.post(
+      "/team-list-by-project-id",
+      {
+        project_id: project_id
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1235,6 +1264,28 @@ export const FOListByProjectId = async (token, project_id) => {
       "/fo-list-by-project-id",
       {
         project_id: project_id
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data.result;
+  } catch (error) {
+    console.error("Error fetching team details:", error);
+    throw error;
+  }
+};
+
+// FO LIST BY PROJECT AND TEAM ID
+export const FOListByProjectTeamId = async (token, project_id, team_id) => {
+  try {
+    const response = await api.post(
+      "/fo-list-by-project-id",
+      {
+        project_id: project_id,
+        team_id: team_id
       },
       {
         headers: {
@@ -2186,13 +2237,16 @@ export const getFOPaymentRequisitionList = async (token, financial_year_id) => {
 };
 
 // FO EXPENSE LIST BY ID
-export const getFOExpenseListById = async (token, fo_payment_requition_id) => {
+export const getFOExpenseListAll = async (token, project_id, team_id, fo_id, fo_payment_req_id) => {
 
   try {
     const response = await api.post(
-      "/expenses-by-payment-requition-id",
+      "/fo-expenses-list-all",
       {
-        fo_payment_requition_id: fo_payment_requition_id,
+        project_id: project_id,
+        team_id: team_id,
+        fo_id: fo_id,
+        fo_payment_req_id: fo_payment_req_id,
       },
       {
         headers: {
