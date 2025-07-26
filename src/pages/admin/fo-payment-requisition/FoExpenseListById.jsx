@@ -20,6 +20,7 @@ const FoExpenseListById = ({ payment }) => {
     const [foFilterId, setFoFilter] = useState(null);
 
     const token = useSelector(state => state.auth.token);
+    const userId = useSelector(state => state.auth.user.role_id);
     const queryClient = useQueryClient();
 
     const { data: foExpenseList, isLoading } = useQuery({
@@ -40,7 +41,7 @@ const FoExpenseListById = ({ payment }) => {
             if (!teamFilterId) return { response: [] };
             return await FOListByProjectTeamId(token, payment.project_id, teamFilterId);
         },
-        enabled: !!teamFilterId,
+        // enabled: !!teamFilterId,
     });
 
     const rejectMutation = useMutation({
@@ -135,7 +136,7 @@ const FoExpenseListById = ({ payment }) => {
                         className="border px-3 py-2 rounded w-64"
                         value={foFilterId || ''}
                         onChange={(e) => setFoFilter(e.target.value || null)}
-                        disabled={!teamFilterId}
+                        // disabled={!teamFilterId}
                     >
                         <option value="">Select FO</option>
                         {foList?.response.map((fo) => (
@@ -162,7 +163,10 @@ const FoExpenseListById = ({ payment }) => {
                 <Column field="exp_reason" header="Reason" />
                 <Column header="Attachment" body={attachmentTemplate} />
                 <Column field="status" header="Status" body={statusTemplate} />
-                <Column header="Want to reject?" body={rejectButtonTemplate} />
+                {
+                    userId === 4 && 
+                    <Column header="Want to reject?" body={rejectButtonTemplate} />
+                }
                 <Column field="created_at" header="Created At" body={(rowData) => dateTemplate(rowData.created_at)} />
                 <Column field="updated_at" header="Updated At" body={(rowData) => dateTemplate(rowData.updated_at)} />
             </DataTable>
