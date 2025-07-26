@@ -393,10 +393,10 @@ export default function Dashboard() {
                 type="button"
                 onClick={() => {
                   projectListByCategory(
-                    "billed Closed Projects",
-                    "/project-list/billed-closed",
-                    "2",
-                    "1",
+                    "Cancelled Projects",
+                    "/project-list/cancelled",
+                    "0",
+                    null,
                     null
                   );
                 }}
